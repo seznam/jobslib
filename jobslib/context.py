@@ -3,6 +3,8 @@ Module :module:`jobslib.context` provides base class which encapsulates
 necessary resources (configuration, database connection, …) for tasks.
 """
 
+from cached_property import cached_property
+
 __all__ = ['Context']
 
 
@@ -31,7 +33,7 @@ class Context(object):
         """
         pass
 
-    @property
+    @cached_property
     def config(self):
         """
         Application's configuration.
