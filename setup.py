@@ -40,6 +40,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
+        'colored<1.3',
     ],
     tests_require=[
         'pytest-cov',

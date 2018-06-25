@@ -5,7 +5,7 @@ Command line parser helpers.
 import argparse
 import sys
 
-from gettext import gettext as _
+from colored import fg, attr
 
 
 def argument(*args, **kwargs):
@@ -29,4 +29,6 @@ class ArgumentParser(argparse.ArgumentParser):
         exit process.
         """
         self.print_help(sys.stderr)
-        self.exit(2, _('\n{:s}: error: {:s}\n').format(self.prog, message))
+        self.exit(
+            2, '\n{:s}{:s}: error: {}{:s}\n'.format(
+                fg('red'), self.prog, message, attr('reset')))
