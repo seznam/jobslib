@@ -4,18 +4,17 @@ Module :module:`shelter.tasks` provides an ancestor class for writing tasks.
 
 import sys
 
-from jobslib.cmdlineparser import argument
+from .cmdlineparser import argument
 
 __all__ = ['BaseCommand', 'argument']
 
 
 class BaseTask(object):
     """
-    Ancestor for task. Inherit this class and adjust *name*, *help*
-    and optionally *arguments* attributes and override *task()* method.
-    *arguments* is a :class:`tuple` containing command line arguments
-    for task. Constructor argument *config* is an instance of the
-    :class:`jobslib.config.Config`.
+    Ancestor for task. Inherit this class and adjust :attr:`name`,
+    :meth:`help` and optionally :attr:`arguments` attributes and
+    override :meth:`task` method. Constructor argument *config* is
+    an instance of the :class:`jobslib.config.Config`.
 
     ::
 
@@ -39,7 +38,7 @@ class BaseTask(object):
 
     name = ''
     """
-    Task name..
+    Task name.
     """
 
     help = ''
@@ -49,17 +48,25 @@ class BaseTask(object):
 
     arguments = ()
     """
-    Task command line arguments.
+    Task command line arguments. :class:`tuple` containing command line
+    arguments for task.
+
+    ::
+
+        arguments = (
+            argument('-f', '--file', action='store', dest='filename'),
+        )
     """
 
     def __init__(self, config):
-        self.context = None  # TODO: config.context_class.from_config(config)
+        self.context = config.context_class.from_config(config)
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.initialize()
 
     def __call__(self):
-        raise NotImplementedError
+        self.context.config.configure_logging()
+        self.task()
 
     def initialize(self):
         """
