@@ -5,15 +5,16 @@ encapsulates configuration.
 
 import logging.config
 
-from jobslib.cmdlineparser import argument
-from jobslib.context import Context
-from jobslib.imports import import_object
-from jobslib.logging import BASE_LOGGING
+from .cmdlineparser import argument
+from .context import Context
+from .imports import import_object
+from .logging import BASE_LOGGING
+from .objectvalidator import option, OptionsContainer
 
 __all__ = ['Config', 'argument']
 
 
-class Config(object):
+class Config(OptionsContainer):
     """
     Class which encapsulates configuration. It joins options from settings
     module and from command line. *settings* is a Python module defined by
@@ -30,7 +31,7 @@ class Config(object):
     def __init__(self, settings, args_parser):
         self._settings = settings
         self._args_parser = args_parser
-        self.initialize()
+        super().__init__()
 
     def __repr__(self):
         return "<{}.{}: {:#x}>".format(
@@ -47,29 +48,27 @@ class Config(object):
     def configure_logging(self):
         """
         Configure Python logging according to configuration in
-        :meth:`config`.
+        :attr:`logging`.
         """
         logging.config.dictConfig(self.logging)
 
-    @property
+    @option
     def logging(self):
         """
         Python logging configuration as a :class:`dict` or
-        :const:`BASE_LOGGING`.
+        :data:`BASE_LOGGING`.
         """
-        return getattr(self.settings, 'LOGGING', BASE_LOGGING)
+        return getattr(self._settings, 'LOGGING', BASE_LOGGING)
 
-    @property
+    @option
     def context_class(self):
         """
         Context class, either :class:`jobslib.context.Context` class or
         subclass.
         """
-        if 'context_class' not in self._cached_values:
-            context_cls_name = getattr(self.settings, 'CONTEXT_CLASS', '')
-            if context_cls_name:
-                context_class = import_object(context_cls_name)
-            else:
-                context_class = Context
-            self._cached_values['context_class'] = context_class
-        return self._cached_values['context_class']
+        context_cls_name = getattr(self._settings, 'CONTEXT_CLASS', '')
+        if context_cls_name:
+            context_class = import_object(context_cls_name)
+        else:
+            context_class = Context
+        return context_class
