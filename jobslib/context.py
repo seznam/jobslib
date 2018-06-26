@@ -4,6 +4,7 @@ necessary resources (configuration, database connection, …) for tasks.
 """
 
 from cached_property import cached_property
+from consul import Consul
 
 __all__ = ['Context']
 
@@ -39,3 +40,13 @@ class Context(object):
         Application's configuration.
         """
         return self._config
+
+    @cached_property
+    def consul(self):
+        """
+        Connection arguments to HashiCorp Consul.
+        """
+        kwargs = {
+            k: v for k, v in self._config.consul.as_kwargs.items()
+            if v is not None}
+        return Consul(**kwargs)

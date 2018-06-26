@@ -83,5 +83,4 @@ class OptionsContainer(object):
         )
 
     def initialize(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
+        pass
