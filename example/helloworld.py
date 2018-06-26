@@ -3,9 +3,12 @@ import sys
 
 from jobslib import BaseTask, argument, Config, option
 
+# settings --------------------------------------------------------------------
 
 CONFIG_CLASS = 'example.helloworld.HelloWorldConfig'
 
+
+# config ----------------------------------------------------------------------
 
 class HelloWorldConfig(Config):
 
@@ -13,6 +16,8 @@ class HelloWorldConfig(Config):
     def yourname(self):
         return self._args_parser.yourname
 
+
+# task ------------------------------------------------------------------------
 
 class HelloWorld(BaseTask):
 
