@@ -2,6 +2,7 @@
 Module :module:`shelter.tasks` provides an ancestor class for writing tasks.
 """
 
+import socket
 import sys
 
 from .cmdlineparser import argument
@@ -66,7 +67,19 @@ class BaseTask(object):
 
     def __call__(self):
         self.context.config.configure_logging()
-        self.task()
+
+        if self.context.config.one_instance:
+            session_id = self.context.consul.session.create(
+                ttl=self.context.config.one_instance_ttl)
+        else:
+            session_id = None
+
+        try:
+            # TODO: one instance lock
+            self.task()
+        finally:
+            if session_id:
+                self.context.consul.Session.destroy(session_id)
 
     def initialize(self):
         """
