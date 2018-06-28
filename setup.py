@@ -42,6 +42,8 @@ setup(
     install_requires=[
         'cached-property',
         'colored<1.3',
+        'python-consul',
+        'ujson',
     ],
     tests_require=[
         'pytest-cov',

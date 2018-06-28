@@ -42,9 +42,17 @@ class Context(object):
         return self._config
 
     @cached_property
+    def one_instance_lock(self):
+        """
+        One instance lock.
+        """
+        return self._config.one_instance.backend(
+            self, self._config.one_instance.options)
+
+    @cached_property
     def consul(self):
         """
-        Connection arguments to HashiCorp Consul.
+        HashiCorp Consul client.
         """
         kwargs = {
             k: v for k, v in self._config.consul.as_kwargs.items()

@@ -11,7 +11,7 @@ from .imports import import_object
 from .logging import BASE_LOGGING
 from .objectvalidator import option, OptionsContainer
 
-__all__ = ['Config', 'argument', 'ConfigGroup']
+__all__ = ['Config', 'ConfigGroup']
 
 
 class ConfigGroup(OptionsContainer):
@@ -41,10 +41,6 @@ class Config(OptionsContainer):
             '--one-instance', action='store_true',
             dest='one_instance', default=False,
             help='only one running instance at the same time is allowed'),
-        argument(
-            '--one-instance-ttl', action='store', type=int,
-            dest='one_instance_ttl', default=60 * 60 * 24,
-            help='maximum time in seconds before instance lock is expired'),
     )
 
     arguments = ()
@@ -97,20 +93,13 @@ class Config(OptionsContainer):
             context_class = Context
         return context_class
 
-    @option(attrtype=bool)
+    @option
     def one_instance(self):
         """
-        Determines that only one running instance at the same time
-        is allowed.
+        One instance lock.
         """
-        return self._args_parser.one_instance
-
-    @option(attrtype=int)
-    def one_instance_ttl(self):
-        """
-        Maximum TTL in seconds before one instance lock is released.
-        """
-        return self._args_parser.one_instance_ttl
+        return OneInstanceConfig(
+            getattr(self._settings, 'ONE_INSTANCE', {}), self._args_parser)
 
     @option
     def consul(self):
@@ -123,7 +112,44 @@ class Config(OptionsContainer):
             getattr(self._settings, 'CONSUL', {}), self._args_parser)
 
 
+class OneInstanceConfig(ConfigGroup):
+    """
+    Configuration of the one instance lock.
+    """
+
+    @option
+    def backend(self):
+        """
+        One instance implementation class.
+        """
+        if self._args_parser.one_instance:
+            cls_name = self._settings['backend']
+        else:
+            cls_name = 'jobslib.oneinstance.dummy.DummyLock'
+        return import_object(cls_name)
+
+    @option
+    def options(self):
+        """
+        Constructor arguments of the one instance implementation class.
+        Config group class is adopted from :meth:`backend`.
+        """
+        return self.backend.OptionsConfig(
+            self._settings.get('options', {}), self._args_parser)
+
+
 class ConsulConfig(ConfigGroup):
+    """
+    Connection arguments to HashiCorp Consul, see `Consul documentation
+    <http://python-consul.readthedocs.io/en/latest/#consul>`_.
+    """
+
+    @option(attrtype=str)
+    def scheme(self):
+        """
+        URI scheme.
+        """
+        return 'http'
 
     @option(required=True, attrtype=str)
     def host(self):
@@ -138,7 +164,3 @@ class ConsulConfig(ConfigGroup):
         Port of the Consul server.
         """
         return self._settings.get('port')
-
-    @option(attrtype=str)
-    def scheme(self):
-        return 'http'

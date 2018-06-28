@@ -7,6 +7,15 @@ from jobslib import BaseTask
 
 # settings --------------------------------------------------------------------
 
+# ONE_INSTANCE_BACKEND = 'jobslib.oneinstance.dummy.DummyLock'
+ONE_INSTANCE = {
+    'backend': 'jobslib.oneinstance.consul.ConsulLock',
+    'options': {
+        'key': 'example-oneinstance',
+        'ttl': 60,
+    }
+}
+
 CONSUL = {
     'host': '127.0.0.1',
 }

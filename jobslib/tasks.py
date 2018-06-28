@@ -2,12 +2,11 @@
 Module :module:`shelter.tasks` provides an ancestor class for writing tasks.
 """
 
-import socket
+import logging
 import sys
+import time
 
-from .cmdlineparser import argument
-
-__all__ = ['BaseCommand', 'argument']
+__all__ = ['BaseCommand']
 
 
 class BaseTask(object):
@@ -61,6 +60,7 @@ class BaseTask(object):
 
     def __init__(self, config):
         self.context = config.context_class.from_config(config)
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.initialize()
@@ -68,18 +68,23 @@ class BaseTask(object):
     def __call__(self):
         self.context.config.configure_logging()
 
-        if self.context.config.one_instance:
-            session_id = self.context.consul.session.create(
-                ttl=self.context.config.one_instance_ttl)
-        else:
-            session_id = None
-
-        try:
-            # TODO: one instance lock
-            self.task()
-        finally:
-            if session_id:
-                self.context.consul.Session.destroy(session_id)
+        counter = 0
+        while 1:
+            try:
+                if self.context.one_instance_lock.acquire():
+                    counter = 0
+                    try:
+                        self.task()
+                    finally:
+                        self.context.one_instance_lock.release()
+                else:
+                    counter += 1
+                    if counter == 60:
+                        self.logger.info("Can't acquire lock")
+                        counter = 0
+                time.sleep(1.0)
+            except Exception:
+                self.logger.exception("{} task failed".format(self.name))
 
     def initialize(self):
         """
