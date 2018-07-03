@@ -1,3 +1,30 @@
+"""
+Module :mod:`objectvalidator` provides functionality for validating and
+caching.
+
+    ::
+
+        class InterfaceConfig(OptionsContainer):
+
+            def initialize(self, *args, **kwargs):
+                self.config = args[0]
+
+            @option
+            def hostname(self):
+                return self.config.interface.get('hostname')
+
+            @option(required=True, attrtype=int)
+            def port(self):
+                return self.config.interface.get('port')
+
+        # Option values will be validated and cached
+        >>> interface_config = InterfaceConfig(config)
+
+        >>> interface_config.hostname
+        'localhost'
+        >>> interface_config.port
+        8000
+"""
 
 import functools
 import inspect
@@ -6,6 +33,11 @@ __all__ = ['option', 'OptionsContainer']
 
 
 class option(object):
+    """
+    Decorator which validates and caches values returned from methods. Can
+    be used either with arguments or without. If arguments are ommited,
+    value is not validated, only cached.
+    """
 
     def __new__(cls, func=None, required=False, attrtype=None):
         if func is not None:
@@ -28,6 +60,10 @@ class option(object):
 
     @classmethod
     def get_option_names(cls, inst):
+        """
+        Return :class:`list` containig method names on *inst* instance which
+        are decorated by :class:`option` decorator.
+        """
         res = []
         for attrname, attrvalue in inspect.getmembers(inst.__class__):
             if isinstance(attrvalue, cls):
@@ -36,6 +72,11 @@ class option(object):
 
     @classmethod
     def load_all_options(cls, inst):
+        """
+        Try reading values from all methods on *inst* instance which
+        are decorated by :class:`option` decorator. Reading will cause
+        validation of theese values and cache them.
+        """
         for attrname in cls.get_option_names(inst):
             getattr(inst, attrname)
 
@@ -67,6 +108,11 @@ class option(object):
 
 
 class OptionsContainer(object):
+    """
+    Container for options methods. During initialization are read values
+    from all methods decorated by :class:`option` decorator . So if class
+    is successfuly initialized, all options are validated a cached.
+    """
 
     def __init__(self, *args, **kwargs):
         self.initialize(*args, **kwargs)
@@ -83,4 +129,8 @@ class OptionsContainer(object):
         )
 
     def initialize(self, *args, **kwargs):
+        """
+        Initialize instance attributes. You can override this method in
+        the subclasses.
+        """
         pass

@@ -27,8 +27,7 @@ def get_app_settings(cmdline_args):
         cmdline_args.settings or os.environ.get('JOBSLIB_SETTINGS_MODULE', ''))
     if not settings_module_path:
         return None
-    else:
-        return importlib.import_module(settings_module_path)
+    return importlib.import_module(settings_module_path)
 
 
 def get_task_cls(task_cls_path):

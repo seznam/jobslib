@@ -15,12 +15,23 @@ __all__ = ['Config', 'ConfigGroup']
 
 
 class ConfigGroup(OptionsContainer):
+    """
+    Container for configuration. Descendant of the :class:`OptionsContainer`,
+    enrich the parent class of :meth:`as_kwargs`.
+    """
 
     def initialize(self, *args, **unused_kwargs):
+        """
+        Initialize instance attributes. You can override this method in
+        the subclasses.
+        """
         self._settings, self._args_parser = args
 
     @property
     def as_kwargs(self):
+        """
+        Return all options as a :class:`dict`.
+        """
         return {
             name: getattr(self, name)
             for name in option.get_option_names(self)

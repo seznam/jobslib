@@ -1,3 +1,8 @@
+"""
+Module :mod:`jobslib.oneinstance.consul` provides :class:`ConsulLock`
+lock. It is based on HashiCorp Consul, so lock is distributed among
+datacenters.
+"""
 
 import logging
 import signal
@@ -10,12 +15,22 @@ from ..config import ConfigGroup
 from ..objectvalidator import option
 from ..time import get_current_time, to_local, to_utc
 
+__all__ = ['ConsulLock']
+
 logger = logging.getLogger(__name__)
 
 
 class ConsulLock(BaseLock):
+    """
+    Consul lock implementation. Provides locking among datacenters.
+    When lock expire due to TTL, :exc:`OneInstanceWatchdogError` is
+    raised.
+    """
 
     class OptionsConfig(ConfigGroup):
+        """
+        Consul lock options.
+        """
 
         @option(required=True, attrtype=str)
         def key(self):
