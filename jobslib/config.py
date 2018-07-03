@@ -167,10 +167,8 @@ class LivenessConfig(ConfigGroup):
         """
         Liveness implementation class.
         """
-        if self._args_parser.one_instance:
-            cls_name = self._settings['backend']
-        else:
-            cls_name = 'jobslib.liveness.dummy.DummyLiveness'
+        cls_name = self._settings.get(
+            'backend', 'jobslib.liveness.dummy.DummyLiveness')
         return import_object(cls_name)
 
     @option
