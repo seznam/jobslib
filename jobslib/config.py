@@ -58,7 +58,7 @@ class Config(OptionsContainer):
             self.__class__.__module__, self.__class__.__name__, id(self)
         )
 
-    def initialize(self):
+    def initialize(self, *args, **kwargs):
         """
         Initialize instance attributes. You can override this method in
         the subclasses.
