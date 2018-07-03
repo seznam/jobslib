@@ -113,6 +113,14 @@ class Config(OptionsContainer):
             getattr(self._settings, 'ONE_INSTANCE', {}), self._args_parser)
 
     @option
+    def liveness(self):
+        """
+        Health status writer.
+        """
+        return LivenessConfig(
+            getattr(self._settings, 'LIVENESS', {}), self._args_parser)
+
+    @option
     def consul(self):
         """
         Connection arguments to HashiCorp Consul, see `Consul documentation
@@ -143,6 +151,32 @@ class OneInstanceConfig(ConfigGroup):
     def options(self):
         """
         Constructor arguments of the one instance implementation class.
+        Config group class is adopted from :meth:`backend`.
+        """
+        return self.backend.OptionsConfig(
+            self._settings.get('options', {}), self._args_parser)
+
+
+class LivenessConfig(ConfigGroup):
+    """
+    Configuration of the liveness writer.
+    """
+
+    @option
+    def backend(self):
+        """
+        Liveness implementation class.
+        """
+        if self._args_parser.one_instance:
+            cls_name = self._settings['backend']
+        else:
+            cls_name = 'jobslib.liveness.dummy.DummyLiveness'
+        return import_object(cls_name)
+
+    @option
+    def options(self):
+        """
+        Constructor arguments of the liveness implementation class.
         Config group class is adopted from :meth:`backend`.
         """
         return self.backend.OptionsConfig(

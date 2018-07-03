@@ -7,12 +7,18 @@ from jobslib import BaseTask
 
 # settings --------------------------------------------------------------------
 
-# ONE_INSTANCE_BACKEND = 'jobslib.oneinstance.dummy.DummyLock'
 ONE_INSTANCE = {
     'backend': 'jobslib.oneinstance.consul.ConsulLock',
     'options': {
-        'key': 'example-oneinstance',
+        'key': 'jobs/example/oneinstance/lock',
         'ttl': 30,
+    }
+}
+
+LIVENESS = {
+    'backend': 'jobslib.liveness.consul.ConsulLiveness',
+    'options': {
+        'key': 'jobs/example/oneinstance/liveness',
     }
 }
 

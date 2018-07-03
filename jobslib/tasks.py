@@ -71,6 +71,7 @@ class BaseTask(object):
         self.context.config.configure_logging()
 
         lock = self.context.one_instance_lock
+        liveness = self.context.liveness
         counter = 0
         while 1:
             try:
@@ -80,6 +81,7 @@ class BaseTask(object):
                         self.task()
                     finally:
                         lock.release()
+                    liveness.write()
                 else:
                     counter += 1
                     if counter == 60:

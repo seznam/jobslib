@@ -50,6 +50,14 @@ class Context(object):
             self, self._config.one_instance.options)
 
     @cached_property
+    def liveness(self):
+        """
+        Health status writer.
+        """
+        return self._config.liveness.backend(
+            self, self._config.liveness.options)
+
+    @cached_property
     def consul(self):
         """
         HashiCorp Consul client.
