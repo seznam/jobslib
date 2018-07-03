@@ -6,7 +6,7 @@ of the task.
 import abc
 
 from ..config import ConfigGroup
-from ..time import get_current_time, to_local, to_utc
+from ..time import get_current_time, to_utc
 
 __all__ = ['BaseLiveness']
 
