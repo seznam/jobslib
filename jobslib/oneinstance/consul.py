@@ -6,7 +6,6 @@ datacenters.
 
 import logging
 import signal
-import socket
 
 import ujson
 
@@ -67,7 +66,7 @@ class ConsulLock(BaseLock):
     def acquire(self):
         timestamp = get_current_time()
         record = {
-            'fqdn': socket.getfqdn(),
+            'fqdn': self.context.fqdn,
             'timestamp': timestamp,
             'time_utc': to_utc(timestamp),
             'time_local': to_local(timestamp),

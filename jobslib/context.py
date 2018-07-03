@@ -3,6 +3,8 @@ Module :module:`jobslib.context` provides base class which encapsulates
 necessary resources (configuration, database connection, …) for tasks.
 """
 
+import socket
+
 from cached_property import cached_property
 from consul import Consul
 
@@ -40,6 +42,13 @@ class Context(object):
         Application's configuration.
         """
         return self._config
+
+    @cached_property
+    def fqdn(self):
+        """
+        Fully qualified domain name of the local machine.
+        """
+        return socket.getfqdn()
 
     @cached_property
     def one_instance_lock(self):
