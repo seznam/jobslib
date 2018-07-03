@@ -10,6 +10,9 @@ and run your task from console:
 
 from .cmdlineparser import argument
 from .config import Config, ConfigGroup, option
+from .context import Context
 from .tasks import BaseTask
 
-__all__ = ['BaseTask', 'argument', 'Config', 'ConfigGroup', 'option']
+__all__ = [
+    'BaseTask', 'argument', 'Config', 'Context', 'ConfigGroup', 'option'
+]
