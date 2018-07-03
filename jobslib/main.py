@@ -39,7 +39,7 @@ def get_task_cls(task_cls_path):
     task_cls = import_object(task_cls_path)
     if not issubclass(task_cls, BaseTask):
         raise TypeError(
-            _("'{}' is not subclass of the BaseTask").format(task_cls_path))
+            "'{}' is not subclass of the BaseTask".format(task_cls_path))
     return task_cls
 
 
