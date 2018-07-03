@@ -12,7 +12,7 @@ ONE_INSTANCE = {
     'backend': 'jobslib.oneinstance.consul.ConsulLock',
     'options': {
         'key': 'example-oneinstance',
-        'ttl': 60,
+        'ttl': 30,
     }
 }
 
@@ -31,8 +31,9 @@ class OneInstance(BaseTask):
 
     def task(self):
         for i in range(10, 0, -1):
-            sys.stdout.write("\r[{}] {}\x1b[K".format(os.getpid(), i))
-            sys.stdout.flush()
-            time.sleep(1.0)
+            if self.context.one_instance_lock.refresh():
+                sys.stdout.write("\r[{}] {}\x1b[K".format(os.getpid(), i))
+                sys.stdout.flush()
+                time.sleep(5.0)
         sys.stdout.write("\r[{}] Done\x1b[K\n".format(os.getpid()))
         sys.stdout.flush()

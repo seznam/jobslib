@@ -6,7 +6,9 @@ import logging
 import sys
 import time
 
-__all__ = ['BaseCommand']
+from .oneinstance import OneInstanceWatchdogError
+
+__all__ = ['BaseTask']
 
 
 class BaseTask(object):
@@ -68,23 +70,30 @@ class BaseTask(object):
     def __call__(self):
         self.context.config.configure_logging()
 
+        lock = self.context.one_instance_lock
         counter = 0
         while 1:
             try:
-                if self.context.one_instance_lock.acquire():
+                if lock.acquire():
                     counter = 0
                     try:
                         self.task()
                     finally:
-                        self.context.one_instance_lock.release()
+                        lock.release()
                 else:
                     counter += 1
                     if counter == 60:
-                        self.logger.info("Can't acquire lock")
+                        self.logger.info(
+                            "Can't acquire lock (lock owner is %s)",
+                            lock.get_lock_owner_info()
+                        )
                         counter = 0
-                time.sleep(1.0)
+            except OneInstanceWatchdogError:
+                self.logger.exception("Task has been killed by watchdog!")
             except Exception:
-                self.logger.exception("{} task failed".format(self.name))
+                self.logger.exception("%s task failed", self.name)
+
+            time.sleep(1.0)
 
     def initialize(self):
         """

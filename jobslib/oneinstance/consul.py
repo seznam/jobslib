@@ -1,12 +1,16 @@
 
+import logging
+import signal
 import socket
 
 import ujson
 
-from . import BaseLock
+from . import BaseLock, OneInstanceWatchdogError
 from ..config import ConfigGroup
 from ..objectvalidator import option
 from ..time import get_current_time, to_local, to_utc
+
+logger = logging.getLogger(__name__)
 
 
 class ConsulLock(BaseLock):
@@ -37,9 +41,15 @@ class ConsulLock(BaseLock):
         super().__init__(context, options)
         self.session_id = None
 
-    def acquire(self):
-        consul = self.context.consul
+    @staticmethod
+    def alarm_handler(unused_signum, unused_frame):
+        """
+        Raise :exc:`OneInstanceWatchdogError` when TTL of the lock is
+        reached.
+        """
+        raise OneInstanceWatchdogError
 
+    def acquire(self):
         timestamp = get_current_time()
         record = {
             'fqdn': socket.getfqdn(),
@@ -48,19 +58,55 @@ class ConsulLock(BaseLock):
             'time_local': to_local(timestamp),
         }
 
-        self.session_id = consul.session.create(ttl=self.options.ttl)
-        return consul.kv.put(
-            self.options.key, ujson.dumps(record), acquire=self.session_id)
+        session_id = self.context.consul.session.create(ttl=self.options.ttl)
+        try:
+            res = self.context.consul.kv.put(
+                self.options.key, ujson.dumps(record), acquire=session_id)
+        except Exception:
+            logger.exception("Can't acquire lock")
+            return False
+        else:
+            if res is True:
+                self.session_id = session_id
+                # Set SIGALRM handler. If lock is not released before ttl,
+                # process will be killed.
+                signal.signal(signal.SIGALRM, self.alarm_handler)
+                signal.alarm(self.options.ttl)
+                return True
+            return False
 
     def release(self):
-        res = self.context.consul.kv.put(
-            self.options.key, '{}', release=self.session_id)
-        self.session_id = None
-        return res
+        try:
+            res = self.context.consul.session.destroy(self.session_id)
+        except Exception:
+            logger.exception("Can't release lock")
+            return False
+        else:
+            self.session_id = None
+            if res is True:
+                # Cancel SIGALRM
+                signal.alarm(0)
+                signal.signal(signal.SIGALRM, signal.SIG_DFL)
+                return True
+            return False
 
     def refresh(self):
-        if self.acquire():
-            session_id = self.context.consul.session.renew(
-                self.context.consul_session_id)
-            return session_id == self.context.consul_session_id
-        return False
+        try:
+            res = self.context.consul.session.renew(self.session_id)
+        except Exception:
+            logger.exception("Can't refresh lock")
+            return False
+        else:
+            if res:
+                # Restart SIGALRM
+                signal.alarm(self.options.ttl)
+                return True
+            return True
+
+    def get_lock_owner_info(self):
+        unused_index, res = self.context.consul.kv.get(self.options.key)
+        if res is not None:
+            value = ujson.loads(res['Value'])
+            return "{}, locked at {} UTC".format(
+                value.get('fqdn'), value.get('time_utc'))
+        return None

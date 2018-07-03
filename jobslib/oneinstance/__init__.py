@@ -4,6 +4,10 @@ import abc
 from ..config import ConfigGroup
 
 
+class OneInstanceWatchdogError(BaseException):
+    pass
+
+
 class BaseLock(abc.ABC):
 
     class OptionsConfig(ConfigGroup):
@@ -24,3 +28,6 @@ class BaseLock(abc.ABC):
     @abc.abstractmethod
     def refresh(self):
         raise NotImplementedError
+
+    def get_lock_owner_info(self):
+        return None
