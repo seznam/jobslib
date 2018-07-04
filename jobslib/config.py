@@ -47,13 +47,6 @@ class Config(OptionsContainer):
     of the :class:`argparse.Namespace`.
     """
 
-    _base_arguments = (
-        argument(
-            '--one-instance', action='store_true',
-            dest='one_instance', default=False,
-            help='only one running instance at the same time is allowed'),
-    )
-
     arguments = ()
     """
     Command line arguments of the Config class.
@@ -111,6 +104,20 @@ class Config(OptionsContainer):
         """
         return OneInstanceConfig(
             getattr(self._settings, 'ONE_INSTANCE', {}), self._args_parser)
+
+    @option
+    def run_once(self):
+        """
+        Run task only once and exit.
+        """
+        return self._args_parser.run_once
+
+    @option
+    def sleep_interval(self):
+        """
+        Sleep interval after task.
+        """
+        return self._args_parser.sleep_interval
 
     @option
     def liveness(self):

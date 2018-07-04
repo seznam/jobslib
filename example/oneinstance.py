@@ -41,5 +41,5 @@ class OneInstance(BaseTask):
                 sys.stdout.write("\r[{}] {}\x1b[K".format(os.getpid(), i))
                 sys.stdout.flush()
                 time.sleep(5.0)
-        sys.stdout.write("\r[{}] Done\x1b[K\n".format(os.getpid()))
+        sys.stdout.write("\r\x1b[K")
         sys.stdout.flush()

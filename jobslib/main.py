@@ -67,12 +67,22 @@ def main(args=None):
     parser.add_argument(
         '-s', '--settings', action='store', dest='settings',
         type=str, default=None,
-        help='task settings module'
-    )
+        help='task settings module')
+    parser.add_argument(
+        '--one-instance', action='store_true',
+        dest='one_instance', default=False,
+        help='only one running instance at the same time is allowed')
+    parser.add_argument(
+        '--run-once', action='store_true',
+        dest='run_once', default=False,
+        help='run task only once and exit')
+    parser.add_argument(
+        '--sleep-interval', action='store', dest='sleep_interval',
+        type=int, default=60,
+        help='sleep interval in seconds after task')
     parser.add_argument(
         'task_cls', action='store', type=str,
-        help='module path to task class (module.submodule.TaskClass)'
-    )
+        help='module path to task class (module.submodule.TaskClass)')
     cmdline_args, unused_remaining = parser.parse_known_args(args)
 
     # Obtain settings module
@@ -95,8 +105,7 @@ def main(args=None):
     if not issubclass(config_cls, Config):
         parser.error(
             "Config class must be subclass of the jobslib.config.Config")
-    for config_args, kwargs in itertools.chain(
-            config_cls._base_arguments, config_cls.arguments):
+    for config_args, kwargs in config_cls.arguments:
         parser.add_argument(*config_args, **kwargs)
 
     # Add help argument

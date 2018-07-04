@@ -36,8 +36,6 @@ class BaseTask(object):
                 print("Hello %s" % self.args.name)
     """
 
-    logger = None
-
     name = ''
     """
     Task name.
@@ -72,30 +70,30 @@ class BaseTask(object):
 
         lock = self.context.one_instance_lock
         liveness = self.context.liveness
-        counter = 0
         while 1:
             try:
                 if lock.acquire():
-                    counter = 0
+                    self.logger.info("Run task")
                     try:
                         self.task()
                     finally:
                         lock.release()
+                    self.logger.info("Task done, write liveness")
                     liveness.write()
                 else:
-                    counter += 1
-                    if counter == 60:
-                        self.logger.info(
-                            "Can't acquire lock (lock owner is %s)",
-                            lock.get_lock_owner_info()
-                        )
-                        counter = 0
+                    self.logger.info(
+                        "Can't acquire lock (lock owner is %s)",
+                        lock.get_lock_owner_info())
             except OneInstanceWatchdogError:
                 self.logger.exception("Task has been killed by watchdog!")
             except Exception:
                 self.logger.exception("%s task failed", self.name)
 
-            time.sleep(1.0)
+            if self.context.config.run_once:
+                break
+            self.logger.info(
+                "Sleep for %d seconds", self.context.config.sleep_interval)
+            time.sleep(self.context.config.sleep_interval)
 
     def initialize(self):
         """
