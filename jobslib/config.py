@@ -199,7 +199,7 @@ class ConsulConfig(ConfigGroup):
         """
         IP address or hostname of the Consul server.
         """
-        return self._settings['host']
+        return self._settings.get('host', '')
 
     @option(attrtype=int)
     def port(self):
