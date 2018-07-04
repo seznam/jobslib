@@ -1,7 +1,6 @@
 
-from unittest import mock
-
 from jobslib.config import Config, ConfigGroup, option
+from jobslib.context import Context
 from jobslib.liveness.consul import ConsulLiveness
 from jobslib.oneinstance.consul import ConsulLock
 
@@ -41,7 +40,7 @@ def test_config():
             },
         }
 
-        CONTEXT_CLASS = 'unittest.mock.Mock'
+        CONTEXT_CLASS = 'jobslib.context.Context'
 
         ONE_INSTANCE = {
             'backend': 'jobslib.oneinstance.consul.ConsulLock',
@@ -72,7 +71,7 @@ def test_config():
     config = Config(settings, args_parser)
 
     assert config.logging == settings.LOGGING
-    assert config.context_class is mock.Mock
+    assert config.context_class is Context
     assert config.one_instance.backend is ConsulLock
     assert config.one_instance.options.key == 'jobs/example/oneinstance/lock'
     assert config.one_instance.options.ttl == 30
