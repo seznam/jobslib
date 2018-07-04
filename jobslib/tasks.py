@@ -14,15 +14,15 @@ __all__ = ['BaseTask']
 class BaseTask(object):
     """
     Ancestor for task. Inherit this class and adjust :attr:`name`,
-    :meth:`help` and optionally :attr:`arguments` attributes and
-    override :meth:`task` method. Constructor argument *config* is
-    an instance of the :class:`jobslib.config.Config`.
+    :attr:`help` and optionally :attr:`arguments` attributes and
+    override :meth:`task` method. Constructor's argument *config* is
+    an instance of the :class:`jobslib.Config` (or descendand).
 
-    ::
+    .. code-block:: python
 
         # application/tasks/hello.py
 
-        from jobslib.tasks import BaseTask, argument
+        from jobslib import BaseTask, argument
 
         class HelloCommand(BaseTask):
 
@@ -38,20 +38,21 @@ class BaseTask(object):
 
     name = ''
     """
-    Task name.
+    Task's name.
     """
 
     help = ''
     """
-    Task description.
+    Task's description.
     """
 
     arguments = ()
     """
-    Task command line arguments. :class:`tuple` containing command line
-    arguments for task.
+    Task's command line arguments. :class:`tuple` containing command line
+    arguments. Each argument is defined using :func:`jobslib.argument`
+    function.
 
-    ::
+    .. code-block:: python
 
         arguments = (
             argument('-f', '--file', action='store', dest='filename'),

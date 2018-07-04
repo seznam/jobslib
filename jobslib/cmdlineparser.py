@@ -7,12 +7,14 @@ import sys
 
 from colored import fg, attr
 
+__all__ = ['argument']
+
 
 def argument(*args, **kwargs):
     """
     Define how a single command-line argument should be parsed.
     *args* and *kwargs* have the same meaning as a
-    :method:`argparse.ArgumentParser.add_argument` method.
+    :meth:`argparse.ArgumentParser.add_argument` method.
     """
     return args, kwargs
 

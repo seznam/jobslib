@@ -61,7 +61,7 @@ class option(object):
     @classmethod
     def get_option_names(cls, inst):
         """
-        Return :class:`list` containig method names on *inst* instance which
+        Return :class:`list` containig method's names on *inst* instance which
         are decorated by :class:`option` decorator.
         """
         res = []

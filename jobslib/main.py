@@ -4,7 +4,6 @@ Modul :module:`jobslib.main` is an entry point from command line into
 """
 
 import importlib
-import itertools
 import os
 
 from .cmdlineparser import ArgumentParser
@@ -100,13 +99,11 @@ def main(args=None):
     for task_args, task_kwargs in task_cls.arguments:
         parser.add_argument(*task_args, **task_kwargs)
 
-    # Obtain config class and enrich parser with config arguments
+    # Obtain config class
     config_cls = get_config_class(settings)
     if not issubclass(config_cls, Config):
         parser.error(
             "Config class must be subclass of the jobslib.config.Config")
-    for config_args, kwargs in config_cls.arguments:
-        parser.add_argument(*config_args, **kwargs)
 
     # Add help argument
     parser.add_argument(

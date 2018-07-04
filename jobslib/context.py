@@ -25,7 +25,7 @@ class Context(object):
     def from_config(cls, config):
         """
         According to application's configuration *config* create and
-        return new instance of the **Context**.
+        return new instance of the :class:`Context`.
         """
         return cls(config)
 

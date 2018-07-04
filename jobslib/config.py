@@ -5,7 +5,6 @@ encapsulates configuration.
 
 import logging.config
 
-from .cmdlineparser import argument
 from .context import Context
 from .imports import import_object
 from .logging import BASE_LOGGING
@@ -16,8 +15,9 @@ __all__ = ['Config', 'ConfigGroup']
 
 class ConfigGroup(OptionsContainer):
     """
-    Container for configuration. Descendant of the :class:`OptionsContainer`,
-    enrich the parent class of :meth:`as_kwargs`.
+    Container for configuration. During initialization are read values
+    from all methods decorated by :class:`option` decorator . So if class
+    is successfuly initialized, all options are validated a cached.
     """
 
     def initialize(self, *args, **unused_kwargs):
@@ -40,16 +40,11 @@ class ConfigGroup(OptionsContainer):
 
 class Config(OptionsContainer):
     """
-    Class which encapsulates configuration. It joins options from settings
-    module and from command line. *settings* is a Python module defined by
-    either **JOBSLIB_SETTINGS_MODULE** environment variable or
-    **-s/--settings** command line argument. *args_parser* is an instance
-    of the :class:`argparse.Namespace`.
-    """
-
-    arguments = ()
-    """
-    Command line arguments of the Config class.
+    Class which encapsulates configuration. It joins configuration values
+    from **settings** module and from command line. *settings* is a Python
+    module defined by either ``JOBSLIB_SETTINGS_MODULE`` environment
+    variable or ``-s/--settings`` command line argument. *args_parser* is
+    an instance of the :class:`argparse.Namespace`.
     """
 
     def __init__(self, settings, args_parser):
@@ -71,8 +66,8 @@ class Config(OptionsContainer):
 
     def configure_logging(self):
         """
-        Configure Python logging according to configuration in
-        :attr:`logging`.
+        Configure Python logging according to configuration stored in the
+        :attr:`logging` property.
         """
         logging.config.dictConfig(self.logging)
 
@@ -80,15 +75,14 @@ class Config(OptionsContainer):
     def logging(self):
         """
         Python logging configuration as a :class:`dict` or
-        :data:`BASE_LOGGING`.
+        :const:`BASE_LOGGING`.
         """
         return getattr(self._settings, 'LOGGING', BASE_LOGGING)
 
     @option
     def context_class(self):
         """
-        Context class, either :class:`jobslib.context.Context` class or
-        subclass.
+        Context class, either :class:`jobslib.Context` class or subclass.
         """
         context_cls_name = getattr(self._settings, 'CONTEXT_CLASS', '')
         if context_cls_name:
@@ -100,7 +94,8 @@ class Config(OptionsContainer):
     @option
     def one_instance(self):
         """
-        One instance lock.
+        Configuration of the one instance lock. Contains attributes defined
+        on :class:`OneInstanceConfig` class.
         """
         return OneInstanceConfig(
             getattr(self._settings, 'ONE_INSTANCE', {}), self._args_parser)
@@ -108,21 +103,22 @@ class Config(OptionsContainer):
     @option
     def run_once(self):
         """
-        Run task only once and exit.
+        Run task only once flag.
         """
         return self._args_parser.run_once
 
     @option
     def sleep_interval(self):
         """
-        Sleep interval after task.
+        Sleep interval in seconds after task is done.
         """
         return self._args_parser.sleep_interval
 
     @option
     def liveness(self):
         """
-        Health status writer.
+        Configuration of the health status writer. Contains attributes
+        defined on :class:`LivenessConfig` class.
         """
         return LivenessConfig(
             getattr(self._settings, 'LIVENESS', {}), self._args_parser)
@@ -130,9 +126,8 @@ class Config(OptionsContainer):
     @option
     def consul(self):
         """
-        Connection arguments to HashiCorp Consul, see `Consul documentation
-        <http://python-consul.readthedocs.io/en/latest/#consul>`_.
-        .
+        Configuration of the connection arguments to HashiCorp Consul.
+        Contains attributes defined on :class:`ConsulConfig` class.
         """
         return ConsulConfig(
             getattr(self._settings, 'CONSUL', {}), self._args_parser)
@@ -146,7 +141,10 @@ class OneInstanceConfig(ConfigGroup):
     @option
     def backend(self):
         """
-        One instance implementation class.
+        One instance lock implementation class. If ``--one-instance``
+        argument is passed, value must be Python's module path. For
+        development purposes you can use
+        ``jobslib.oneinstance.dummy.DummyLock``.
         """
         if self._args_parser.one_instance:
             cls_name = self._settings['backend']
@@ -157,8 +155,8 @@ class OneInstanceConfig(ConfigGroup):
     @option
     def options(self):
         """
-        Constructor arguments of the one instance implementation class.
-        Config group class is adopted from :meth:`backend`.
+        Constructor's arguments of the one instance implementation class.
+        It depends on :meth:`backend` attribute.
         """
         return self.backend.OptionsConfig(
             self._settings.get('options', {}), self._args_parser)
@@ -172,7 +170,8 @@ class LivenessConfig(ConfigGroup):
     @option
     def backend(self):
         """
-        Liveness implementation class.
+        Liveness implementation class. If value is not defined, default
+        value ``jobslib.liveness.dummy.DummyLiveness`` is used.
         """
         cls_name = self._settings.get(
             'backend', 'jobslib.liveness.dummy.DummyLiveness')
@@ -181,8 +180,7 @@ class LivenessConfig(ConfigGroup):
     @option
     def options(self):
         """
-        Constructor arguments of the liveness implementation class.
-        Config group class is adopted from :meth:`backend`.
+        Constructor's arguments of the liveness implementation class.
         """
         return self.backend.OptionsConfig(
             self._settings.get('options', {}), self._args_parser)
@@ -190,14 +188,15 @@ class LivenessConfig(ConfigGroup):
 
 class ConsulConfig(ConfigGroup):
     """
-    Connection arguments to HashiCorp Consul, see `Consul documentation
-    <http://python-consul.readthedocs.io/en/latest/#consul>`_.
+    Configuration of the connection to HashiCorp Consul, see `Consul
+    documentation <http://python-consul.readthedocs.io/en/latest/#consul>`_
+    for details.
     """
 
     @option(attrtype=str)
     def scheme(self):
         """
-        URI scheme.
+        URI scheme, in current implementation always ``http``.
         """
         return 'http'
 
@@ -211,6 +210,6 @@ class ConsulConfig(ConfigGroup):
     @option(attrtype=int)
     def port(self):
         """
-        Port of the Consul server.
+        Port where the Consul server listening on.
         """
         return self._settings.get('port')
