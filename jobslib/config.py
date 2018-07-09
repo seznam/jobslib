@@ -15,9 +15,9 @@ __all__ = ['Config', 'ConfigGroup']
 
 class ConfigGroup(OptionsContainer):
     """
-    Container for configuration. During initialization are read values
-    from all methods decorated by :class:`option` decorator . So if class
-    is successfuly initialized, all options are validated a cached.
+    Container for configuration. During initialization values from all
+    methods decorated by :class:`option` decorator are read. So if class
+    is successfuly initialized, all options are validated and cached.
     """
 
     def initialize(self, *args, **unused_kwargs):
@@ -41,10 +41,70 @@ class ConfigGroup(OptionsContainer):
 class Config(OptionsContainer):
     """
     Class which encapsulates configuration. It joins configuration values
-    from **settings** module and from command line. *settings* is a Python
+    from **settings** module and from command line. *settings* is Python
     module defined by either ``JOBSLIB_SETTINGS_MODULE`` environment
     variable or ``-s/--settings`` command line argument. *args_parser* is
-    an instance of the :class:`argparse.Namespace`.
+    instance of the :class:`argparse.Namespace`. Both values are available
+    on class, *settings* as a **_settings** attribute, *args_parser* as a
+    **_args_parser** attribute.
+
+    Configuration options are placed on class as methods decorated by
+    :class:`option` decorator. During class initialization all decorated
+    methods are read, so it implies values validation a caching. If you want
+    nested configurations options, use :class:`ConfigGroup`. Reading value of
+    the nested class during initialization implies the same mechanism, so all
+    configuration will be validated and cached recursively.
+
+    Example of the custom :class:`Config` class:
+
+    .. code-block:: python
+
+        import os
+
+        from jobslib import Config, ConfigGroup, option
+
+        class AuthServiceConfig(ConfigGroup):
+
+            @option(required=True, attrtype=str)
+            def uri(self):
+                # First try reading value from command line
+                uri = self._args_parser.auth_servise_uri
+                if uri:
+                    return uri
+
+                # Then try reading value from environment variable
+                uri = os.environ.get('MYAPP_AUTH_SERVICE_URI')
+                if uri is not None:
+                    return uri
+
+                # Finally try reading value from settings
+                return self._settings.get['uri']
+
+        class MyAppConfig(Config):
+
+            @option
+            def auth_service(self):
+                return AuthServiceConfig(
+                    self._settings['AUTH_SERVICE'], self._args_parser)
+
+    And write into **settings** module:
+
+    .. code-block:: python
+
+        CONFIG_CLASS = 'myapp.config.MyAppConfig'
+
+        AUTH_SERVICE = {
+            'uri': 'http://example.com/api/v1/auth',
+        }
+
+    Configuration options are available on the :class:`Config` as
+    attributes. If any configuration value is not valid, exception will
+    be raised and instance will not be created.
+
+    .. code-block:: python
+
+        >>> context.config.auth_service.uri
+        'http://example.com/api/v1/auth'
     """
 
     def __init__(self, settings, args_parser):
@@ -64,9 +124,9 @@ class Config(OptionsContainer):
         """
         pass
 
-    def configure_logging(self):
+    def _configure_logging(self):
         """
-        Configure Python logging according to configuration stored in the
+        Configure Python's logging according to configuration stored in the
         :attr:`logging` property.
         """
         logging.config.dictConfig(self.logging)
@@ -74,15 +134,17 @@ class Config(OptionsContainer):
     @option
     def logging(self):
         """
-        Python logging configuration as a :class:`dict` or
-        :const:`BASE_LOGGING`.
+        Python's logging configuration or :data:`BASE_LOGGING` if value is
+        not defined. :data:`BASE_LOGGING` allowes :data:`~logging.INFO`
+        and higher leveled messages and forwards them onto console. Format
+        is :func:`logging.config.dictConfig`.
         """
         return getattr(self._settings, 'LOGGING', BASE_LOGGING)
 
     @option
     def context_class(self):
         """
-        Context class, either :class:`jobslib.Context` class or subclass.
+        Context class, either :class:`~jobslib.Context` class or subclass.
         """
         context_cls_name = getattr(self._settings, 'CONTEXT_CLASS', '')
         if context_cls_name:
@@ -94,8 +156,8 @@ class Config(OptionsContainer):
     @option
     def one_instance(self):
         """
-        Configuration of the one instance lock. Contains attributes defined
-        on :class:`OneInstanceConfig` class.
+        Configuration of the one instance lock. Instance of the
+        :class:`OneInstanceConfig`.
         """
         return OneInstanceConfig(
             getattr(self._settings, 'ONE_INSTANCE', {}), self._args_parser)
@@ -103,7 +165,7 @@ class Config(OptionsContainer):
     @option
     def run_once(self):
         """
-        Run task only once flag.
+        :class:`bool` that indicates that task will be run only once.
         """
         return self._args_parser.run_once
 
@@ -117,8 +179,8 @@ class Config(OptionsContainer):
     @option
     def liveness(self):
         """
-        Configuration of the health status writer. Contains attributes
-        defined on :class:`LivenessConfig` class.
+        Configuration of the health state writer. Instance of the
+        :class:`LivenessConfig`.
         """
         return LivenessConfig(
             getattr(self._settings, 'LIVENESS', {}), self._args_parser)
@@ -127,7 +189,7 @@ class Config(OptionsContainer):
     def consul(self):
         """
         Configuration of the connection arguments to HashiCorp Consul.
-        Contains attributes defined on :class:`ConsulConfig` class.
+        Instance of the :class:`ConsulConfig`.
         """
         return ConsulConfig(
             getattr(self._settings, 'CONSUL', {}), self._args_parser)

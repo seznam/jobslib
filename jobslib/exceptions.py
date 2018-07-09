@@ -2,20 +2,12 @@
 JobsLib exceptions.
 """
 
-__all__ = ['JobsLibError', 'ImproperlyConfiguredError', 'TaskError']
+__all__ = ['JobsLibError', 'TaskError']
 
 
 class JobsLibError(Exception):
     """
     Base error, ancestor for all other JobsLib errors.
-    """
-
-    pass
-
-
-class ImproperlyConfiguredError(JobsLibError):
-    """
-    Configuration error.
     """
 
     pass

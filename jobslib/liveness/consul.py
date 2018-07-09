@@ -16,8 +16,19 @@ logger = logging.getLogger(__name__)
 
 class ConsulLiveness(BaseLiveness):
     """
-    Consul liveness implementation. Provides exporting health state into
-    Consul key/value storage.
+    Consul liveness implementation. Provides exporting informations about
+    health state into Consul's key/value storage.
+
+    For use of :class:`ConsulLiveness` write into **settings**:
+
+    .. code-block:: python
+
+        LIVENESS = {
+            'backend': 'jobslib.liveness.consul.ConsulLiveness',
+            'options': {
+                'key': 'jobs/example/liveness',
+            },
+        }
     """
 
     class OptionsConfig(ConfigGroup):

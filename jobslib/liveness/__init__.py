@@ -1,6 +1,9 @@
 """
-Module :mod:`liveness` provides functionality for exportig healt status
-of the task.
+Module :mod:`liveness` provides functionality for exporting informations
+about health state of the task. When task is successfuly finished,
+some state is written. :class:`BaseLiveness` is ancestor, it is abstract
+class which defines API, not functionality. Override this class if you
+want to write own implementation of the liveness.
 """
 
 import abc
@@ -13,12 +16,16 @@ __all__ = ['BaseLiveness']
 
 class BaseLiveness(abc.ABC):
     """
-    Provides liveness API.
+    Provides liveness API. Inherit this class and override abstract method
+    :meth:`write`. Configuration options are defined in
+    :class:`OptionsConfig` class, which is :class:`~jobslib.ConfigGroup`
+    descendant.
     """
 
     class OptionsConfig(ConfigGroup):
         """
-        Validation of the liveness *options*.
+        Validation of the liveness configuration, see
+        :class:`~jobslib.ConfigGroup`.
         """
         pass
 
@@ -29,12 +36,12 @@ class BaseLiveness(abc.ABC):
     @abc.abstractmethod
     def write(self):
         """
-        Write health state of the task.
+        Write informations about health state of the task.
         """
         raise NotImplementedError
 
     def get_state(self):
         """
-        Return state as a :class:`string`.
+        Return health state as a :class:`str`.
         """
         return to_utc(get_current_time(), format_string='%Y/%m/%d/%H/%M/%S')

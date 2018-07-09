@@ -26,3 +26,7 @@ BASE_LOGGING = {
         'level': 'INFO',
     },
 }
+"""
+Default logging configuration. Defines top-level root logger, which
+forwards log messages onto console.
+"""

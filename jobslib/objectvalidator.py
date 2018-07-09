@@ -1,6 +1,6 @@
 """
 Module :mod:`objectvalidator` provides functionality for validating and
-caching.
+caching values returning from methods.
 
     ::
 
@@ -36,7 +36,24 @@ class option(object):
     """
     Decorator which validates and caches values returned from methods. Can
     be used either with arguments or without. If arguments are ommited,
-    value is not validated, only cached.
+    value is not validated, only cached. Allowed argumenta are **required**
+    and **attrtype**. If **required** id :data:`True`, value returned from
+    method mustn't be :data:`None`. **attrtype** is a type which is allowed
+    for value. Can be either single type or :class:`tuple` containig types.
+
+    .. code-block:: python
+
+        @option
+        def foo(self):
+            return ...
+
+        @option(required=True, attrtype=int)
+        def bar(self):
+            return ...
+
+        @option(required=True, attrtype=(int, float))
+        def baz(self):
+            return ...
     """
 
     def __new__(cls, func=None, required=False, attrtype=None):

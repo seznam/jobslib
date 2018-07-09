@@ -22,8 +22,26 @@ logger = logging.getLogger(__name__)
 class ConsulLock(BaseLock):
     """
     Consul lock implementation. Provides locking among datacenters.
-    When lock expire due to TTL, :exc:`OneInstanceWatchdogError` is
+    When the lock expires due to TTL, :exc:`OneInstanceWatchdogError` is
     raised.
+
+    .. warning::
+
+        :class:`ConsulLock` uses :mod:`signal` and :data:`signal.SIGALRM`
+        for TTL mechanism, so don't use :data:`signal.SIGALRM` in your
+        task.
+
+    For using the :class:`ConsulLock` write into **settings**:
+
+    .. code-block:: python
+
+        ONE_INSTANCE = {
+            'backend': 'jobslib.oneinstance.consul.ConsulLock',
+            'options': {
+                'key': 'jobs/example/lock',
+                'ttl': 60,
+            },
+        }
     """
 
     class OptionsConfig(ConfigGroup):

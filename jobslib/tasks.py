@@ -14,26 +14,38 @@ __all__ = ['BaseTask']
 class BaseTask(object):
     """
     Ancestor for task. Inherit this class and adjust :attr:`name`,
-    :attr:`help` and optionally :attr:`arguments` attributes and
-    override :meth:`task` method. Constructor's argument *config* is
-    an instance of the :class:`jobslib.Config` (or descendand).
+    :attr:`help` and optionally :attr:`arguments` attributes and override
+    :meth:`task` method. Constructor's argument *config* is instance of
+    the :class:`~jobslib.Config` (or descendant).
+
+    There are several attributes which are set during initialization.
+    :attr:`context` is instance of the :class:`~jobslib.Context`.
+    Configuration is available on context as :attr:`Context.config`
+    attribute. :attr:`logger` is instance of the :class:`logging.Logger`.
+    :attr:`stdout` and :attr:`stderr` are file-like objects for standard
+    output and error.
 
     .. code-block:: python
 
-        # application/tasks/hello.py
-
         from jobslib import BaseTask, argument
 
-        class HelloCommand(BaseTask):
+        class HelloWorldTask(BaseTask):
 
             name = 'hello'
-            help = 'show hello'
+            help = 'prints hello world'
             arguments = (
-                argument('--name', dest='name', help='your name'),
+                argument('--to-stderr', action='strore_true', default=False,
+                         help='use stderr instead of stdout'),
             )
 
             def task(self):
-                print("Hello %s" % self.args.name)
+                self.logger.info("Hello world")
+                if self.context.config.to_stderr:
+                    self.stderr("Hello world\\n")
+                    self.stderr.flush()
+                else:
+                    self.stdout("Hello world\\n")
+                    self.stdout.flush()
     """
 
     name = ''
@@ -49,7 +61,7 @@ class BaseTask(object):
     arguments = ()
     """
     Task's command line arguments. :class:`tuple` containing command line
-    arguments. Each argument is defined using :func:`jobslib.argument`
+    arguments. Each argument is defined using :func:`~jobslib.argument`
     function.
 
     .. code-block:: python
@@ -67,7 +79,7 @@ class BaseTask(object):
         self.initialize()
 
     def __call__(self):
-        self.context.config.configure_logging()
+        self.context.config._configure_logging()
 
         lock = self.context.one_instance_lock
         liveness = self.context.liveness

@@ -13,8 +13,31 @@ __all__ = ['Context']
 
 class Context(object):
     """
-    Class which encapsulates resources (configuration, database
-    connection, …) for tasks.
+    Class which encapsulates resources (configuration, database connection,
+    …). Instance of this class is created during task initialization. So in
+    your task you have access to all necessary resources. Inherit this class
+    and enrich it of necessary properties. According to your requirements
+    cache values using :func:`cached_property` decorator.
+
+    Example of the custom :class:`Context` class:
+
+    .. code-block:: python
+
+        from xmlrpc.client import ServerProxy
+
+        from jobslib import Context, cached_property
+
+        class MyAppContext(Context):
+
+            @cached_property
+            def auth_service(self):
+                return ServerProxy(uri=self.config.auth_service.uri)
+
+    And write into **settings** module:
+
+    .. code-block:: python
+
+        CONTEXT_CLASS = 'myapp.context.MyAppContext'
     """
 
     def __init__(self, config):
@@ -39,21 +62,22 @@ class Context(object):
     @cached_property
     def config(self):
         """
-        Application's configuration.
+        Application's configuration, instance of the :class:`~jobslib.Config`.
         """
         return self._config
 
     @cached_property
     def fqdn(self):
         """
-        Fully qualified domain name of the local machine.
+        Fully qualified domain name of the local machine as :class:`str`.
         """
         return socket.getfqdn()
 
     @cached_property
     def one_instance_lock(self):
         """
-        One instance lock.
+        One instance lock, instance of the
+        :class:`jobslib.oneinstance.BaseLock` descendant.
         """
         return self._config.one_instance.backend(
             self, self._config.one_instance.options)
@@ -61,7 +85,8 @@ class Context(object):
     @cached_property
     def liveness(self):
         """
-        Health status writer.
+        Health state writer, instance of the
+        :class:`jobslib.liveness.BaseLiveness` descendant.
         """
         return self._config.liveness.backend(
             self, self._config.liveness.options)
@@ -69,7 +94,7 @@ class Context(object):
     @cached_property
     def consul(self):
         """
-        HashiCorp Consul client.
+        HashiCorp Consul client, instance of the :class:`consul.Consul`.
         """
         kwargs = {
             k: v for k, v in self._config.consul.as_kwargs.items()

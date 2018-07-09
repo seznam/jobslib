@@ -8,12 +8,38 @@ jobslib
 .. automodule:: jobslib
    :members:
 
+oneinstance lock
+----------------
+
+.. automodule:: jobslib.oneinstance
+   :members:
+
+.. autoclass:: jobslib.oneinstance.dummy.DummyLock
+
+.. autoclass:: jobslib.oneinstance.consul.ConsulLock
+    :members: OptionsConfig
+
+liveness
+--------
+
+.. automodule:: jobslib.liveness
+   :members:
+
+.. autoclass:: jobslib.liveness.dummy.DummyLiveness
+
+.. autoclass:: jobslib.liveness.consul.ConsulLiveness
+    :members: OptionsConfig
+
 settings
 --------
 
 Example:
 
 .. code-block:: python
+
+    CONFIG_CLASS = 'myapp.config.MyAppConfig'
+
+    CONTEXT_CLASS = 'myapp.context.MyAppContext'
 
     ONE_INSTANCE = {
         'backend': 'jobslib.oneinstance.consul.ConsulLock',
@@ -32,6 +58,7 @@ Example:
 
     CONSUL = {
         'host': '127.0.0.1',
+        'port': 8500,
     }
 
     LOGGING = {

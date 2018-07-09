@@ -8,7 +8,6 @@ import os
 
 from .cmdlineparser import ArgumentParser
 from .config import Config
-from .exceptions import ImproperlyConfiguredError
 from .imports import import_object
 from .tasks import BaseTask
 
@@ -114,10 +113,7 @@ def main(args=None):
     cmdline_args = parser.parse_args(args)
 
     # Launch task
-    try:
-        config = config_cls(settings, cmdline_args)
-    except ImproperlyConfiguredError as exc:
-        parser.error(str(exc))
+    config = config_cls(settings, cmdline_args)
     task = task_cls(config)
     task()
 

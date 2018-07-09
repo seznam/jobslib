@@ -10,7 +10,15 @@ __all__ = ['DummyLiveness']
 
 class DummyLiveness(BaseLiveness):
     """
-    Dummy liveness implementation. Do not provides real functionality.
+    Dummy liveness implementation. Doesn't provide real functionality.
+    It is useful for development or if it is not necessary liveness. For
+    use of :class:`DummyLiveness` write into **settings**:
+
+    .. code-block:: python
+
+        LIVENESS = {
+            'backend': 'jobslib.liveness.dummy.DummyLiveness',
+        }
     """
 
     def write(self):

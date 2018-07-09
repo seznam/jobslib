@@ -1,6 +1,16 @@
 """
-Module :mod:`oneinstance` provides lock which allowes only one running
-instance at the same time.
+Module :mod:`oneinstance` provides a lock which allowes only one running
+instance at the same time. The Lock is used when ``--one-instance`` command
+line argument is passed. When acquiring the lock is not possible, task is not
+run and process is slept for ``--sleep-interval`` seconds. Then ``runjob``
+will try to acquire lock again. If implementation of the lock supports TTL
+and you need make the lock longer, it is possible call
+:meth:`BaseLock.refresh` inside your :meth:`jobslib.BaseTask.task`. Otherwise
+task is aborted.
+
+:class:`BaseLock` is ancestor, it is abstract class which defines API,
+not locking functionality. Override this class if you want write own
+implementation of the lock.
 """
 
 import abc
@@ -19,13 +29,16 @@ class OneInstanceWatchdogError(BaseException):
 
 class BaseLock(abc.ABC):
     """
-    Provides lock API. Inherit this class and override abstract methods
-    :meth:`acquire`, :meth:`release` and :meth:`refresh`.
+    Provides lock's API. Inherit this class and override abstract methods
+    :meth:`acquire`, :meth:`release` and :meth:`refresh`. Configuration
+    options are defined in :class:`OptionsConfig` class, which is
+    :class:`~jobslib.ConfigGroup` descendant.
     """
 
     class OptionsConfig(ConfigGroup):
         """
-        Validation of the lock *options*.
+        Validation of the lock's configuration, see
+        :class:`~jobslib.ConfigGroup`.
         """
         pass
 
@@ -36,31 +49,30 @@ class BaseLock(abc.ABC):
     @abc.abstractmethod
     def acquire(self):
         """
-        Acquire a lock. Return :const:`True` if lock has been successfuly
-        acquired, otherwise return :const:`False`.
+        Acquire a lock. Return :data:`True` if lock has been successfuly
+        acquired, otherwise return :data:`False`.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def release(self):
         """
-        Release existing lock. Return :const:`True` if lock has been
-        successfuly released, otherwise return :const:`False`.
+        Release existing lock. Return :data:`True` if lock has been
+        successfuly released, otherwise return :data:`False`.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def refresh(self):
         """
-        Refresh existing lock. Return :const:`True` if lock has been
-        successfuly refreshed, otherwise return :const:`False`.
+        Refresh existing lock. Return :data:`True` if lock has been
+        successfuly refreshed, otherwise return :data:`False`.
         """
         raise NotImplementedError
 
     def get_lock_owner_info(self):
         """
-        Return information about owner of the lock. It depends on
-        implementation, return :data:`None` if information is not
-        available.
+        Return lock's owner information. It depends on implementation,
+        return :data:`None` if information is not available.
         """
         return None

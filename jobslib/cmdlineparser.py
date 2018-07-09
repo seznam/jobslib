@@ -13,7 +13,7 @@ __all__ = ['argument']
 def argument(*args, **kwargs):
     """
     Define how a single command-line argument should be parsed.
-    *args* and *kwargs* have the same meaning as a
+    *args* and *kwargs* have the same meaning as
     :meth:`argparse.ArgumentParser.add_argument` method.
     """
     return args, kwargs
