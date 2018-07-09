@@ -6,6 +6,7 @@ datacenters.
 
 import logging
 import signal
+import os
 
 import ujson
 
@@ -54,6 +55,9 @@ class ConsulLock(BaseLock):
             """
             Key under which the lock is stored.
             """
+            key = os.environ.get('DOP_JOBSLIB_ONE_INSTANCE_OPTIONS_KEY')
+            if key is not None:
+                return key
             return self._settings['key']
 
         @option(attrtype=int)
@@ -62,7 +66,12 @@ class ConsulLock(BaseLock):
             Maximum lock lifespan in seconds.
             """
             one_day_seconds = 60 * 60 * 24
-            ttl = self._settings.get('ttl', one_day_seconds)
+
+            ttl = os.environ.get('DOP_JOBSLIB_ONE_INSTANCE_OPTIONS_TTL')
+            if ttl is not None:
+                ttl = int(ttl)
+            else:
+                ttl = self._settings.get('ttl', one_day_seconds)
             if ttl < 10 or ttl > one_day_seconds:
                 raise ValueError(
                     'TTL must be between 10 and {} seconds'.format(
