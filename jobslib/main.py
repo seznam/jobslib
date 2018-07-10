@@ -94,7 +94,10 @@ def main(args=None):
     except (ImportError, AttributeError) as exc:
         parser.error(exc)
 
-    # Enrich parser with task arguments
+    # Enrich parser with task arguments and help
+    if task_cls.description:
+        parser.description = '{:s}: {:s}'.format(
+            cmdline_args.task_cls, task_cls.description)
     for task_args, task_kwargs in task_cls.arguments:
         parser.add_argument(*task_args, **task_kwargs)
 
