@@ -4,6 +4,8 @@ import sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
+from jobslib import __version__ as VERSION
+
 
 class PyTest(TestCommand):
 
@@ -23,7 +25,7 @@ class PyTest(TestCommand):
 
 setup(
     name="jobslib",
-    version='0.0.1',
+    version=VERSION,
     author='Doporucovani team',
     author_email="doporucovani-vyvoj@firma.seznam.cz",
     description=("Library for launching tasks in parallel environment"),
@@ -31,6 +33,7 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Operating System :: OS Independent',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
