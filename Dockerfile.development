@@ -1,0 +1,12 @@
+FROM        docker.dev/doporucovani/dev/debian-python3:stretch
+
+MAINTAINER  doporucovani-vyvoj "doporucovani-vyvoj@firma.seznam.cz"
+
+LABEL       description="recass-jobslib"
+
+COPY        . /www/recass/jobslib
+
+WORKDIR     /www/recass/jobslib
+
+RUN         apt-get update \
+         && python3 setup.py install
