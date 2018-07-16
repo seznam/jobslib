@@ -9,4 +9,4 @@ COPY        . /www/recass/jobslib
 WORKDIR     /www/recass/jobslib
 
 RUN         apt-get update \
-         && python3 setup.py install
+         && python3 setup.py develop

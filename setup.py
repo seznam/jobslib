@@ -1,4 +1,3 @@
-
 import sys
 
 from setuptools import setup, find_packages
@@ -8,7 +7,6 @@ from jobslib import __version__ as VERSION
 
 
 class PyTest(TestCommand):
-
     user_options = [
         ('pytest-args=', 'a', "Arguments to pass to py.test"),
     ]
@@ -24,11 +22,11 @@ class PyTest(TestCommand):
 
 
 setup(
-    name="jobslib",
+    name="szn-recass-jobslib",
     version=VERSION,
     author='Doporucovani team',
     author_email="doporucovani-vyvoj@firma.seznam.cz",
-    description=("Library for launching tasks in parallel environment"),
+    description="Library for launching tasks in parallel environment",
     url='https://gitlab.kancelar.seznam.cz/doporucovani/recass',
     classifiers=[
         'Programming Language :: Python :: 3.5',
