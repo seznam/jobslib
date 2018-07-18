@@ -7,7 +7,7 @@ from setuptools.command.test import test as TestCommand
 
 
 def _get_version():
-    filename = os.path.join(os.path.dirname(__file__), 'CHANGELOG.md')
+    filename = os.path.join(os.path.dirname(__file__), 'jobslib', 'CHANGELOG.md')
     with open(filename, 'rt') as fd:
         pat = r"""
             (?P<version>\d+\.\d+)         # minimum 'N.N'
