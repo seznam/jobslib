@@ -1,9 +1,32 @@
+import os
+import re
 import sys
 
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
-from jobslib import __version__ as VERSION
+
+def _get_version():
+    filename = os.path.join(os.path.dirname(__file__), 'CHANGELOG.md')
+    with open(filename, 'rt') as fd:
+        pat = r"""
+            (?P<version>\d+\.\d+)         # minimum 'N.N'
+            (?P<extraversion>(?:\.\d+)*)  # any number of extra '.N' segments
+            (?:
+                (?P<prerel>[abc]|rc)      # 'a' = alpha, 'b' = beta
+                                          # 'c' or 'rc' = release candidate
+                (?P<prerelversion>\d+(?:\.\d+)*)
+            )?
+            (?P<postdev>(\.post(?P<post>\d+))?(\.dev(?P<dev>\d+))?)?
+        """
+        for line in fd:
+            match = re.search(pat, line, re.VERBOSE)
+            if match:
+                return match.group()
+    raise ValueError("Can't get version")
+
+
+__version__ = _get_version()
 
 
 class PyTest(TestCommand):
@@ -23,7 +46,7 @@ class PyTest(TestCommand):
 
 setup(
     name="szn-recass-jobslib",
-    version=VERSION,
+    version=__version__,
     author='Doporucovani team',
     author_email="doporucovani-vyvoj@firma.seznam.cz",
     description="Library for launching tasks in parallel environment",

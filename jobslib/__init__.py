@@ -39,15 +39,15 @@ inherit and override :class:`Config` and/or :class:`Context` and set
 import os.path
 import re
 
-# from .cmdlineparser import argument
-# from .config import Config, ConfigGroup, option
-# from .context import Context, cached_property
-# from .tasks import BaseTask
-#
-# __all__ = [
-#     'BaseTask', 'argument', 'Config', 'ConfigGroup', 'option',
-#     'Context', 'cached_property'
-# ]
+from .cmdlineparser import argument
+from .config import Config, ConfigGroup, option
+from .context import Context, cached_property
+from .tasks import BaseTask
+
+__all__ = [
+    'BaseTask', 'argument', 'Config', 'ConfigGroup', 'option',
+    'Context', 'cached_property'
+]
 
 
 def _get_version():
