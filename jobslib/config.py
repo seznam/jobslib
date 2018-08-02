@@ -1,6 +1,6 @@
 """
-Module :module:`shelter.core.config` provides base class which
-encapsulates configuration.
+Module :module:`jobslib.config` provides base class which encapsulates
+configuration.
 """
 
 import logging.config

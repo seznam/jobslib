@@ -14,6 +14,10 @@ from .tasks import BaseTask
 
 __all__ = ['main']
 
+JOBSLIB_TASKS = {
+    'check-liveness': 'jobslib.liveness.CheckLiveness',
+}
+
 
 def get_app_settings(cmdline_args):
     """
@@ -80,7 +84,9 @@ def main(args=None):
         help='sleep interval in seconds after task')
     parser.add_argument(
         'task_cls', action='store', type=str,
-        help='module path to task class (module.submodule.TaskClass)')
+        help='module path to task class (module.submodule.TaskClass), '
+             'or some of the internal tasks ({})'.format(
+                 '|'.join(JOBSLIB_TASKS.keys())))
     cmdline_args, unused_remaining = parser.parse_known_args(args)
 
     # Obtain settings module
@@ -89,10 +95,13 @@ def main(args=None):
     except ImportError as exc:
         parser.error("Invalid application settings module: {}".format(exc))
     # Obtain task class and add its arguments into parser
-    try:
-        task_cls = get_task_cls(cmdline_args.task_cls)
-    except (ImportError, AttributeError) as exc:
-        parser.error(exc)
+    if cmdline_args.task_cls in JOBSLIB_TASKS:
+        task_cls = get_task_cls(JOBSLIB_TASKS[cmdline_args.task_cls])
+    else:
+        try:
+            task_cls = get_task_cls(cmdline_args.task_cls)
+        except (ImportError, AttributeError) as exc:
+            parser.error(exc)
 
     # Enrich parser with task arguments and help
     if task_cls.description:

@@ -120,3 +120,13 @@ class BaseTask(object):
         Task body, override this method.
         """
         raise NotImplementedError
+
+
+class _Task(BaseTask):
+    """
+    Ancestor for internal task. Only for internal usage.
+    """
+
+    def __call__(self):
+        self.context.config._configure_logging()
+        self.task()

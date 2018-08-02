@@ -23,3 +23,6 @@ class DummyLiveness(BaseLiveness):
 
     def write(self):
         pass
+
+    def read(self):
+        return self.get_state()
