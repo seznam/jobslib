@@ -12,6 +12,7 @@ ONE_INSTANCE = {
     'options': {
         'key': 'jobs/example/oneinstance/lock',
         'ttl': 30,
+        'lock_delay': 5,
     }
 }
 

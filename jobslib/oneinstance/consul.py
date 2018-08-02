@@ -78,6 +78,22 @@ class ConsulLock(BaseLock):
                         one_day_seconds))
             return ttl
 
+        @option(attrtype=int)
+        def lock_delay(self):
+            """
+            When sessions invalidation request is received, wait *lock_delay*
+            seconds before session is truly invalidated. Valid value must be
+            between 0 and 60 seconds, default is 1.
+            """
+            lock_delay = os.environ.get('DOP_JOBSLIB_ONE_INSTANCE_LOCK_DELAY')
+            if lock_delay is not None:
+                lock_delay = int(lock_delay)
+            else:
+                lock_delay = self._settings.get('lock_delay', 1)
+            if lock_delay < 0 or lock_delay > 60:
+                raise ValueError('lock_delay must be between 0 and 60 seconds')
+            return lock_delay
+
     def __init__(self, context, options):
         super().__init__(context, options)
         self.session_id = None
@@ -99,7 +115,8 @@ class ConsulLock(BaseLock):
             'time_local': to_local(timestamp),
         }
 
-        session_id = self.context.consul.session.create(ttl=self.options.ttl)
+        session_id = self.context.consul.session.create(
+            ttl=self.options.ttl, lock_delay=self.options.lock_delay)
         try:
             res = self.context.consul.kv.put(
                 self.options.key, ujson.dumps(record), acquire=session_id)
