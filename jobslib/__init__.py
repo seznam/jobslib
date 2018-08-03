@@ -4,7 +4,7 @@ command line using ``runjob`` command:
 
 .. code-block:: bash
 
-    runjob [-s SETTINGS] [--one-instance] [--run-once]
+    runjob [-s SETTINGS] [--disable-one-instance] [--run-once]
            [--sleep-interval SLEEP_INTERVAL]
            task_cls
 
@@ -15,12 +15,13 @@ command line using ``runjob`` command:
 
 Task is normally run in infinite loop, delay in seconds between individual
 launches is controlled by ``--sleep-interval`` argument. If you don't want
-to launch task forever, use ``--run-once`` argument. If you want to launch
-task on several machines and may be launched only one instance at one time,
-library provides locking mechanism. In this case use ``--one-instance``
-argument. Optional argument ``--settings`` defines Python's module where
-configuration is stored. Or you can pass settings module using
-``JOBSLIB_SETTINGS_MODULE``.
+to launch task forever, use ``--run-once`` argument. Library provides
+locking mechanism for launching tasks on several machines and only one
+instance at one time may be launched. If you don't want this locking, use
+``--disable-one-instance`` argument. All these options can be set in
+**settings** module. Optional argument ``--settings`` defines Python's
+module where configuration is stored. Or you can pass settings module
+using ``JOBSLIB_SETTINGS_MODULE``.
 
 During task initialization instances of the :class:`Config` and
 :class:`Context` classes are created. You can define your own classes in the

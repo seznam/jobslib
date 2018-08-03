@@ -7,6 +7,10 @@ from jobslib import BaseTask
 
 # settings --------------------------------------------------------------------
 
+RUN_ONCE = False
+
+SLEEP_INTERVAL = 5
+
 ONE_INSTANCE = {
     'backend': 'jobslib.oneinstance.consul.ConsulLock',
     'options': {

@@ -168,20 +168,24 @@ class Config(OptionsContainer):
         """
         :class:`bool` that indicates that task will be run only once.
         """
+        if self._args_parser.run_once is not None:
+            return self._args_parser.run_once
         run_once = os.environ.get('DOP_JOBSLIB_RUN_ONCE')
         if run_once is not None:
-            return bool(run_once)
-        return self._args_parser.run_once
+            return bool(int(run_once))
+        return getattr(self._settings, 'RUN_ONCE', False)
 
     @option(attrtype=int)
     def sleep_interval(self):
         """
         Sleep interval in seconds after task is done.
         """
+        if self._args_parser.sleep_interval is not None:
+            return self._args_parser.sleep_interval
         sleep_interval = os.environ.get('DOP_JOBSLIB_SLEEP_INTERVAL')
         if sleep_interval is not None:
             return int(sleep_interval)
-        return self._args_parser.sleep_interval
+        return getattr(self._settings, 'SLEEP_INTERVAL', 60)
 
     @option
     def liveness(self):
@@ -210,17 +214,18 @@ class OneInstanceConfig(ConfigGroup):
     @option
     def backend(self):
         """
-        One instance lock implementation class. If ``--one-instance``
-        argument is passed, value must be Python's module path. For
-        development purposes you can use
-        ``jobslib.oneinstance.dummy.DummyLock``.
+        One instance lock implementation class. Value must be Python's module
+        path ``[package.[submodule.]]module.ClassName``. For development
+        purposes you can use ``jobslib.oneinstance.dummy.DummyLock``. If
+        ``--disable-one-instance`` argument is passed,
+        :class:`jobslib.oneinstance.dummy.DummyLock` will be forced.
         """
-        if self._args_parser.one_instance:
+        if self._args_parser.disable_one_instance:
+            cls_name = 'jobslib.oneinstance.dummy.DummyLock'
+        else:
             cls_name = os.environ.get('DOP_JOBSLIB_ONE_INSTANCE_BACKEND')
             if cls_name is None:
                 cls_name = self._settings['backend']
-        else:
-            cls_name = 'jobslib.oneinstance.dummy.DummyLock'
         return import_object(cls_name)
 
     @option

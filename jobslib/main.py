@@ -71,16 +71,16 @@ def main(args=None):
         type=str, default=None,
         help='task settings module')
     parser.add_argument(
-        '--one-instance', action='store_true',
-        dest='one_instance', default=False,
-        help='only one running instance at the same time is allowed')
+        '--disable-one-instance', action='store_true',
+        dest='disable_one_instance', default=False,
+        help='multilple instance can be run at the same time')
     parser.add_argument(
         '--run-once', action='store_true',
-        dest='run_once', default=False,
+        dest='run_once', default=None,
         help='run task only once and exit')
     parser.add_argument(
         '--sleep-interval', action='store', dest='sleep_interval',
-        type=int, default=60,
+        type=int, default=None,
         help='sleep interval in seconds after task')
     parser.add_argument(
         'task_cls', action='store', type=str,

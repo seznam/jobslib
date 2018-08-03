@@ -64,7 +64,7 @@ def test_config():
 
     class args_parser:
 
-        one_instance = True
+        disable_one_instance = False
         run_once = True
         sleep_interval = 300
 
