@@ -44,8 +44,8 @@ class ConsulLiveness(BaseLiveness):
             """
             Key under which the health state is stored.
             """
-            key = os.environ.get('DOP_JOBSLIB_LIVENESS_OPTIONS_KEY')
-            if key is not None:
+            key = os.environ.get('JOBSLIB_LIVENESS_OPTIONS_KEY')
+            if key:
                 return key
             return self._settings['key']
 

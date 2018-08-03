@@ -170,8 +170,8 @@ class Config(OptionsContainer):
         """
         if self._args_parser.run_once is not None:
             return self._args_parser.run_once
-        run_once = os.environ.get('DOP_JOBSLIB_RUN_ONCE')
-        if run_once is not None:
+        run_once = os.environ.get('JOBSLIB_RUN_ONCE')
+        if run_once:
             return bool(int(run_once))
         return getattr(self._settings, 'RUN_ONCE', False)
 
@@ -182,8 +182,8 @@ class Config(OptionsContainer):
         """
         if self._args_parser.sleep_interval is not None:
             return self._args_parser.sleep_interval
-        sleep_interval = os.environ.get('DOP_JOBSLIB_SLEEP_INTERVAL')
-        if sleep_interval is not None:
+        sleep_interval = os.environ.get('JOBSLIB_SLEEP_INTERVAL')
+        if sleep_interval:
             return int(sleep_interval)
         return getattr(self._settings, 'SLEEP_INTERVAL', 60)
 
@@ -223,8 +223,8 @@ class OneInstanceConfig(ConfigGroup):
         if self._args_parser.disable_one_instance:
             cls_name = 'jobslib.oneinstance.dummy.DummyLock'
         else:
-            cls_name = os.environ.get('DOP_JOBSLIB_ONE_INSTANCE_BACKEND')
-            if cls_name is None:
+            cls_name = os.environ.get('JOBSLIB_ONE_INSTANCE_BACKEND')
+            if not cls_name:
                 cls_name = self._settings['backend']
         return import_object(cls_name)
 
@@ -249,8 +249,8 @@ class LivenessConfig(ConfigGroup):
         Liveness implementation class. If value is not defined, default
         value ``jobslib.liveness.dummy.DummyLiveness`` is used.
         """
-        cls_name = os.environ.get('DOP_JOBSLIB_LIVENESS_BACKEND')
-        if cls_name is None:
+        cls_name = os.environ.get('JOBSLIB_LIVENESS_BACKEND')
+        if not cls_name:
             cls_name = self._settings.get(
                 'backend', 'jobslib.liveness.dummy.DummyLiveness')
         return import_object(cls_name)
@@ -283,8 +283,8 @@ class ConsulConfig(ConfigGroup):
         """
         IP address or hostname of the Consul server.
         """
-        host = os.environ.get('DOP_JOBSLIB_CONSUL_HOST')
-        if host is not None:
+        host = os.environ.get('JOBSLIB_CONSUL_HOST')
+        if host:
             return host
         return self._settings.get('host', '')
 
@@ -293,7 +293,7 @@ class ConsulConfig(ConfigGroup):
         """
         Port where the Consul server listening on.
         """
-        port = os.environ.get('DOP_JOBSLIB_CONSUL_PORT')
-        if port is not None:
+        port = os.environ.get('JOBSLIB_CONSUL_PORT')
+        if port:
             return int(port)
         return self._settings.get('port')

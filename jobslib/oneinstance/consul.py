@@ -55,8 +55,8 @@ class ConsulLock(BaseLock):
             """
             Key under which the lock is stored.
             """
-            key = os.environ.get('DOP_JOBSLIB_ONE_INSTANCE_OPTIONS_KEY')
-            if key is not None:
+            key = os.environ.get('JOBSLIB_ONE_INSTANCE_OPTIONS_KEY')
+            if key:
                 return key
             return self._settings['key']
 
@@ -67,8 +67,8 @@ class ConsulLock(BaseLock):
             """
             one_day_seconds = 60 * 60 * 24
 
-            ttl = os.environ.get('DOP_JOBSLIB_ONE_INSTANCE_OPTIONS_TTL')
-            if ttl is not None:
+            ttl = os.environ.get('JOBSLIB_ONE_INSTANCE_OPTIONS_TTL')
+            if ttl:
                 ttl = int(ttl)
             else:
                 ttl = self._settings.get('ttl', one_day_seconds)
@@ -85,8 +85,8 @@ class ConsulLock(BaseLock):
             seconds before session is truly invalidated. Valid value must be
             between 0 and 60 seconds, default is 1.
             """
-            lock_delay = os.environ.get('DOP_JOBSLIB_ONE_INSTANCE_LOCK_DELAY')
-            if lock_delay is not None:
+            lock_delay = os.environ.get('JOBSLIB_ONE_INSTANCE_LOCK_DELAY')
+            if lock_delay:
                 lock_delay = int(lock_delay)
             else:
                 lock_delay = self._settings.get('lock_delay', 1)
