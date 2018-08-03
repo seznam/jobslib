@@ -77,7 +77,7 @@ class BaseLiveness(abc.ABC):
 
 class CheckLiveness(_Task):
     """
-    Internal task which checkes age of the liveness stamp. Returns exit
+    Internal task which checks age of the liveness stamp. Returns exit
     code :const:`0` if check passes, :const:`0` if check fails.
     """
 
