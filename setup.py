@@ -70,7 +70,6 @@ setup(
         'ujson',
     ],
     tests_require=[
-        'pytest-cov',
         'pytest',
     ],
     test_suite='tests',
