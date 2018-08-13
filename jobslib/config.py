@@ -286,7 +286,7 @@ class ConsulConfig(ConfigGroup):
         host = os.environ.get('JOBSLIB_CONSUL_HOST')
         if host:
             return host
-        return self._settings.get('host', '')
+        return self._settings.get('host', '127.0.0.1')
 
     @option(attrtype=int)
     def port(self):
