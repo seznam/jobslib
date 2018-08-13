@@ -5,6 +5,7 @@ configuration.
 
 import logging.config
 import os
+import json
 
 from .context import Context
 from .imports import import_object
@@ -140,7 +141,10 @@ class Config(OptionsContainer):
         and higher leveled messages and forwards them onto console. Format
         is :func:`logging.config.dictConfig`.
         """
-        return getattr(self._settings, 'LOGGING', BASE_LOGGING)
+        if os.environ.get('JOBSLIB_LOGGING'):
+            return json.loads(os.environ.get('JOBSLIB_LOGGING'))
+        else:
+            return getattr(self._settings, 'LOGGING', BASE_LOGGING)
 
     @option
     def context_class(self):
