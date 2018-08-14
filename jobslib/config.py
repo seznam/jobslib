@@ -5,8 +5,8 @@ configuration.
 
 import logging.config
 import os
-import json
-from json.decoder import JSONDecodeError
+
+import ujson
 
 from .context import Context
 from .imports import import_object
@@ -142,14 +142,10 @@ class Config(OptionsContainer):
         and higher leveled messages and forwards them onto console. Format
         is :func:`logging.config.dictConfig`.
         """
-        if os.environ.get('JOBSLIB_LOGGING'):
-            try:
-                return json.loads(os.environ.get('JOBSLIB_LOGGING'))
-            except JSONDecodeError:
-                logging.error('Invalid JSON format of JOBSLIB_LOGGING')
-                return None
-        else:
-            return getattr(self._settings, 'LOGGING', BASE_LOGGING)
+        logging_cfg = os.environ.get('JOBSLIB_LOGGING')
+        if logging_cfg:
+            return ujson.loads(logging_cfg)
+        return getattr(self._settings, 'LOGGING', BASE_LOGGING)
 
     @option
     def context_class(self):
