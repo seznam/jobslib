@@ -6,6 +6,8 @@ configuration.
 import logging.config
 import os
 
+import ujson
+
 from .context import Context
 from .imports import import_object
 from .logging import BASE_LOGGING
@@ -140,6 +142,9 @@ class Config(OptionsContainer):
         and higher leveled messages and forwards them onto console. Format
         is :func:`logging.config.dictConfig`.
         """
+        logging_cfg = os.environ.get('JOBSLIB_LOGGING')
+        if logging_cfg:
+            return ujson.loads(logging_cfg)
         return getattr(self._settings, 'LOGGING', BASE_LOGGING)
 
     @option
