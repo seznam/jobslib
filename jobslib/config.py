@@ -146,7 +146,7 @@ class Config(OptionsContainer):
             try:
                 return json.loads(os.environ.get('JOBSLIB_LOGGING'))
             except JSONDecodeError:
-                logging.error('Invalid JSON format of JOBSLIB_LOGGING environment variable: ' + os.environ.get('JOBSLIB_LOGGING'))
+                logging.error('Invalid JSON format of JOBSLIB_LOGGING')
                 return None
         else:
             return getattr(self._settings, 'LOGGING', BASE_LOGGING)
