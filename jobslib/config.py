@@ -6,6 +6,7 @@ configuration.
 import logging.config
 import os
 import json
+from json.decoder import JSONDecodeError
 
 from .context import Context
 from .imports import import_object
@@ -142,7 +143,11 @@ class Config(OptionsContainer):
         is :func:`logging.config.dictConfig`.
         """
         if os.environ.get('JOBSLIB_LOGGING'):
-            return json.loads(os.environ.get('JOBSLIB_LOGGING'))
+            try:
+                return json.loads(os.environ.get('JOBSLIB_LOGGING'))
+            except JSONDecodeError:
+                logging.error('Invalid JSON format of JOBSLIB_LOGGING environment variable: ' + os.environ.get('JOBSLIB_LOGGING'))
+                return None
         else:
             return getattr(self._settings, 'LOGGING', BASE_LOGGING)
 
