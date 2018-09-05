@@ -1,4 +1,4 @@
-FROM        docker.dev.dszn.cz/doporucovani/dev/debian-python3:stretch
+FROM        docker.dev.dszn.cz/doporucovani/gitlab-ci/debian:stretch
 
 MAINTAINER  doporucovani-vyvoj "doporucovani-vyvoj@firma.seznam.cz"
 
