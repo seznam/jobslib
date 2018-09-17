@@ -81,7 +81,7 @@ class Config(OptionsContainer):
                     return uri
 
                 # Finally try reading value from settings
-                return self._settings.get['uri']
+                return self._settings['uri']
 
         class MyAppConfig(Config):
 
