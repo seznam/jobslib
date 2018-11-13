@@ -92,6 +92,11 @@ class Context(object):
             self, self._config.liveness.options)
 
     @cached_property
+    def metrics(self):
+        return self._config.metrics.backend(
+            self, self._config.metrics.options)
+
+    @cached_property
     def consul(self):
         """
         HashiCorp Consul client, instance of the :class:`consul.Consul`.

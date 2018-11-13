@@ -94,7 +94,7 @@ def main(args=None):
         settings = get_app_settings(cmdline_args)
     except ImportError as exc:
         parser.error("Invalid application settings module: {}".format(exc))
-    # Obtain task class and add its arguments into parser
+    # Obtain task class
     if cmdline_args.task_cls in JOBSLIB_TASKS:
         task_cls = get_task_cls(JOBSLIB_TASKS[cmdline_args.task_cls])
     else:

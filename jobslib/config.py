@@ -160,6 +160,21 @@ class Config(OptionsContainer):
         return context_class
 
     @option
+    def task_class(self):
+        """
+        Task class, subclass of the :class:`~jobslib.BaseTask`.
+        """
+        # TODO: refactor in the future. Import inside method is not nice,
+        # but this solution doesn't break API. Some task's class attributes
+        # could be useful (e.g. name for metrics/InfluxDB support).
+        from .main import JOBSLIB_TASKS, get_task_cls
+        if self._args_parser.task_cls in JOBSLIB_TASKS:
+            task_cls = get_task_cls(JOBSLIB_TASKS[self._args_parser.task_cls])
+        else:
+            task_cls = get_task_cls(self._args_parser.task_cls)
+        return task_cls
+
+    @option
     def one_instance(self):
         """
         Configuration of the one instance lock. Instance of the
@@ -209,6 +224,11 @@ class Config(OptionsContainer):
         """
         return ConsulConfig(
             getattr(self._settings, 'CONSUL', {}), self._args_parser)
+
+    @option
+    def metrics(self):
+        return MetricsConfig(
+            getattr(self._settings, 'METRICS', {}), self._args_parser)
 
 
 class OneInstanceConfig(ConfigGroup):
@@ -302,3 +322,18 @@ class ConsulConfig(ConfigGroup):
         if port:
             return int(port)
         return self._settings.get('port')
+
+
+class MetricsConfig(ConfigGroup):
+    @option
+    def backend(self):
+        cls_name = os.environ.get('JOBSLIB_METRICS_BACKEND')
+        if not cls_name:
+            cls_name = self._settings.get(
+                'backend', 'jobslib.metrics.dummy.DummyMetrics')
+        return import_object(cls_name)
+
+    @option
+    def options(self):
+        return self.backend.OptionsConfig(
+            self._settings.get('options', {}), self._args_parser)

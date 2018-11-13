@@ -44,10 +44,11 @@ from .cmdlineparser import argument
 from .config import Config, ConfigGroup, option
 from .context import Context, cached_property
 from .tasks import BaseTask
+from .metrics import BaseMetrics
 
 __all__ = [
     'BaseTask', 'argument', 'Config', 'ConfigGroup', 'option',
-    'Context', 'cached_property'
+    'Context', 'cached_property', 'BaseMetrics',
 ]
 
 
