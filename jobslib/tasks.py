@@ -7,6 +7,8 @@ import sys
 import time
 
 from .oneinstance import OneInstanceWatchdogError
+from .metrics import BaseMetrics
+from .time import get_current_time, to_utc
 
 __all__ = ['BaseTask']
 
@@ -83,7 +85,10 @@ class BaseTask(object):
 
         lock = self.context.one_instance_lock
         liveness = self.context.liveness
+        metrics = self.context.metrics
         while 1:
+            start_time = time.time()
+
             try:
                 if lock.acquire():
                     self.logger.info("Run task")
@@ -91,16 +96,38 @@ class BaseTask(object):
                         self.task()
                     finally:
                         lock.release()
+                    duration = time.time() - start_time
+                    timestamp = get_current_time()
+
                     self.logger.info("Task done, write liveness")
+
                     liveness.write()
+
+                    metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_SUCCEEDED,
+                                                 duration=duration)
+
+                    timestamp_utc = to_utc(timestamp)
+                    metrics.last_successful_run_timestamp(timestamp=timestamp_utc)
                 else:
                     self.logger.info(
                         "Can't acquire lock (lock owner is %s)",
                         lock.get_lock_owner_info())
+
+                    duration = time.time() - start_time
+                    metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_PENDING,
+                                                 duration=duration)
+
             except OneInstanceWatchdogError:
+                duration = time.time() - start_time
                 self.logger.exception("Task has been killed by watchdog!")
+                metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_INTERRUPTED,
+                                             duration=duration)
+
             except Exception:
+                duration = time.time() - start_time
                 self.logger.exception("%s task failed", self.name)
+                metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_FAILED,
+                                             duration=duration)
 
             if self.context.config.run_once:
                 break

@@ -18,3 +18,6 @@ class DummyMetrics(BaseMetrics):
 
     def push_monitoring_metrics(self, metrics, timestamp=None):
         pass
+
+    def push_monitoring_metrics_with_tags(self, metrics, timestamp=None):
+        pass

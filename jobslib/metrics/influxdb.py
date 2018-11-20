@@ -9,15 +9,12 @@ from influxdb_wrapper import DoporucovaniInfluxDBCLient
 
 __all__ = ['InfluxDBMetrics']
 
-logger = logging.getLogger(__name__)
-
 
 class InfluxDBMetrics(BaseMetrics):
     """
-    Consul liveness implementation. Provides exporting informations about
-    health state into Consul's key/value storage.
+    InfluxDB metrics implementation.
 
-    For use of :class:`ConsulLiveness` write into **settings**:
+    For use of :class:`InfluxDBMetrics` write into **settings**:
 
     .. code-block:: python
 
@@ -86,3 +83,6 @@ class InfluxDBMetrics(BaseMetrics):
 
     def push_monitoring_metrics(self, metrics, timestamp=None):
         self._client.push_monitoring_metrics(metrics=metrics, timestamp=timestamp)
+
+    def push_monitoring_metrics_with_tags(self, metrics, timestamp=None):
+        self._client.push_monitoring_metrics_with_tags(metrics=metrics, timestamp=timestamp)
