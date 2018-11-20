@@ -1,4 +1,3 @@
-
 from jobslib.config import Config, ConfigGroup, option
 from jobslib.context import Context
 from jobslib.liveness.consul import ConsulLiveness
@@ -67,6 +66,7 @@ def test_config():
         disable_one_instance = False
         run_once = True
         sleep_interval = 300
+        task_cls = None
 
     config = Config(settings, args_parser)
 
