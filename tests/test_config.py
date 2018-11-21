@@ -1,8 +1,18 @@
+import sys
 
+from jobslib import BaseTask
 from jobslib.config import Config, ConfigGroup, option
 from jobslib.context import Context
 from jobslib.liveness.consul import ConsulLiveness
 from jobslib.oneinstance.consul import ConsulLock
+
+
+class TaskModuleMockClass:
+    class TaskClassMockClass(BaseTask):
+        pass
+
+
+sys.modules["mock_task"] = TaskModuleMockClass
 
 
 def test_config_group():
