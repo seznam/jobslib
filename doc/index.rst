@@ -30,6 +30,15 @@ liveness
 .. autoclass:: jobslib.liveness.consul.ConsulLiveness
     :members: OptionsConfig
 
+metrics
+--------
+
+.. automodule:: jobslib.metrics
+   :members:
+
+.. autoclass:: jobslib.metrics.dummy.DummyMetrics
+   :members:
+
 settings
 --------
 

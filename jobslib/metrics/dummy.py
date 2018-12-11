@@ -11,7 +11,7 @@ class DummyMetrics(BaseMetrics):
 
     .. code-block:: python
 
-        LIVENESS = {
+        METRICS = {
             'backend': 'jobslib.metrics.dummy.DummyMetrics',
         }
     """
