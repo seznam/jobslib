@@ -63,6 +63,16 @@ class InfluxDBMetrics(BaseMetrics):
             return self._settings.get('username', "root")
 
         @option(required=True, attrtype=str)
+        def password(self):
+            """
+            InfluxDB password
+            """
+            password = os.environ.get('JOBSLIB_METRICS_INFLUXDB_PASSWORD')
+            if password:
+                return password
+            return self._settings.get('password', "root")
+
+        @option(required=True, attrtype=str)
         def database(self):
             """
             InfluxDB database
@@ -82,7 +92,7 @@ class InfluxDBMetrics(BaseMetrics):
         self._client = DoporucovaniInfluxDBCLient(app=context.config.task_class.name, **kwargs)
 
     def push_monitoring_metrics(self, metrics, timestamp=None):
-        self._client.push_monitoring_metrics(metrics=metrics, timestamp=timestamp)
+        self._client.push_monitoring_metrics_safely(metrics=metrics, timestamp=timestamp)
 
     def push_monitoring_metrics_with_tags(self, metrics, timestamp=None):
-        self._client.push_monitoring_metrics_with_tags(metrics=metrics, timestamp=timestamp)
+        self._client.push_monitoring_metrics_with_tags_safely(metrics=metrics, timestamp=timestamp)

@@ -1,5 +1,10 @@
 # Jobslib
 
+## [1.0.4] - 2018-12-11 16:36 - Ondra Voves <ondrej.voves@firma.seznam.cz>
+### Fixed
+- Add password to influx config.
+- Safely metrics.
+
 ## [1.0.3] - 2018-12-11 13:36 - Ondra Voves <ondrej.voves@firma.seznam.cz>
 ### Added
 - Metrics.
