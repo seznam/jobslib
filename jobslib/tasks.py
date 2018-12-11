@@ -106,8 +106,7 @@ class BaseTask(object):
                     metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_SUCCEEDED,
                                                  duration=duration)
 
-                    timestamp_utc = to_utc(timestamp)
-                    metrics.last_successful_run_timestamp(timestamp=timestamp_utc)
+                    metrics.last_successful_run_timestamp(timestamp=timestamp)
                 else:
                     self.logger.info(
                         "Can't acquire lock (lock owner is %s)",
