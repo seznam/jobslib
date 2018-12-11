@@ -1,7 +1,8 @@
 # Jobslib
 
 ## [1.0.3] - 2018-12-11 13:36 - Ondra Voves <ondrej.voves@firma.seznam.cz>
-- Add metrics.
+### Added
+- Metrics.
 
 ## [1.0.2] - 2018-12-11 13:36 - Ondrej Voves <ondrej.voves@firma.seznam.cz>
 ### Fixed
