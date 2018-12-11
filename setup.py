@@ -68,6 +68,7 @@ setup(
         'colored<1.3',
         'python-consul',
         'ujson',
+        'szn-doporucovani-influxdb-wrapper',
     ],
     tests_require=[
         'pytest',
