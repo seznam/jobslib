@@ -1,5 +1,9 @@
 # Jobslib
 
+## [1.0.5] - 2018-12-11 16:52 - Ondra Voves <ondrej.voves@firma.seznam.cz>
+### Fixed
+- timstamp as string to numeric because influxwrapper
+
 ## [1.0.4] - 2018-12-11 16:36 - Ondra Voves <ondrej.voves@firma.seznam.cz>
 ### Fixed
 - Add password to influx config.
