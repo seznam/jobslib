@@ -122,6 +122,7 @@ class ConsulLock(BaseLock):
                 self.options.key, ujson.dumps(record), acquire=session_id)
         except Exception:
             logger.exception("Can't acquire lock")
+            self.context.consul.session.destroy(session_id)
             return False
         else:
             if res is True:
@@ -131,11 +132,14 @@ class ConsulLock(BaseLock):
                 signal.signal(signal.SIGALRM, self.alarm_handler)
                 signal.alarm(self.options.ttl)
                 return True
+
+            self.context.consul.session.destroy(session_id)
             return False
 
     def release(self):
         try:
-            res = self.context.consul.session.destroy(self.session_id)
+            res = self.context.consul.kv.put(
+                self.options.key, None, release=self.session_id)
         except Exception:
             logger.exception("Can't release lock")
             return False
