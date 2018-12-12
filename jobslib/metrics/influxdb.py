@@ -49,7 +49,7 @@ class InfluxDBMetrics(BaseMetrics):
             """
             port = os.environ.get('JOBSLIB_METRICS_INFLUXDB_PORT')
             if port:
-                return port
+                return int(port)
             return self._settings.get('port', 8086)
 
         @option(required=True, attrtype=str)
