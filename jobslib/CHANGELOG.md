@@ -1,5 +1,9 @@
 # Jobslib
 
+## [1.0.7rc1] - 2018-02-04 12:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
+### Added
+- lock release on SIGINT and SIGTERM
+
 ## [1.0.6] - 2018-12-12 15:52 - Ondra Voves <ondrej.voves@firma.seznam.cz>
 ### Fixed
 - fix bad env validation for influxdb
