@@ -43,12 +43,14 @@ import re
 from .cmdlineparser import argument
 from .config import Config, ConfigGroup, option
 from .context import Context, cached_property
-from .tasks import BaseTask
 from .metrics import BaseMetrics
+from .oneinstance import OneInstanceWatchdogError
+from .tasks import BaseTask
 
 __all__ = [
-    'BaseTask', 'argument', 'Config', 'ConfigGroup', 'option',
-    'Context', 'cached_property', 'BaseMetrics',
+    'argument', 'Config', 'ConfigGroup', 'option', 'Context',
+    'cached_property', 'BaseMetrics', 'OneInstanceWatchdogError',
+    'BaseTask'
 ]
 
 
