@@ -7,6 +7,7 @@ import signal
 import sys
 import time
 
+from .exceptions import Terminate
 from .oneinstance import OneInstanceWatchdogError
 from .metrics import BaseMetrics
 from .time import get_current_time
@@ -127,6 +128,10 @@ class BaseTask(object):
                 metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_INTERRUPTED,
                                              duration=duration)
 
+            except Terminate:
+                self.logger.warning("Task has been terminated!")
+                break
+
             except Exception:
                 duration = time.time() - start_time
                 self.logger.exception("%s task failed", self.name)
@@ -152,10 +157,8 @@ class BaseTask(object):
         """
         raise NotImplementedError
 
-    def terminateProcess(self, signalNumber, frame):
-        self.context.one_instance_lock.release
-        self.logger.info("{} terminated the job".format(signal.Signals(signalNumber).name))
-        sys.exit()
+    def terminateProcess(self, unused_signal_number, unused_frame):
+        raise Terminate
 
 
 class _Task(BaseTask):
