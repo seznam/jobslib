@@ -89,8 +89,8 @@ class BaseTask(object):
         liveness = self.context.liveness
         metrics = self.context.metrics
 
-        signal.signal(signal.SIGTERM, self.terminateProcess)
-        signal.signal(signal.SIGINT, self.terminateProcess)
+        signal.signal(signal.SIGTERM, self.terminate_process)
+        signal.signal(signal.SIGINT, self.terminate_process)
 
         while 1:
             start_time = time.time()
@@ -157,7 +157,7 @@ class BaseTask(object):
         """
         raise NotImplementedError
 
-    def terminateProcess(self, unused_signal_number, unused_frame):
+    def terminate_process(self, unused_signal_number, unused_frame):
         raise Terminate
 
 
