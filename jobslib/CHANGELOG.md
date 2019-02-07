@@ -1,6 +1,6 @@
 # Jobslib
 
-## [1.0.7rc1] - 2018-02-04 12:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
+## [1.0.7] - 2018-02-04 12:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
 ### Added
 - lock release on SIGINT and SIGTERM
 
