@@ -2,7 +2,7 @@
 JobsLib exceptions.
 """
 
-__all__ = ['JobsLibError', 'TaskError']
+__all__ = ['JobsLibError', 'TaskError', 'Terminate']
 
 
 class JobsLibError(Exception):
@@ -16,6 +16,14 @@ class JobsLibError(Exception):
 class TaskError(JobsLibError):
     """
     Task error.
+    """
+
+    pass
+
+
+class Terminate(BaseException):
+    """
+    Indicates that terminate signal has been reached.
     """
 
     pass

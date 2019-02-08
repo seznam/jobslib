@@ -6,7 +6,9 @@ from jobslib import BaseTask, argument, Config, option
 # settings --------------------------------------------------------------------
 
 CONFIG_CLASS = 'example.helloworld.HelloWorldConfig'
-
+ONE_INSTANCE = {
+    'backend': 'jobslib.oneinstance.dummy.DummyLock',
+    }
 
 # config ----------------------------------------------------------------------
 

@@ -1,8 +1,12 @@
 # Jobslib
 
-## [1.0.7] - 2019-02-05 14:45 - Jan Seifert <jan.seifert@firma.seznam.cz>
+## [1.0.8] - 2019-02-08 08:34 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Changed
 - Add OneInstanceWatchdogError on public API
+
+## [1.0.7] - 2018-02-04 12:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
+### Added
+- lock release on SIGINT and SIGTERM
 
 ## [1.0.6] - 2018-12-12 15:52 - Ondra Voves <ondrej.voves@firma.seznam.cz>
 ### Fixed

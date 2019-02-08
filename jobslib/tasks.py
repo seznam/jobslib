@@ -3,12 +3,14 @@ Module :module:`shelter.tasks` provides an ancestor class for writing tasks.
 """
 
 import logging
+import signal
 import sys
 import time
 
+from .exceptions import Terminate
 from .oneinstance import OneInstanceWatchdogError
 from .metrics import BaseMetrics
-from .time import get_current_time, to_utc
+from .time import get_current_time
 
 __all__ = ['BaseTask']
 
@@ -86,6 +88,10 @@ class BaseTask(object):
         lock = self.context.one_instance_lock
         liveness = self.context.liveness
         metrics = self.context.metrics
+
+        signal.signal(signal.SIGTERM, self.terminate_process)
+        signal.signal(signal.SIGINT, self.terminate_process)
+
         while 1:
             start_time = time.time()
 
@@ -122,6 +128,10 @@ class BaseTask(object):
                 metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_INTERRUPTED,
                                              duration=duration)
 
+            except Terminate:
+                self.logger.warning("Task has been terminated!")
+                break
+
             except Exception:
                 duration = time.time() - start_time
                 self.logger.exception("%s task failed", self.name)
@@ -146,6 +156,9 @@ class BaseTask(object):
         Task body, override this method.
         """
         raise NotImplementedError
+
+    def terminate_process(self, unused_signal_number, unused_frame):
+        raise Terminate
 
 
 class _Task(BaseTask):
