@@ -1,4 +1,8 @@
+
 import sys
+import collections
+
+import pytest
 
 from jobslib import BaseTask
 from jobslib.config import Config, ConfigGroup, option
@@ -31,7 +35,11 @@ def test_config_group():
     assert test_config.as_kwargs == {'baz': 1, 'bar': 2}
 
 
-def test_config():
+@pytest.mark.parametrize(
+    'run_interval, sleep_interval',
+    [(None, None), (300, None), (None, 300)]
+)
+def test_config(run_interval, sleep_interval):
 
     class settings:
 
@@ -72,12 +80,14 @@ def test_config():
             'port': 1234,
         }
 
-    class args_parser:
-        disable_one_instance = False
-        run_once = True
-        run_interval = None
-        sleep_interval = 300
-        task_cls = "mock_task.TaskClassMockClass"
+    ArgsParser = collections.namedtuple('ArgsParser', [
+        'disable_one_instance', 'run_once', 'run_interval',
+        'sleep_interval', 'task_cls'])
+
+    args_parser = ArgsParser(
+        disable_one_instance=False, run_once=True,
+        run_interval=run_interval, sleep_interval=sleep_interval,
+        task_cls='mock_task.TaskClassMockClass')
 
     config = Config(settings, args_parser)
 
@@ -87,7 +97,10 @@ def test_config():
     assert config.one_instance.options.key == 'jobs/example/oneinstance/lock'
     assert config.one_instance.options.ttl == 30
     assert config.run_once is True
-    assert config.sleep_interval == 300
+    assert config.sleep_interval == (
+        sleep_interval if sleep_interval is not None else 0)
+    assert config.run_interval == (
+        run_interval if run_interval is not None else 0)
     assert config.liveness.backend is ConsulLiveness
     assert config.liveness.options.key == 'jobs/example/oneinstance/liveness'
     assert config.consul.scheme == 'http'

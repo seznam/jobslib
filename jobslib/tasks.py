@@ -148,7 +148,7 @@ class BaseTask(object):
             if self.context.config.run_once:
                 break
 
-            if self.context.config.sleep_interval is not None:
+            if self.context.config.sleep_interval:
                 sleep_time = self.context.config.sleep_interval
             else:
                 next_run = start_time + self.context.config.run_interval
