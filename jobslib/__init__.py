@@ -14,8 +14,11 @@ command line using ``runjob`` command:
     runjob myapp.task.HelloWorld --run-once
 
 Task is normally run in infinite loop, delay in seconds between individual
-launches is controlled by ``--sleep-interval`` argument. If you don't want
-to launch task forever, use ``--run-once`` argument. Library provides
+launches is controlled by either ``--sleep-interval`` or ``--run-interval``
+argument. ``--sleep-interval`` is interval in seconds, which is used to
+sleep after task is done. ``--run-interval`` tells that task is run every
+run interval seconds. Both arguments may not be used together. If you don't
+want to launch task forever, use ``--run-once`` argument. Library provides
 locking mechanism for launching tasks on several machines and only one
 instance at one time may be launched. If you don't want this locking, use
 ``--disable-one-instance`` argument. All these options can be set in

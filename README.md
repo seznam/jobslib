@@ -13,13 +13,16 @@ command line using `runjob` command:
     runjob --run-once myapp.task.HelloWorld
 
 Task is normally run in infinite loop, delay in seconds between individual
-launches is controlled by `--sleep-interval` argument. If you don’t want to
-launch task forever, use `--run-once` argument. If you want to launch task
-on several machines and may be launched only one instance at one time,
-library provides locking mechanism. In this case use `--one-instance`
-argument. Optional argument `-s`/`--settings` defines Python’s module where
-configuration is stored. Or you can pass settings module using
-`JOBSLIB_SETTINGS_MODULE`.
+launches is controlled by either `--sleep-interval` or `--run-interval`
+argument. `--sleep-interval` is interval in seconds, which is used to
+sleep after task is done. `--run-interval` tells that task is run every
+run interval seconds. Both arguments may not be used together. If you don't
+want to launch task forever, use `--run-once` argument. Library provides
+locking mechanism for launching tasks on several machines and only one
+instance at one time may be launched. If you don't want this locking, use
+`--disable-one-instance` argument. Optional argument `-s`/`--settings`
+defines Python's module where configuration is stored. Or you can pass
+settings module using `JOBSLIB_SETTINGS_MODULE`.
 
 During task initialization instances of the `Config` and `Context` classes
 are created. You can define your own classes in the **settings** module.
