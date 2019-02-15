@@ -205,7 +205,20 @@ class Config(OptionsContainer):
         sleep_interval = os.environ.get('JOBSLIB_SLEEP_INTERVAL')
         if sleep_interval:
             return int(sleep_interval)
-        return getattr(self._settings, 'SLEEP_INTERVAL', 60)
+        return getattr(self._settings, 'SLEEP_INTERVAL', None)
+
+    @option(attrtype=int)
+    def run_interval(self):
+        """
+        Run interval in seconds. If task is run longer than this interval,
+        next loop is run imediately after task is done.
+        """
+        if self._args_parser.run_interval is not None:
+            return self._args_parser.run_interval
+        run_interval = os.environ.get('JOBSLIB_RUN_INTERVAL')
+        if run_interval:
+            return int(run_interval)
+        return getattr(self._settings, 'RUN_INTERVAL', None)
 
     @option
     def liveness(self):

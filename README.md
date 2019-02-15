@@ -3,8 +3,9 @@
 Library for launching tasks in parallel environment. Task is launched from
 command line using `runjob` command:
 
-    runjob [-s SETTINGS] [--one-instance] [--run-once]
-           [--sleep-interval SLEEP_INTERVAL] task_cls
+    runjob [-s SETTINGS] [--disable-one-instance] [--run-once]
+           [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]
+           task_cls
 
     runjob -s myapp.settings --run-once myapp.task.HelloWorld
 

@@ -75,6 +75,7 @@ def test_config():
     class args_parser:
         disable_one_instance = False
         run_once = True
+        run_interval = None
         sleep_interval = 300
         task_cls = "mock_task.TaskClassMockClass"
 

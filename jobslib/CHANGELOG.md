@@ -1,5 +1,9 @@
 # Jobslib
 
+## [1.1.0a1] - 2019-02-14 09:27 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Added
+- run interval option
+
 ## [1.0.8] - 2019-02-08 08:34 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Changed
 - Add OneInstanceWatchdogError on public API

@@ -89,60 +89,74 @@ class BaseTask(object):
         liveness = self.context.liveness
         metrics = self.context.metrics
 
-        signal.signal(signal.SIGTERM, self.terminate_process)
-        signal.signal(signal.SIGINT, self.terminate_process)
-
         while 1:
             start_time = time.time()
 
             try:
                 if lock.acquire():
-                    self.logger.info("Run task")
                     try:
-                        self.task()
+                        self.logger.info("Run task")
+
+                        signal.signal(signal.SIGTERM, self.terminate_process)
+                        signal.signal(signal.SIGINT, self.terminate_process)
+                        try:
+                            self.task()
+                        finally:
+                            signal.signal(signal.SIGTERM, signal.SIG_DFL)
+                            signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+                        self.logger.info("Task done")
                     finally:
                         lock.release()
-                    duration = time.time() - start_time
-                    timestamp = get_current_time()
-
-                    self.logger.info("Task done, write liveness")
 
                     liveness.write()
-
-                    metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_SUCCEEDED,
-                                                 duration=duration)
-
-                    metrics.last_successful_run_timestamp(timestamp=timestamp)
+                    duration = time.time() - start_time
+                    metrics.job_duration_seconds(
+                        status=BaseMetrics.JOB_STATUS_SUCCEEDED,
+                        duration=duration)
+                    metrics.last_successful_run_timestamp(
+                        timestamp=get_current_time())
                 else:
                     self.logger.info(
                         "Can't acquire lock (lock owner is %s)",
                         lock.get_lock_owner_info())
 
                     duration = time.time() - start_time
-                    metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_PENDING,
-                                                 duration=duration)
-
+                    metrics.job_duration_seconds(
+                        status=BaseMetrics.JOB_STATUS_PENDING,
+                        duration=duration)
             except OneInstanceWatchdogError:
-                duration = time.time() - start_time
                 self.logger.exception("Task has been killed by watchdog!")
-                metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_INTERRUPTED,
-                                             duration=duration)
-
+                duration = time.time() - start_time
+                metrics.job_duration_seconds(
+                    status=BaseMetrics.JOB_STATUS_INTERRUPTED,
+                    duration=duration)
             except Terminate:
                 self.logger.warning("Task has been terminated!")
+                duration = time.time() - start_time
+                metrics.job_duration_seconds(
+                    status=BaseMetrics.JOB_STATUS_INTERRUPTED,
+                    duration=duration)
                 break
-
             except Exception:
                 duration = time.time() - start_time
                 self.logger.exception("%s task failed", self.name)
-                metrics.job_duration_seconds(status=BaseMetrics.JOB_STATUS_FAILED,
-                                             duration=duration)
+                metrics.job_duration_seconds(
+                    status=BaseMetrics.JOB_STATUS_FAILED,
+                    duration=duration)
 
             if self.context.config.run_once:
                 break
-            self.logger.info(
-                "Sleep for %d seconds", self.context.config.sleep_interval)
-            time.sleep(self.context.config.sleep_interval)
+
+            if self.context.config.sleep_interval is not None:
+                sleep_time = self.context.config.sleep_interval
+            else:
+                next_run = start_time + self.context.config.run_interval
+                sleep_time = next_run - time.time()
+                if sleep_time < 0:
+                    sleep_time = 0
+            self.logger.info("Sleep for %d seconds", sleep_time)
+            time.sleep(sleep_time)
 
     def initialize(self):
         """

@@ -5,7 +5,7 @@ command line using ``runjob`` command:
 .. code-block:: bash
 
     runjob [-s SETTINGS] [--disable-one-instance] [--run-once]
-           [--sleep-interval SLEEP_INTERVAL]
+           [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]
            task_cls
 
     runjob -s myapp.settings myapp.task.HelloWorld --run-once

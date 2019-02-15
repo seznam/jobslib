@@ -81,7 +81,13 @@ def main(args=None):
     parser.add_argument(
         '--sleep-interval', action='store', dest='sleep_interval',
         type=int, default=None,
-        help='sleep interval in seconds after task')
+        help='sleep interval seconds after task is done, may not be '
+             'used together with --run-interval')
+    parser.add_argument(
+        '--run-interval', action='store', dest='run_interval',
+        type=int, default=None,
+        help='run task every interval seconds, may not be used together '
+             'with --sleep-interval')
     parser.add_argument(
         'task_cls', action='store', type=str,
         help='module path to task class (module.submodule.TaskClass), '
@@ -123,6 +129,10 @@ def main(args=None):
     )
     # Parse command line
     cmdline_args = parser.parse_args(args)
+    if (cmdline_args.sleep_interval is not None and
+            cmdline_args.run_interval is not None):
+        parser.error(
+            "--sleep-interval and --run-interval may not be used together")
 
     # Launch task
     config = config_cls(settings, cmdline_args)
