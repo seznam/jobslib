@@ -66,6 +66,7 @@ setup(
     install_requires=[
         'cached-property',
         'colored<1.3',
+        'objectvalidator',
         'python-consul',
         'ujson',
         'szn-doporucovani-influxdb-wrapper',

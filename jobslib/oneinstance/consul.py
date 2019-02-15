@@ -10,9 +10,10 @@ import os
 
 import ujson
 
+from objectvalidator import option
+
 from . import BaseLock, OneInstanceWatchdogError
 from ..config import ConfigGroup
-from ..objectvalidator import option
 from ..time import get_current_time, to_local, to_utc
 
 __all__ = ['ConsulLock']

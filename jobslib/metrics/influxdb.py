@@ -1,7 +1,8 @@
-import logging
+
 import os
 
-from ..objectvalidator import option
+from objectvalidator import option
+
 from . import BaseMetrics
 from ..config import ConfigGroup
 

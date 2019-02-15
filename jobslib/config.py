@@ -8,10 +8,11 @@ import os
 
 import ujson
 
+from objectvalidator import option, OptionsContainer
+
 from .context import Context
 from .imports import import_object
 from .logging import BASE_LOGGING
-from .objectvalidator import option, OptionsContainer
 
 __all__ = ['Config', 'ConfigGroup']
 

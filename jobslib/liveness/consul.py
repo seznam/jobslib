@@ -8,9 +8,10 @@ import os
 
 import ujson
 
+from objectvalidator import option
+
 from . import BaseLiveness
 from ..config import ConfigGroup
-from ..objectvalidator import option
 
 __all__ = ['ConsulLiveness']
 
