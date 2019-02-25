@@ -152,9 +152,7 @@ class BaseTask(object):
                 sleep_time = self.context.config.sleep_interval
             else:
                 next_run = start_time + self.context.config.run_interval
-                sleep_time = next_run - time.time()
-                if sleep_time < 0:
-                    sleep_time = 0
+                sleep_time = max(next_run - time.time(), 0)
             self.logger.info("Sleep for %d seconds", sleep_time)
             time.sleep(sleep_time)
 
