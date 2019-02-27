@@ -50,6 +50,8 @@ setup(
     author='Doporucovani team',
     author_email="doporucovani-vyvoj@firma.seznam.cz",
     description="Library for launching tasks in parallel environment",
+    long_description="Library for launching tasks in parallel environment",
+    long_description_content_type='text/plain',
     url='https://gitlab.kancelar.seznam.cz/doporucovani/recass',
     classifiers=[
         'Programming Language :: Python :: 3.5',
