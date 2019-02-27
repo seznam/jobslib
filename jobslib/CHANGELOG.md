@@ -1,6 +1,6 @@
 # Jobslib
 
-## [1.1.0rc1] - 2019-02-27 13:29 - Jan Seifert <jan.seifert@firma.seznam.cz>
+## [1.1.0] - 2019-02-27 14:35 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Added
 - run interval option
 - use objectvalidator library
