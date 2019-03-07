@@ -82,11 +82,11 @@ def test_config(run_interval, sleep_interval):
 
     ArgsParser = collections.namedtuple('ArgsParser', [
         'disable_one_instance', 'run_once', 'run_interval',
-        'sleep_interval', 'task_cls'])
+        'sleep_interval', 'keep_lock', 'task_cls'])
 
     args_parser = ArgsParser(
-        disable_one_instance=False, run_once=True,
-        run_interval=run_interval, sleep_interval=sleep_interval,
+        disable_one_instance=False, run_once=True, run_interval=run_interval,
+        sleep_interval=sleep_interval, keep_lock=True,
         task_cls='mock_task.TaskClassMockClass')
 
     config = Config(settings, args_parser)
@@ -101,6 +101,7 @@ def test_config(run_interval, sleep_interval):
         sleep_interval if sleep_interval is not None else 0)
     assert config.run_interval == (
         run_interval if run_interval is not None else 0)
+    assert config.keep_lock is True
     assert config.liveness.backend is ConsulLiveness
     assert config.liveness.options.key == 'jobs/example/oneinstance/liveness'
     assert config.consul.scheme == 'http'
