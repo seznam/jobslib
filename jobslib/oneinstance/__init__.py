@@ -63,10 +63,11 @@ class BaseLock(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def refresh(self):
+    def refresh(self, ttl=None):
         """
-        Refresh existing lock. Return :data:`True` if lock has been
-        successfuly refreshed, otherwise return :data:`False`.
+        Refresh existing lock. If *ttl* parameter (in seconfs) is omitted,
+        value from configuration will be used. Return :data:`True` if lock
+        has been successfuly refreshed, otherwise return :data:`False`.
         """
         raise NotImplementedError
 

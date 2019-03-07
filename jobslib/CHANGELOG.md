@@ -1,5 +1,11 @@
 # Jobslib
 
+## [1.2.0a1] - 2019-03-07 07:02 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Added
+- keep lock during sleeping interval
+### Changed
+- use semantic versioning
+
 ## [1.1.0] - 2019-02-27 14:35 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Added
 - run interval option

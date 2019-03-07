@@ -89,6 +89,10 @@ def main(args=None):
         help='run task every interval seconds, may not be used together '
              'with --sleep-interval')
     parser.add_argument(
+        '--keep-lock', action='store_true',
+        dest='keep_lock', default=False,
+        help='keep lock during sleeping interval')
+    parser.add_argument(
         'task_cls', action='store', type=str,
         help='module path to task class (module.submodule.TaskClass), '
              'or some of the internal tasks ({})'.format(

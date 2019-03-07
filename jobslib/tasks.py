@@ -90,6 +90,7 @@ class BaseTask(object):
         metrics = self.context.metrics
 
         while 1:
+            keep_lock = self.context.config.keep_lock
             start_time = time.time()
 
             try:
@@ -107,7 +108,10 @@ class BaseTask(object):
 
                         self.logger.info("Task done")
                     finally:
-                        lock.release()
+                        if keep_lock and not self.context.config.run_once:
+                            lock.refresh(ttl=10)
+                        else:
+                            lock.release()
 
                     liveness.write()
                     duration = time.time() - start_time
@@ -120,6 +124,7 @@ class BaseTask(object):
                     self.logger.info(
                         "Can't acquire lock (lock owner is %s)",
                         lock.get_lock_owner_info())
+                    keep_lock = False
 
                     duration = time.time() - start_time
                     metrics.job_duration_seconds(
@@ -153,8 +158,17 @@ class BaseTask(object):
             else:
                 next_run = start_time + self.context.config.run_interval
                 sleep_time = max(next_run - time.time(), 0)
+
             self.logger.info("Sleep for %d seconds", sleep_time)
-            time.sleep(sleep_time)
+            if keep_lock:
+                sleep_start_time = time.time()
+                sleep_stop_time = sleep_start_time + sleep_time
+                while time.time() < sleep_stop_time:
+                    lock.refresh(ttl=30)
+                    time.sleep(15)
+                lock.release()
+            else:
+                time.sleep(sleep_time)
 
     def initialize(self):
         """

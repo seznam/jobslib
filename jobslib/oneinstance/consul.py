@@ -153,7 +153,7 @@ class ConsulLock(BaseLock):
                 return True
             return False
 
-    def refresh(self):
+    def refresh(self, ttl=None):
         try:
             res = self.context.consul.session.renew(self.session_id)
         except Exception:
@@ -162,7 +162,7 @@ class ConsulLock(BaseLock):
         else:
             if res:
                 # Restart SIGALRM
-                signal.alarm(self.options.ttl)
+                signal.alarm(ttl if ttl is not None else self.options.ttl)
                 return True
             return True
 

@@ -28,5 +28,5 @@ class DummyLock(BaseLock):
     def release(self):
         return True
 
-    def refresh(self):
+    def refresh(self, ttl=None):
         return True

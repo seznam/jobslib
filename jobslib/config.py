@@ -232,6 +232,18 @@ class Config(OptionsContainer):
         return run_interval
 
     @option
+    def keep_lock(self):
+        """
+        :class:`bool` that indicates that lock will be kept during sleeping.
+        """
+        if self._args_parser.keep_lock is not None:
+            return self._args_parser.keep_lock
+        keep_lock = os.environ.get('JOBSLIB_KEEP_LOCK')
+        if keep_lock:
+            return bool(int(keep_lock))
+        return getattr(self._settings, 'KEEP_LOCK', False)
+
+    @option
     def liveness(self):
         """
         Configuration of the health state writer. Instance of the

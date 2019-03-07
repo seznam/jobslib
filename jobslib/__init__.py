@@ -6,6 +6,7 @@ command line using ``runjob`` command:
 
     runjob [-s SETTINGS] [--disable-one-instance] [--run-once]
            [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]
+           [--keep-lock]
            task_cls
 
     runjob -s myapp.settings myapp.task.HelloWorld --run-once
@@ -17,10 +18,12 @@ Task is normally run in infinite loop, delay in seconds between individual
 launches is controlled by either ``--sleep-interval`` or ``--run-interval``
 argument. ``--sleep-interval`` is interval in seconds, which is used to
 sleep after task is done. ``--run-interval`` tells that task is run every
-run interval seconds. Both arguments may not be used together. If you don't
-want to launch task forever, use ``--run-once`` argument. Library provides
-locking mechanism for launching tasks on several machines and only one
-instance at one time may be launched. If you don't want this locking, use
+run interval seconds. Both arguments may not be used together. `--keep-lock`
+argument causes that lock will be kept during sleeping, it is useful when you
+have several machines and you want to keep the task still on the same machine.
+If you don't want to launch task forever, use ``--run-once`` argument. Library
+provides locking mechanism for launching tasks on several machines and only
+one instance at one time may be launched. If you don't want this locking, use
 ``--disable-one-instance`` argument. All these options can be set in
 **settings** module. Optional argument ``--settings`` defines Python's
 module where configuration is stored. Or you can pass settings module
