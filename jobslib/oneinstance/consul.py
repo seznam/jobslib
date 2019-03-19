@@ -173,4 +173,4 @@ class ConsulLock(BaseLock):
                 value = ujson.loads(res['Value'])
                 return "{}, locked at {} UTC".format(
                     value.get('fqdn'), value.get('time_utc'))
-        return None
+        return "undetectable"
