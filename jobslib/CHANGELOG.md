@@ -1,5 +1,9 @@
 # Jobslib
 
+## [1.1.1rc1] - 2019-03-19 10:00 - Josef Florian <josef.florian@firma.seznam.cz>
+### Fixed
+- method `get_lock_owner_info`
+
 ## [1.1.0] - 2019-02-27 14:35 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Added
 - run interval option
