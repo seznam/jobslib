@@ -118,7 +118,7 @@ class BaseTask(object):
                         timestamp=get_current_time())
                 else:
                     self.logger.info(
-                        "Can't acquire lock (lock owner is %s)",
+                        "Can't acquire lock (%s)",
                         lock.get_lock_owner_info())
 
                     duration = time.time() - start_time

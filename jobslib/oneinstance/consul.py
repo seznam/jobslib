@@ -171,6 +171,6 @@ class ConsulLock(BaseLock):
         if res is not None:
             if res['Value'] is not None:
                 value = ujson.loads(res['Value'])
-                return "{}, locked at {} UTC".format(
+                return "lock owner is {}, locked at {} UTC".format(
                     value.get('fqdn'), value.get('time_utc'))
-        return "undetectable"
+        return "cannot get lock owner info"
