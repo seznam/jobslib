@@ -1,6 +1,6 @@
 # Jobslib
 
-## [1.1.1rc1] - 2019-03-19 10:00 - Josef Florian <josef.florian@firma.seznam.cz>
+## [1.1.1] - 2019-03-19 10:00 - Josef Florian <josef.florian@firma.seznam.cz>
 ### Fixed
 - method `get_lock_owner_info`
 
