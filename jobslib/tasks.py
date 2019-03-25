@@ -159,8 +159,10 @@ class BaseTask(object):
                 next_run = start_time + self.context.config.run_interval
                 sleep_time = max(next_run - time.time(), 0)
 
-            self.logger.info("Sleep for %d seconds", sleep_time)
             if keep_lock:
+                self.logger.info(
+                    "Sleep for %d seconds, lock is kept", sleep_time)
+
                 sleep_start_time = time.time()
                 sleep_stop_time = sleep_start_time + sleep_time
                 while time.time() < sleep_stop_time:
@@ -168,6 +170,9 @@ class BaseTask(object):
                     time.sleep(15)
                 lock.release()
             else:
+                self.logger.info(
+                    "Sleep for %d seconds", sleep_time)
+
                 time.sleep(sleep_time)
 
     def initialize(self):
