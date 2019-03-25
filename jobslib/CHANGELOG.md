@@ -1,6 +1,6 @@
 # Jobslib
 
-## [1.2.0a1] - 2019-03-25 08:25 - Jan Seifert <jan.seifert@firma.seznam.cz>
+## [1.2.0rc1] - 2019-03-25 08:33 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Added
 - keep lock during sleeping interval
 ### Changed
