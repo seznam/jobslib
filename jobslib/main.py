@@ -90,7 +90,7 @@ def main(args=None):
              'with --sleep-interval')
     parser.add_argument(
         '--keep-lock', action='store_true',
-        dest='keep_lock', default=False,
+        dest='keep_lock', default=None,
         help='keep lock during sleeping interval')
     parser.add_argument(
         'task_cls', action='store', type=str,
