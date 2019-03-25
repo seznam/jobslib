@@ -169,7 +169,8 @@ class ConsulLock(BaseLock):
     def get_lock_owner_info(self):
         unused_index, res = self.context.consul.kv.get(self.options.key)
         if res is not None:
-            value = ujson.loads(res['Value'])
-            return "{}, locked at {} UTC".format(
-                value.get('fqdn'), value.get('time_utc'))
-        return None
+            if res['Value'] is not None:
+                value = ujson.loads(res['Value'])
+                return "lock owner is {}, locked at {} UTC".format(
+                    value.get('fqdn'), value.get('time_utc'))
+        return "cannot get lock owner info"
