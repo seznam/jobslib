@@ -131,8 +131,8 @@ class BaseTask(object):
                         status=BaseMetrics.JOB_STATUS_PENDING,
                         duration=duration)
             except OneInstanceWatchdogError:
-                self.logger.exception("Task has been killed by watchdog!")
                 duration = time.time() - start_time
+                self.logger.exception("Lock has expired after %s seconds!", str(int(duration)))
                 metrics.job_duration_seconds(
                     status=BaseMetrics.JOB_STATUS_INTERRUPTED,
                     duration=duration)
