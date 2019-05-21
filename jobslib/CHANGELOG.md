@@ -2,7 +2,7 @@
 
 ## [1.2.1] - 2019-05-21 15:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
 ### Changed
-- use semantic versioning
+- Expired lock log message (#SDOP-103)
 
 ## [1.2.0] - 2019-03-25 09:29 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Added
