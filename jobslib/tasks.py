@@ -132,7 +132,7 @@ class BaseTask(object):
                         duration=duration)
             except OneInstanceWatchdogError:
                 duration = time.time() - start_time
-                self.logger.exception("Lock has expired after %s seconds!", str(int(duration)))
+                self.logger.exception("Lock has expired after %d seconds!", duration)
                 metrics.job_duration_seconds(
                     status=BaseMetrics.JOB_STATUS_INTERRUPTED,
                     duration=duration)
