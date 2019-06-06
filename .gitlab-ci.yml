@@ -8,7 +8,9 @@ image: docker.dev.dszn.cz/doporucovani/gitlab-ci/debian:stretch
 jobslib-test:
   stage: test
   only:
-    - branches
+    refs:
+      - branches
+      - /^jobslib-.*$/
   script:
     - python3 setup.py install
     - bash scripts/test.sh
