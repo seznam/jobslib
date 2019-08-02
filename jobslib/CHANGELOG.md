@@ -1,5 +1,9 @@
 # Jobslib
 
+## [1.2.2] - 2019-08-02 10:25 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Fixed
+- Fix name of the logger
+
 ## [1.2.1] - 2019-05-21 15:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
 ### Changed
 - Expired lock log message (#SDOP-103)

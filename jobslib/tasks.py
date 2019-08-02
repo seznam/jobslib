@@ -77,7 +77,8 @@ class BaseTask(object):
 
     def __init__(self, config):
         self.context = config.context_class.from_config(config)
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logging.getLogger(
+            '{}.{}'.format(self.__class__.__module__, self.__class__.__name__))
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.initialize()
