@@ -18,6 +18,7 @@ class BaseMetrics(abc.ABC):
     JOB_STATUS_INTERRUPTED = "interrupted"
     JOB_STATUS_PENDING = "pending"
     JOB_STATUS_IN_PROGRESS = "in_progress"
+    JOB_STATUS_KILLED = "killed"
     JOB_STATUS_UNKNOWN = "unknown"
 
     class OptionsConfig(ConfigGroup):
