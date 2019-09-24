@@ -1,5 +1,9 @@
 # Jobslib
 
+## [1.3.0] - 2019-09-23 12:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
+### Added
+- JOB_STATUS_KILLED metric (#SDOP-533)
+
 ## [1.2.2] - 2019-08-02 10:25 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Fixed
 - Fix name of the logger

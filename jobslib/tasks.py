@@ -141,7 +141,7 @@ class BaseTask(object):
                 self.logger.warning("Task has been terminated!")
                 duration = time.time() - start_time
                 metrics.job_duration_seconds(
-                    status=BaseMetrics.JOB_STATUS_INTERRUPTED,
+                    status=BaseMetrics.JOB_STATUS_KILLED,
                     duration=duration)
                 break
             except Exception:
