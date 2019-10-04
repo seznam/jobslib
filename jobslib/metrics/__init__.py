@@ -45,24 +45,26 @@ class BaseMetrics(abc.ABC):
     def push_monitoring_metrics_with_tags(self, metrics, timestamp=None):
         """Push metrics with tags
 
-        metrics = {
-            "flow_velocity": {
-                "value": 30.0,
-                "tags": {
-                    "tag_name1": "tag_value1",
-                    "tag_name2": "tag_value2",
-                }
-            },
-            "processed_requests": {
-                "value": 5,
-                "tags": {
-                    "tag_name3": "tag_value3",
-                }
-            },
-        }
-
         :param metrics: Metrics
         :param timestamp: Timestamp
+
+        .. code-block:: python
+
+            metrics = {
+                "flow_velocity": {
+                    "value": 30.0,
+                    "tags": {
+                        "tag_name1": "tag_value1",
+                        "tag_name2": "tag_value2",
+                    }
+                },
+                "processed_requests": {
+                    "value": 5,
+                    "tags": {
+                        "tag_name3": "tag_value3",
+                    }
+                },
+            }
         """
         raise NotImplementedError
 
