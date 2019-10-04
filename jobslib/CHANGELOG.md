@@ -1,5 +1,9 @@
 # Jobslib
 
+## [2.0.0a1] - 2019-10-04 08:06 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Changed
+- improve refreshing of the one instance lock
+
 ## [1.3.0] - 2019-09-23 12:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
 ### Added
 - JOB_STATUS_KILLED metric (#SDOP-533)
