@@ -12,8 +12,8 @@ class DummyLock(BaseLock):
     """
     Dummy lock implementation. Doesn't provide real locking, all methods
     always return :data:`True`. It is useful for development or if it is
-    not necessary run only one instance at the same time. For use of
-    :class:`DummyLock` write into **settings**:
+    not necessary run only one instance at the same time. For using the
+    :class:`DummyLock` configure backend in **settings**:
 
     .. code-block:: python
 
@@ -28,5 +28,5 @@ class DummyLock(BaseLock):
     def release(self):
         return True
 
-    def refresh(self, ttl=None):
+    def refresh(self):
         return True

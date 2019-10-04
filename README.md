@@ -38,3 +38,7 @@ argument) is created and launched.
 If you want to write your own task, inherit `BaseTask` class and override
 `BaseTask.task()` method. According to your requirements inherit and
 override `Config` and/or `Context` and set **settings** module.
+
+## Incompatible changes between 2.x and 1.x
+
+* removed `ttl` parameter from `jobslib.oneinstance.BaseLock.refresh` method

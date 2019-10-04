@@ -3,6 +3,8 @@
 ## [2.0.0a1] - 2019-10-04 08:06 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Changed
 - improve refreshing of the one instance lock
+### Incompatible changes between 2.x and 1.x
+- removed `ttl` parameter from `jobslib.oneinstance.BaseLock.refresh` method
 
 ## [1.3.0] - 2019-09-23 12:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
 ### Added

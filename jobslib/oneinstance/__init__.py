@@ -4,12 +4,11 @@ instance at the same time. The Lock is used when ``--one-instance`` command
 line argument is passed. When acquiring the lock is not possible, task is not
 run and process is slept for ``--sleep-interval`` seconds. Then ``runjob``
 will try to acquire lock again. If implementation of the lock supports TTL
-and you need make the lock longer, it is possible call
-:meth:`BaseLock.refresh` inside your :meth:`jobslib.BaseTask.task`. Otherwise
-task is aborted.
+and you need extend the lock, it is possible call :meth:`BaseLock.refresh`
+inside your :meth:`jobslib.BaseTask.task`. Otherwise task is aborted.
 
-:class:`BaseLock` is ancestor, it is abstract class which defines API,
-not locking functionality. Override this class if you want write own
+:class:`BaseLock` is ancestor, it is an abstract class which defines API,
+not locking functionality. Override the class if you want write own
 implementation of the lock.
 """
 
@@ -63,11 +62,10 @@ class BaseLock(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def refresh(self, ttl=None):
+    def refresh(self):
         """
-        Refresh existing lock. If *ttl* parameter (in seconfs) is omitted,
-        value from configuration will be used. Return :data:`True` if lock
-        has been successfuly refreshed, otherwise return :data:`False`.
+        Refresh existing lock. Return :data:`True` if lock has been
+        successfuly refreshed, otherwise return :data:`False`.
         """
         raise NotImplementedError
 
