@@ -4,6 +4,7 @@ lock. It is based on HashiCorp Consul, so lock is distributed among
 datacenters.
 """
 
+import collections.abc
 import logging
 import signal
 import os
@@ -178,10 +179,13 @@ class ConsulLock(BaseLock):
         raise OneInstanceWatchdogError
 
     def get_lock_owner_info(self):
-        unused_index, res = self.context.consul.kv.get(self.options.key)
-        if res is not None:
-            if res['Value'] is not None:
-                value = ujson.loads(res['Value'])
-                return "lock owner is {}, locked at {} UTC".format(
-                    value.get('fqdn'), value.get('time_utc'))
-        return "cannot get lock owner info"
+        owner_info = None
+        try:
+            unused_index, res = self.context.consul.kv.get(self.options.key)
+            if res is not None and res['Value'] is not None:
+                owner_info = ujson.loads(res['Value'])
+                if not isinstance(owner_info, collections.abc.Mapping):
+                    raise ValueError('Lock owner info is not a JSON Object')
+        except Exception:
+            logger.exception("Can't get lock owner info")
+        return owner_info

@@ -72,6 +72,7 @@ class BaseLock(abc.ABC):
     def get_lock_owner_info(self):
         """
         Return lock's owner information. It depends on implementation,
-        return :data:`None` if information is not available.
+        return :class:`dict` or :data:`None` if information is not
+        available.
         """
         return None

@@ -122,9 +122,14 @@ class BaseTask(object):
                     metrics.last_successful_run_timestamp(
                         timestamp=get_current_time())
                 else:
-                    self.logger.info(
-                        "Can't acquire lock (%s)",
-                        lock.get_lock_owner_info())
+                    lock_owner_info = lock.get_lock_owner_info()
+                    if lock_owner_info:
+                        self.logger.info(
+                            "Can't acquire lock (lock owner is %s, "
+                            "locked at %s UTC)", lock_owner_info.get('fqdn'),
+                            lock_owner_info.get('time_utc'))
+                    else:
+                        self.logger.info("Can't acquire lock")
                     keep_lock = False
 
                     duration = time.time() - start_time

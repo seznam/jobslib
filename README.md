@@ -42,3 +42,5 @@ override `Config` and/or `Context` and set **settings** module.
 ## Incompatible changes between 2.x and 1.x
 
 * removed `ttl` parameter from `jobslib.oneinstance.BaseLock.refresh` method
+* `jobslib.oneinstance.consul.ConsulLock.get_lock_owner_info` returns **dict**
+  or **None** if information of the lock owner is not available
