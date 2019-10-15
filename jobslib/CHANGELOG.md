@@ -1,6 +1,6 @@
 # Jobslib
 
-## [2.0.0a1] - 2019-10-04 08:06 - Jan Seifert <jan.seifert@firma.seznam.cz>
+## [2.0.0] - 2019-10-22 08:35 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Changed
 - improve refreshing of the one instance lock
 ### Fixed
