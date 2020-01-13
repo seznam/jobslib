@@ -110,7 +110,7 @@ class BaseTask(object):
                         self.logger.info("Task done")
                     finally:
                         if keep_lock and not self.context.config.run_once:
-                            lock.refresh(ttl=10)
+                            lock.refresh()
                         else:
                             lock.release()
 
@@ -173,8 +173,8 @@ class BaseTask(object):
                 sleep_start_time = time.time()
                 sleep_stop_time = sleep_start_time + sleep_time
                 while time.time() < sleep_stop_time:
-                    lock.refresh(ttl=30)
-                    time.sleep(15)
+                    lock.refresh()
+                    time.sleep(1)
                 lock.release()
             else:
                 self.logger.info(
