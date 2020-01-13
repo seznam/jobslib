@@ -1,5 +1,9 @@
 # Jobslib
 
+## [2.1.0rc1] - 2020-01-13 10:01 - Jiri Dokladal <jiri.dokladal@firma.seznam.cz>
+### Fixed
+- Removed ttl argument from lock refresh calls (#SDOP-1179)
+
 ## [2.0.0] - 2019-10-22 08:35 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Changed
 - improve refreshing of the one instance lock
