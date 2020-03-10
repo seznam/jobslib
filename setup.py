@@ -69,7 +69,7 @@ setup(
         'cached-property',
         'colored<1.3',
         'objectvalidator',
-        'python-consul',
+        'python-consul2',
         'ujson',
         'szn-doporucovani-influxdb-wrapper',
     ],

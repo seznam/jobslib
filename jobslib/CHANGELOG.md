@@ -1,5 +1,9 @@
 # Jobslib
 
+## [2.2.0] - 2020-03-10 09:00 - Jozef Juris
+### Changed
+- updated dependency to python-consul2 DOP-3220
+
 ## [2.1.0] - 2020-01-13 14:04 - Jiri Dokladal <jiri.dokladal@firma.seznam.cz>
 ### Fixed
 - Removed ttl argument from lock refresh calls (#SDOP-1179)
