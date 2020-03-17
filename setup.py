@@ -70,7 +70,7 @@ setup(
         'colored<1.3',
         'objectvalidator',
         'python-consul2',
-        'ujson',
+        'ujson<2',
         'szn-doporucovani-influxdb-wrapper',
     ],
     tests_require=[
