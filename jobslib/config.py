@@ -359,6 +359,16 @@ class ConsulConfig(ConfigGroup):
             return int(port)
         return self._settings.get('port')
 
+    @option(attrtype=float)
+    def timeout(self):
+        """
+        Http requests timeout in seconds.
+        """
+        timeout = os.environ.get('JOBSLIB_CONSUL_TIMEOUT')
+        if timeout:
+            return float(timeout)
+        return self._settings.get('timeout', 5.0)
+
 
 class MetricsConfig(ConfigGroup):
     @option

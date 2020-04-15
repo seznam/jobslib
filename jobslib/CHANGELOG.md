@@ -1,5 +1,9 @@
 # Jobslib
 
+## [2.4.0] - 2020-04-14 11:00 - Josef Florian <josef.florian@firma.seznam.cz>
+### Added
+- consul timeout (DOP-3335)
+
 ## [2.3.0] - 2020-03-17 15:46 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Changed
 - limit `ujson` dependency
