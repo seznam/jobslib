@@ -68,6 +68,7 @@ Example:
     CONSUL = {
         'host': '127.0.0.1',
         'port': 8500,
+        'timeout': 0.1,
     }
 
     LOGGING = {
