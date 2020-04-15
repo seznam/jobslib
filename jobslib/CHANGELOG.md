@@ -1,5 +1,9 @@
 # Jobslib
 
+## [2.5.0] - 2020-04-15 09:55 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Fixed
+- Do not exit with code 0 when error (SDOP-1363)
+
 ## [2.4.0] - 2020-04-14 11:00 - Josef Florian <josef.florian@firma.seznam.cz>
 ### Added
 - consul timeout (DOP-3335)
@@ -10,7 +14,7 @@
 
 ## [2.2.0] - 2020-03-10 09:00 - Jozef Juris
 ### Changed
-- updated dependency to python-consul2 DOP-3220
+- updated dependency to python-consul2 (DOP-3220)
 
 ## [2.1.0] - 2020-01-13 14:04 - Jiri Dokladal <jiri.dokladal@firma.seznam.cz>
 ### Fixed

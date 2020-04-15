@@ -143,19 +143,23 @@ class BaseTask(object):
                 metrics.job_duration_seconds(
                     status=BaseMetrics.JOB_STATUS_INTERRUPTED,
                     duration=duration)
+                if self.context.config.run_once:
+                    raise
             except Terminate:
                 self.logger.warning("Task has been terminated")
                 duration = time.time() - start_time
                 metrics.job_duration_seconds(
                     status=BaseMetrics.JOB_STATUS_KILLED,
                     duration=duration)
-                break
+                raise
             except Exception:
                 duration = time.time() - start_time
                 self.logger.exception("%s task failed", self.name)
                 metrics.job_duration_seconds(
                     status=BaseMetrics.JOB_STATUS_FAILED,
                     duration=duration)
+                if self.context.config.run_once:
+                    raise
 
             if self.context.config.run_once:
                 break
