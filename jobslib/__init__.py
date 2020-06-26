@@ -43,15 +43,13 @@ inherit and override :class:`Config` and/or :class:`Context` and set
 **settings** module.
 """
 
-import os.path
-import re
-
 from .cmdlineparser import argument
 from .config import Config, ConfigGroup, option
 from .context import Context, cached_property
 from .metrics import BaseMetrics
 from .oneinstance import OneInstanceWatchdogError
 from .tasks import BaseTask
+from .version import VERSION
 
 __all__ = [
     'argument', 'Config', 'ConfigGroup', 'option', 'Context',
@@ -59,25 +57,4 @@ __all__ = [
     'BaseTask'
 ]
 
-
-def _get_version():
-    filename = os.path.join(os.path.dirname(__file__), 'CHANGELOG.md')
-    with open(filename, 'rt') as fd:
-        pat = r"""
-            (?P<version>\d+\.\d+)         # minimum 'N.N'
-            (?P<extraversion>(?:\.\d+)*)  # any number of extra '.N' segments
-            (?:
-                (?P<prerel>[abc]|rc)      # 'a' = alpha, 'b' = beta
-                                          # 'c' or 'rc' = release candidate
-                (?P<prerelversion>\d+(?:\.\d+)*)
-            )?
-            (?P<postdev>(\.post(?P<post>\d+))?(\.dev(?P<dev>\d+))?)?
-        """
-        for line in fd:
-            match = re.search(pat, line, re.VERBOSE)
-            if match:
-                return match.group()
-    raise ValueError("Can't get version")
-
-
-__version__ = _get_version()
+__version__ = VERSION

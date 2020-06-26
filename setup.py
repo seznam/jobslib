@@ -1,70 +1,41 @@
-import os
-import re
-import sys
 
-from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
+from pathlib import Path
+from runpy import run_path
 
+from setuptools import setup
 
-def _get_version():
-    filename = os.path.join(os.path.dirname(__file__), 'jobslib', 'CHANGELOG.md')
-    with open(filename, 'rt') as fd:
-        pat = r"""
-            (?P<version>\d+\.\d+)         # minimum 'N.N'
-            (?P<extraversion>(?:\.\d+)*)  # any number of extra '.N' segments
-            (?:
-                (?P<prerel>[abc]|rc)      # 'a' = alpha, 'b' = beta
-                                          # 'c' or 'rc' = release candidate
-                (?P<prerelversion>\d+(?:\.\d+)*)
-            )?
-            (?P<postdev>(\.post(?P<post>\d+))?(\.dev(?P<dev>\d+))?)?
-        """
-        for line in fd:
-            match = re.search(pat, line, re.VERBOSE)
-            if match:
-                return match.group()
-    raise ValueError("Can't get version")
+description='Library for launching tasks in parallel environment'
 
+try:
+    with open('README.md', 'rt') as f:
+        long_description = f.read()
+except Exception:
+    long_description = description
 
-__version__ = _get_version()
-
-
-class PyTest(TestCommand):
-    user_options = [
-        ('pytest-args=', 'a', "Arguments to pass to py.test"),
-    ]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = []
-
-    def run_tests(self):
-        import pytest
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
-
+version = run_path(Path(__file__).parent / 'jobslib' / 'version.py')['VERSION']
 
 setup(
-    name="szn-recass-jobslib",
-    version=__version__,
-    author='Doporucovani team',
-    author_email="doporucovani-vyvoj@firma.seznam.cz",
-    description="Library for launching tasks in parallel environment",
-    long_description="Library for launching tasks in parallel environment",
-    long_description_content_type='text/plain',
-    url='https://gitlab.kancelar.seznam.cz/doporucovani/recass',
+    name='jobslib',
+    version=version,
+    author='Seznam.cz a.s.',
+    author_email='doporucovani-vyvoj@firma.seznam.cz',
+    description=description,
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    license='BSD',
+    url='https://gitlab.kancelar.seznam.cz/doporucovani/recass',  # TODO:
     classifiers=[
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Operating System :: OS Independent',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     platforms=['any'],
-    packages=find_packages(include=['jobslib*']),
-    include_package_data=True,
-    zip_safe=False,
+    packages=['jobslib'],
+    zip_safe=True,
     install_requires=[
         'cached-property',
         'colored<1.3',
@@ -73,13 +44,6 @@ setup(
         'ujson<2',
         'szn-doporucovani-influxdb-wrapper',
     ],
-    tests_require=[
-        'pytest',
-    ],
-    test_suite='tests',
-    cmdclass={
-        'test': PyTest,
-    },
     entry_points={
         'console_scripts': [
             'runjob = jobslib.main:main',
