@@ -68,7 +68,8 @@ class BaseMetrics(abc.ABC):
         """
         raise NotImplementedError
 
-    def errors_total(self, type, remote_app="", remote_app_method="", tags=None):
+    def errors_total(
+            self, type, remote_app="", remote_app_method="", tags=None):
         """Errors metric.
         :param type: Error type as string
         :param remote_app: For errors on outgoing communication.
@@ -90,9 +91,11 @@ class BaseMetrics(abc.ABC):
 
         self.push_monitoring_metrics_with_tags(metrics=metric)
 
-    def request_duration_seconds(self, endpoint, type, status_code, method, amount, tags=None):
+    def request_duration_seconds(
+            self, endpoint, type, status_code, method, amount, tags=None):
         """Incoming request duration
-        :param endpoint: Incoming endpoint (ex.: /foo for HTTP, foo.bar.baz for RPC)
+        :param endpoint: Incoming endpoint (ex.: /foo for HTTP,
+            foo.bar.baz for RPC)
         :param type: Request type (HTTP, XMLRPC, ...)
         :param status_code: Status code of request
         :param method: Request method (GET, POST, ..)
@@ -114,11 +117,15 @@ class BaseMetrics(abc.ABC):
 
         self.push_monitoring_metrics_with_tags(metrics=metric)
 
-    def outgoing_request_duration_seconds(self, method, remote_app, endpoint, type, status_code, amount, tags=None):
+    def outgoing_request_duration_seconds(
+            self, method, remote_app, endpoint, type, status_code,
+            amount, tags=None):
         """Outgoing request duration
         :param method: Request method (GET, POST, ..)
-        :param remote_app: Remote app name for DB host is fine as remote_app id.
-        :param endpoint: Incoming endpoint (ex.: /foo for HTTP, foo.bar.baz for RPC)
+        :param remote_app: Remote app name for DB host is fine
+            as remote_app id.
+        :param endpoint: Incoming endpoint (ex.: /foo for HTTP,
+            foo.bar.baz for RPC)
         :param type: Request type (HTTP, XMLRPC, ...)
         :param status_code: Status code of request
         :param amount: Duration.

@@ -27,7 +27,7 @@ def test_argument_parser():
     parser.prog = 'foo'
     with mock.patch.object(parser, 'print_help') as m_print_help:
         with mock.patch.object(parser, 'exit') as m_exit:
-                parser.error('something is wrong')
+            parser.error('something is wrong')
     expected_message = (
         '\n' + colored.fg('red') + 'foo: error: something is wrong' +
         colored.attr('reset') + '\n')

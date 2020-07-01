@@ -6,7 +6,7 @@ from runpy import run_path
 
 from setuptools import setup
 
-description='Library for launching tasks in parallel environment'
+description = 'Library for launching tasks in parallel environment'
 
 try:
     with open('README.md', 'rt') as f:
