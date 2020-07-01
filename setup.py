@@ -1,4 +1,6 @@
 
+import sys
+
 from pathlib import Path
 from runpy import run_path
 
@@ -12,7 +14,10 @@ try:
 except Exception:
     long_description = description
 
-version = run_path(Path(__file__).parent / 'jobslib' / 'version.py')['VERSION']
+version_file = Path(__file__).parent / 'jobslib' / 'version.py'
+if sys.version_info < (3, 6):
+    version_file = str(version_file)
+version = run_path(version_file)['VERSION']
 
 setup(
     name='jobslib',
