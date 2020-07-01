@@ -1,5 +1,7 @@
 # jobslib
 
+## Introduction
+
 Library for launching tasks in parallel environment. Task is launched from
 command line using `runjob` command:
 
@@ -38,6 +40,17 @@ argument) is created and launched.
 If you want to write your own task, inherit `BaseTask` class and override
 `BaseTask.task()` method. According to your requirements inherit and
 override `Config` and/or `Context` and set **settings** module.
+
+## Testing
+
+`tox` is used for testing:
+
+    pip install tox
+    tox
+
+## License
+
+3-clause BSD
 
 ## Incompatible changes between 2.x and 1.x
 
