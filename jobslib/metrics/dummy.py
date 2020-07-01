@@ -1,3 +1,8 @@
+"""
+Module :mod:`jobslib.metrics.dummy` provides :class:`DummyMetrics`
+writer.
+"""
+
 from . import BaseMetrics
 
 __all__ = ['DummyMetrics']
@@ -16,8 +21,5 @@ class DummyMetrics(BaseMetrics):
         }
     """
 
-    def push_monitoring_metrics(self, metrics, timestamp=None):
-        pass
-
-    def push_monitoring_metrics_with_tags(self, metrics, timestamp=None):
+    def push(self, metrics):
         pass

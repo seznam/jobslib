@@ -2,6 +2,7 @@
 Module :module:`shelter.tasks` provides an ancestor class for writing tasks.
 """
 
+import enum
 import logging
 import signal
 import sys
@@ -9,10 +10,18 @@ import time
 
 from .exceptions import Terminate
 from .oneinstance import OneInstanceWatchdogError
-from .metrics import BaseMetrics
 from .time import get_current_time
 
 __all__ = ['BaseTask']
+
+
+class JobStatus(enum.Enum):
+    UNKNOWN = 'unknown'
+    SUCCEEDED = 'succeeded'
+    FAILED = 'failed'
+    PENDING = 'pending'
+    INTERRUPTED = 'interrupted'
+    KILLED = 'killed'
 
 
 class BaseTask(object):
@@ -91,8 +100,10 @@ class BaseTask(object):
         metrics = self.context.metrics
 
         while 1:
-            keep_lock = self.context.config.keep_lock
             start_time = time.time()
+            last_successful_run_timestamp = None
+            job_status = JobStatus.UNKNOWN
+            keep_lock = self.context.config.keep_lock
 
             try:
                 if lock.acquire():
@@ -115,12 +126,8 @@ class BaseTask(object):
                             lock.release()
 
                     liveness.write()
-                    duration = time.time() - start_time
-                    metrics.job_duration_seconds(
-                        status=BaseMetrics.JOB_STATUS_SUCCEEDED,
-                        duration=duration)
-                    metrics.last_successful_run_timestamp(
-                        timestamp=get_current_time())
+                    job_status = JobStatus.SUCCEEDED
+                    last_successful_run_timestamp = get_current_time()
                 else:
                     lock_owner_info = lock.get_lock_owner_info()
                     if lock_owner_info:
@@ -131,35 +138,37 @@ class BaseTask(object):
                     else:
                         self.logger.info("Can't acquire lock")
                     keep_lock = False
-
-                    duration = time.time() - start_time
-                    metrics.job_duration_seconds(
-                        status=BaseMetrics.JOB_STATUS_PENDING,
-                        duration=duration)
+                    job_status = JobStatus.PENDING
             except OneInstanceWatchdogError:
-                duration = time.time() - start_time
-                self.logger.exception(
-                    "Lock has expired after %d seconds", duration)
-                metrics.job_duration_seconds(
-                    status=BaseMetrics.JOB_STATUS_INTERRUPTED,
-                    duration=duration)
+                dur = time.time() - start_time
+                self.logger.exception("Lock has expired after %d seconds", dur)
+                job_status = JobStatus.INTERRUPTED
                 if self.context.config.run_once:
                     raise
             except Terminate:
                 self.logger.warning("Task has been terminated")
-                duration = time.time() - start_time
-                metrics.job_duration_seconds(
-                    status=BaseMetrics.JOB_STATUS_KILLED,
-                    duration=duration)
+                job_status = JobStatus.KILLED
                 raise
             except Exception:
-                duration = time.time() - start_time
                 self.logger.exception("%s task failed", self.name)
-                metrics.job_duration_seconds(
-                    status=BaseMetrics.JOB_STATUS_FAILED,
-                    duration=duration)
+                job_status = JobStatus.FAILED
                 if self.context.config.run_once:
                     raise
+            finally:
+                metrics_data = {
+                    'job_duration_seconds': {
+                        'value': time.time() - start_time,
+                        'tags': {
+                            'status': job_status.value,
+                            'type': 'task',
+                        },
+                    },
+                }
+                if last_successful_run_timestamp:
+                    metrics_data['last_successful_run_timestamp'] = {
+                        'value': get_current_time(),
+                    }
+                metrics.push(metrics_data)
 
             if self.context.config.run_once:
                 break
