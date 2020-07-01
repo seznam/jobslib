@@ -5,11 +5,10 @@ datacenters.
 """
 
 import collections.abc
+import json
 import logging
 import signal
 import os
-
-import ujson
 
 from objectvalidator import option
 
@@ -120,7 +119,7 @@ class ConsulLock(BaseLock):
             ttl=self.options.ttl, lock_delay=self.options.lock_delay)
         try:
             res = self.context.consul.kv.put(
-                self.options.key, ujson.dumps(record), acquire=session_id)
+                self.options.key, json.dumps(record), acquire=session_id)
         except Exception:
             logger.exception("Can't acquire lock")
         else:
@@ -183,7 +182,7 @@ class ConsulLock(BaseLock):
         try:
             unused_index, res = self.context.consul.kv.get(self.options.key)
             if res is not None and res['Value'] is not None:
-                owner_info = ujson.loads(res['Value'])
+                owner_info = json.loads(res['Value'])
                 if not isinstance(owner_info, collections.abc.Mapping):
                     raise ValueError('Lock owner info is not a JSON Object')
         except Exception:

@@ -3,10 +3,9 @@ Module :module:`jobslib.config` provides base class which encapsulates
 configuration.
 """
 
+import json
 import logging.config
 import os
-
-import ujson
 
 from objectvalidator import option, OptionsContainer
 
@@ -145,7 +144,7 @@ class Config(OptionsContainer):
         """
         logging_cfg = os.environ.get('JOBSLIB_LOGGING')
         if logging_cfg:
-            return ujson.loads(logging_cfg)
+            return json.loads(logging_cfg)
         return getattr(self._settings, 'LOGGING', BASE_LOGGING)
 
     @option

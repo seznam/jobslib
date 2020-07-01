@@ -46,7 +46,6 @@ setup(
         'colored<1.3',
         'objectvalidator',
         'python-consul2',
-        'ujson<2',
         'szn-doporucovani-influxdb-wrapper',
     ],
     entry_points={

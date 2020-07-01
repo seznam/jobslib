@@ -3,10 +3,9 @@ Module :mod:`jobslib.liveness.consul` provides :class:`ConsulLiveness`
 writer.
 """
 
+import json
 import logging
 import os
-
-import ujson
 
 from objectvalidator import option
 
@@ -53,7 +52,7 @@ class ConsulLiveness(BaseLiveness):
     def write(self):
         try:
             state = self.get_state()
-            data = ujson.dumps(state)
+            data = json.dumps(state)
             if not self.context.consul.kv.put(self.options.key, data):
                 logger.error("Can't write liveness state")
         except Exception:
@@ -64,7 +63,7 @@ class ConsulLiveness(BaseLiveness):
             unused_index, data = self.context.consul.kv.get(self.options.key)
             if data is None:
                 raise KeyError(self.options.key)
-            record = ujson.loads(data['Value'])
+            record = json.loads(data['Value'])
         except Exception:
             logger.exception("Can't read liveness state")
             raise
