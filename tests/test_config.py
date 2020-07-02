@@ -2,12 +2,15 @@
 import sys
 import collections
 
+from unittest import mock
+
 import pytest
 
 from jobslib import BaseTask
 from jobslib.config import Config, ConfigGroup, option
 from jobslib.context import Context
 from jobslib.liveness.consul import ConsulLiveness
+from jobslib.metrics.influxdb import InfluxDBMetrics
 from jobslib.oneinstance.consul import ConsulLock
 
 
@@ -75,9 +78,22 @@ def test_config(run_interval, sleep_interval):
             }
         }
 
+        METRICS = {
+            'backend': 'jobslib.metrics.influxdb.InfluxDBMetrics',
+        }
+
         CONSUL = {
             'host': '192.168.1.100',
             'port': 1234,
+            'timeout': 5.0,
+        }
+
+        INFLUXDB = {
+            'host': '192.168.1.101',
+            'port': 5678,
+            'username': 'root',
+            'password': 'secret',
+            'database': 'testdb',
         }
 
     ArgsParser = collections.namedtuple('ArgsParser', [
@@ -89,7 +105,7 @@ def test_config(run_interval, sleep_interval):
         sleep_interval=sleep_interval, keep_lock=True,
         task_cls='mock_task.TaskClassMockClass')
 
-    config = Config(settings, args_parser)
+    config = Config(settings, args_parser, mock.Mock())
 
     assert config.logging == settings.LOGGING
     assert config.context_class is Context
@@ -104,6 +120,13 @@ def test_config(run_interval, sleep_interval):
     assert config.keep_lock is True
     assert config.liveness.backend is ConsulLiveness
     assert config.liveness.options.key == 'jobs/example/oneinstance/liveness'
+    assert config.metrics.backend is InfluxDBMetrics
     assert config.consul.scheme == 'http'
     assert config.consul.host == '192.168.1.100'
     assert config.consul.port == 1234
+    assert config.consul.timeout == 5.0
+    assert config.influxdb.host == '192.168.1.101'
+    assert config.influxdb.port == 5678
+    assert config.influxdb.username == 'root'
+    assert config.influxdb.password == 'secret'
+    assert config.influxdb.database == 'testdb'

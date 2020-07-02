@@ -139,7 +139,7 @@ def main(args=None):
             "--sleep-interval and --run-interval may not be used together")
 
     # Launch task
-    config = config_cls(settings, cmdline_args)
+    config = config_cls(settings, cmdline_args, task_cls)
     task = task_cls(config)
     task()
 

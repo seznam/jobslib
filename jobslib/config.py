@@ -110,9 +110,10 @@ class Config(OptionsContainer):
         'http://example.com/api/v1/auth'
     """
 
-    def __init__(self, settings, args_parser):
+    def __init__(self, settings, args_parser, task_cls):
         self._settings = settings
         self._args_parser = args_parser
+        self._task_cls = task_cls
         super().__init__()
 
     def __repr__(self):
@@ -164,24 +165,7 @@ class Config(OptionsContainer):
         """
         Task class, subclass of the :class:`~jobslib.BaseTask`.
         """
-        # TODO: refactor in the future. Import inside method is not nice,
-        # but this solution doesn't break API. Some task's class attributes
-        # could be useful (e.g. name for metrics/InfluxDB support).
-        from .main import JOBSLIB_TASKS, get_task_cls
-        if self._args_parser.task_cls in JOBSLIB_TASKS:
-            task_cls = get_task_cls(JOBSLIB_TASKS[self._args_parser.task_cls])
-        else:
-            task_cls = get_task_cls(self._args_parser.task_cls)
-        return task_cls
-
-    @option
-    def one_instance(self):
-        """
-        Configuration of the one instance lock. Instance of the
-        :class:`OneInstanceConfig`.
-        """
-        return OneInstanceConfig(
-            getattr(self._settings, 'ONE_INSTANCE', {}), self._args_parser)
+        return self._task_cls
 
     @option
     def run_once(self):
@@ -243,6 +227,15 @@ class Config(OptionsContainer):
         return getattr(self._settings, 'KEEP_LOCK', False)
 
     @option
+    def one_instance(self):
+        """
+        Configuration of the one instance lock. Instance of the
+        :class:`OneInstanceConfig`.
+        """
+        return OneInstanceConfig(
+            getattr(self._settings, 'ONE_INSTANCE', {}), self._args_parser)
+
+    @option
     def liveness(self):
         """
         Configuration of the health state writer. Instance of the
@@ -250,6 +243,11 @@ class Config(OptionsContainer):
         """
         return LivenessConfig(
             getattr(self._settings, 'LIVENESS', {}), self._args_parser)
+
+    @option
+    def metrics(self):
+        return MetricsConfig(
+            getattr(self._settings, 'METRICS', {}), self._args_parser)
 
     @option
     def consul(self):
@@ -261,9 +259,13 @@ class Config(OptionsContainer):
             getattr(self._settings, 'CONSUL', {}), self._args_parser)
 
     @option
-    def metrics(self):
-        return MetricsConfig(
-            getattr(self._settings, 'METRICS', {}), self._args_parser)
+    def influxdb(self):
+        """
+        Configuration of the connection arguments to InfluxDb.
+        Instance of the :class:`InfluxDbConfig`.
+        """
+        return InfluxDbConfig(
+            getattr(self._settings, 'INFLUXDB', {}), self._args_parser)
 
 
 class OneInstanceConfig(ConfigGroup):
@@ -324,6 +326,32 @@ class LivenessConfig(ConfigGroup):
             self._settings.get('options', {}), self._args_parser)
 
 
+class MetricsConfig(ConfigGroup):
+    """
+    Configuration of the metrics writer.
+    """
+
+    @option
+    def backend(self):
+        """
+        Metrics implementation class. If value is not defined, default
+        value ``jobslib.liveness.dummy.DummyMetrics`` is used.
+        """
+        cls_name = os.environ.get('JOBSLIB_METRICS_BACKEND')
+        if not cls_name:
+            cls_name = self._settings.get(
+                'backend', 'jobslib.metrics.dummy.DummyMetrics')
+        return import_object(cls_name)
+
+    @option
+    def options(self):
+        """
+        Constructor's arguments of the metrics implementation class.
+        """
+        return self.backend.OptionsConfig(
+            self._settings.get('options', {}), self._args_parser)
+
+
 class ConsulConfig(ConfigGroup):
     """
     Configuration of the connection to HashiCorp Consul, see `Consul
@@ -369,16 +397,54 @@ class ConsulConfig(ConfigGroup):
         return self._settings.get('timeout', 5.0)
 
 
-class MetricsConfig(ConfigGroup):
-    @option
-    def backend(self):
-        cls_name = os.environ.get('JOBSLIB_METRICS_BACKEND')
-        if not cls_name:
-            cls_name = self._settings.get(
-                'backend', 'jobslib.metrics.dummy.DummyMetrics')
-        return import_object(cls_name)
+class InfluxDbConfig(ConfigGroup):
 
-    @option
-    def options(self):
-        return self.backend.OptionsConfig(
-            self._settings.get('options', {}), self._args_parser)
+    @option(required=True, attrtype=str)
+    def host(self):
+        """
+        InfluxDB host
+        """
+        host = os.environ.get('JOBSLIB_METRICS_INFLUXDB_HOST')
+        if host:
+            return host
+        return self._settings.get('host', 'localhost')
+
+    @option(attrtype=int)
+    def port(self):
+        """
+        InfluxDB port
+        """
+        port = os.environ.get('JOBSLIB_METRICS_INFLUXDB_PORT')
+        if port:
+            return int(port)
+        return self._settings.get('port', 8086)
+
+    @option(required=True, attrtype=str)
+    def username(self):
+        """
+        InfluxDB username
+        """
+        username = os.environ.get('JOBSLIB_METRICS_INFLUXDB_USERNAME')
+        if username:
+            return username
+        return self._settings.get('username', "root")
+
+    @option(required=True, attrtype=str)
+    def password(self):
+        """
+        InfluxDB password
+        """
+        password = os.environ.get('JOBSLIB_METRICS_INFLUXDB_PASSWORD')
+        if password:
+            return password
+        return self._settings.get('password', "root")
+
+    @option(attrtype=str)
+    def database(self):
+        """
+        InfluxDB database
+        """
+        database = os.environ.get('JOBSLIB_METRICS_INFLUXDB_DBNAME')
+        if database:
+            return database
+        return self._settings.get('database')

@@ -44,9 +44,9 @@ setup(
     install_requires=[
         'cached-property',
         'colored<1.3',
+        'influxdb',
         'objectvalidator',
         'python-consul2',
-        'szn-doporucovani-influxdb-wrapper',
     ],
     entry_points={
         'console_scripts': [

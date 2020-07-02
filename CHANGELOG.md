@@ -3,6 +3,7 @@
 ## [3.0.0] - 2020-06-26 15:18 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Added
 - `tox` configuration (DOP-3793)
+- Simple influxdb metrisc backend (DOP-3793)
 ### Changed
 - use `json` serializer from stdlib (DOP-3793)
 ### Removed

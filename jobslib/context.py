@@ -7,6 +7,7 @@ import socket
 
 from cached_property import cached_property
 from consul import Consul
+from influxdb.client import InfluxDBClient
 
 __all__ = ['Context']
 
@@ -93,6 +94,10 @@ class Context(object):
 
     @cached_property
     def metrics(self):
+        """
+        Metrics writer, instance of the
+        :class:`jobslib.liveness.BaseMetrics` descendant.
+        """
         return self._config.metrics.backend(
             self, self._config.metrics.options)
 
@@ -105,3 +110,14 @@ class Context(object):
             k: v for k, v in self._config.consul.as_kwargs.items()
             if v is not None}
         return Consul(**kwargs)
+
+    @cached_property
+    def influxdb(self):
+        """
+        InfluxDb client, instance of the
+        :class:`influxdb.client.InfluxDBClient`.
+        """
+        kwargs = {
+            k: v for k, v in self._config.influxdb.as_kwargs.items()
+            if v is not None}
+        return InfluxDBClient(**kwargs)
