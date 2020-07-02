@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 from runpy import run_path
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 description = 'Library for launching tasks in parallel environment'
 
@@ -39,7 +39,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     platforms=['any'],
-    packages=['jobslib'],
+    packages=find_packages(),
     zip_safe=True,
     install_requires=[
         'cached-property',
