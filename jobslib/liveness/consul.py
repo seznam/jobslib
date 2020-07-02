@@ -26,6 +26,12 @@ class ConsulLiveness(BaseLiveness):
 
     .. code-block:: python
 
+        CONSUL = {
+            'host': 'hostname',
+            'port': 8500,
+            'timeout': 1.0,
+        }
+
         LIVENESS = {
             'backend': 'jobslib.liveness.consul.ConsulLiveness',
             'options': {

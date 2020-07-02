@@ -44,12 +44,18 @@ class ConsulLock(BaseLock):
 
     .. code-block:: python
 
+        CONSUL = {
+            'host': 'hostname',
+            'port': 8500,
+            'timeout': 1.0,
+        }
+
         ONE_INSTANCE = {
             'backend': 'jobslib.oneinstance.consul.ConsulLock',
             'options': {
                 'key': 'jobs/example/lock',
-                'ttl': 60,
-                'lock_delay': 15,
+                'ttl': 60.0,
+                'lock_delay': 15.0,
             },
         }
     """
