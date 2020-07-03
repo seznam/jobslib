@@ -22,7 +22,7 @@ class ConsulLiveness(BaseLiveness):
     Consul liveness implementation. Provides exporting informations about
     health state into Consul's key/value storage.
 
-    For use of :class:`ConsulLiveness` write into **settings**:
+    For use of :class:`ConsulLiveness` write into :mod:`settings`:
 
     .. code-block:: python
 

@@ -12,7 +12,7 @@ class DummyLiveness(BaseLiveness):
     """
     Dummy liveness implementation. Doesn't provide real functionality.
     It is useful for development or if it is not necessary liveness. For
-    use of :class:`DummyLiveness` write into **settings**:
+    use of :class:`DummyLiveness` write into :mod:`settings`:
 
     .. code-block:: python
 

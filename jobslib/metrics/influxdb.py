@@ -18,7 +18,7 @@ class InfluxDBMetrics(BaseMetrics):
     """
     InfluxDB metrics implementation.
 
-    For use of :class:`InfluxDBMetrics` write into **settings**:
+    For use of :class:`InfluxDBMetrics` write into :mod:`settings`:
 
     .. code-block:: python
 

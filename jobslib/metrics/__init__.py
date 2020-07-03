@@ -28,8 +28,8 @@ class BaseMetrics(abc.ABC):
     @abc.abstractmethod
     def push(self, metrics):
         """
-        Push metrics. *metrics* are :class:`dict`, where key is metric
-        name and value is :class:`dict` structure containing value and
+        Push metrics. *metrics* are :class:`!dict`, where key is metric
+        name and value is :class:`!dict` structure containing value and
         optionally tags.
 
         .. code-block:: python

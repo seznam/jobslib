@@ -48,31 +48,31 @@ class BaseLock(abc.ABC):
     @abc.abstractmethod
     def acquire(self):
         """
-        Acquire a lock. Return :data:`True` if lock has been successfuly
-        acquired, otherwise return :data:`False`.
+        Acquire a lock. Return :data:`!True` if lock has been successfuly
+        acquired, otherwise return :data:`!False`.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def release(self):
         """
-        Release existing lock. Return :data:`True` if lock has been
-        successfuly released, otherwise return :data:`False`.
+        Release existing lock. Return :data:`!True` if lock has been
+        successfuly released, otherwise return :data:`!False`.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def refresh(self):
         """
-        Refresh existing lock. Return :data:`True` if lock has been
-        successfuly refreshed, otherwise return :data:`False`.
+        Refresh existing lock. Return :data:`!True` if lock has been
+        successfuly refreshed, otherwise return :data:`!False`.
         """
         raise NotImplementedError
 
     def get_lock_owner_info(self):
         """
         Return lock's owner information. It depends on implementation,
-        return :class:`dict` or :data:`None` if information is not
+        return :class:`!dict` or :data:`!None` if information is not
         available.
         """
         return None

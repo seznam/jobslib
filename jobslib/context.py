@@ -1,5 +1,5 @@
 """
-Module :module:`jobslib.context` provides base class which encapsulates
+Module :mod:`jobslib.context` provides base class which encapsulates
 necessary resources (configuration, database connection, …) for tasks.
 """
 
@@ -34,7 +34,7 @@ class Context(object):
             def auth_service(self):
                 return ServerProxy(uri=self.config.auth_service.uri)
 
-    And write into **settings** module:
+    And write into :mod:`settings` module:
 
     .. code-block:: python
 
@@ -70,7 +70,7 @@ class Context(object):
     @cached_property
     def fqdn(self):
         """
-        Fully qualified domain name of the local machine as :class:`str`.
+        Fully qualified domain name of the local machine as :class:`!str`.
         """
         return socket.getfqdn()
 

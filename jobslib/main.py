@@ -21,7 +21,7 @@ JOBSLIB_TASKS = {
 
 def get_app_settings(cmdline_args):
     """
-    Return **settings** module of the application according to either
+    Return :mod:`settings` module of the application according to either
     command line argument **-s/--settings** or **JOBSLIB_SETTINGS_MODULE**
     environment variable.
     """

@@ -52,8 +52,8 @@ class BaseLiveness(abc.ABC):
 
     def check(self, max_age):
         """
-        Check liveness and return :data:`True` when liveness timestamp is
-        younger than *max_age*, :data:`False` when liveness timestamp is
+        Check liveness and return :data:`!True` when liveness timestamp is
+        younger than *max_age*, :data:`!False` when liveness timestamp is
         older than *max_age*.
         """
         record = self.read()
@@ -64,7 +64,7 @@ class BaseLiveness(abc.ABC):
 
     def get_state(self):
         """
-        Return health state as a :class:`str`.
+        Return health state as a :class:`!str`.
         """
         timestamp = get_current_time()
         return {

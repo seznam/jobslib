@@ -35,12 +35,12 @@ class ConsulLock(BaseLock):
     .. warning::
 
         :class:`ConsulLock` uses :mod:`signal` and :data:`signal.SIGALRM`
-        for TTL mechanism, so don't use :data:`signal.SIGALRM` in your
+        for TTL mechanism, so don't use :data:`~!signal.SIGALRM` in your
         task. And don't use multiple instances of the :class:`ConsulLock`
-        at the same time, becase **SIGALRM** can't be shared among
-        multiple instances.
+        at the same time, becase :data:`~!signal.SIGALRM` can't be shared
+        among multiple instances.
 
-    For using the :class:`ConsulLock` configure backend in **settings**:
+    For using the :class:`ConsulLock` configure backend in :mod:`settings`:
 
     .. code-block:: python
 

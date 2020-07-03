@@ -1,5 +1,5 @@
 """
-Module :module:`jobslib.config` provides base class which encapsulates
+Module :mod:`jobslib.config` provides base class which encapsulates
 configuration.
 """
 
@@ -44,8 +44,8 @@ class ConfigGroup(OptionsContainer):
 class Config(OptionsContainer):
     """
     Class which encapsulates configuration. It joins configuration values
-    from **settings** module and from command line. *settings* is Python
-    module defined by either ``JOBSLIB_SETTINGS_MODULE`` environment
+    from :mod:`settings` module and from command line. :mod:`settings` is
+    Python module defined by either ``JOBSLIB_SETTINGS_MODULE`` environment
     variable or ``-s/--settings`` command line argument. *args_parser* is
     instance of the :class:`argparse.Namespace`. Both values are available
     on class, *settings* as a **_settings** attribute, *args_parser* as a
@@ -90,7 +90,7 @@ class Config(OptionsContainer):
                 return AuthServiceConfig(
                     self._settings['AUTH_SERVICE'], self._args_parser)
 
-    And write into **settings** module:
+    And write into :mod:`settings` module:
 
     .. code-block:: python
 
@@ -170,7 +170,7 @@ class Config(OptionsContainer):
     @option
     def run_once(self):
         """
-        :class:`bool` that indicates that task will be run only once.
+        :class:`!bool` that indicates that task will be run only once.
         """
         if self._args_parser.run_once is not None:
             return self._args_parser.run_once
@@ -217,7 +217,7 @@ class Config(OptionsContainer):
     @option
     def keep_lock(self):
         """
-        :class:`bool` that indicates that lock will be kept during sleeping.
+        :class:`!bool` that indicates that lock will be kept during sleeping.
         """
         if self._args_parser.keep_lock is not None:
             return self._args_parser.keep_lock
@@ -335,7 +335,7 @@ class MetricsConfig(ConfigGroup):
     def backend(self):
         """
         Metrics implementation class. If value is not defined, default
-        value ``jobslib.liveness.dummy.DummyMetrics`` is used.
+        value ``jobslib.metrics.dummy.DummyMetrics`` is used.
         """
         cls_name = os.environ.get('JOBSLIB_METRICS_BACKEND')
         if not cls_name:

@@ -11,9 +11,9 @@ __all__ = ['DummyLock']
 class DummyLock(BaseLock):
     """
     Dummy lock implementation. Doesn't provide real locking, all methods
-    always return :data:`True`. It is useful for development or if it is
+    always return :data:`!True`. It is useful for development or if it is
     not necessary run only one instance at the same time. For using the
-    :class:`DummyLock` configure backend in **settings**:
+    :class:`DummyLock` configure backend in :mod:`settings`:
 
     .. code-block:: python
 
