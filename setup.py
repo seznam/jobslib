@@ -28,12 +28,13 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     license='BSD',
-    url='https://gitlab.kancelar.seznam.cz/doporucovani/recass',  # TODO:
+    # url='https://github.com/seznam/jobslib.git',
     classifiers=[
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
