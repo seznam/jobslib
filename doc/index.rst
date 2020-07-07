@@ -5,23 +5,28 @@ Jobslib
 Introduction
 ------------
 
-**Jobslib** is a library for launching tasks in parallel environment.
-For example, you have two datacenters, in both is run server with some task,
-however only one task may be active at one time. Main features are:
+**Jobslib** is a library for launching Python tasks in parallel environment.
+Our use-case is. We have two datacenters (in near future three datacenters),
+in each datacenter is run server with some task. However only one task may
+be active at one time across all datacenters. **Jobslib** solves this problem.
+
+Main features are:
 
 - Ancestor for class which holds configuration.
 - Ancestor for container for shared resources, e.g. database connection.
 - Ancestor for class with task.
-- Configurable either from configuration file or from environmets variables.
-- Liveness – for exporting informations about health state of the task.
-  Includes implementation which uses `Consul <https://www.consul.io/>`_.
-- Metrics – for exporting metrics. Includes implementation which uses
-  `InfluxDB <https://www.influxdata.com/>`_.
-- One Instance – lock which allowes only one running instance at the same time.
-  Includes implementation which uses `Consul <https://www.consul.io/>`_.
+- Configurable either from configuration file or from environmet variables.
+- Liveness – mechanism for exporting informations about health state of
+  the task. Jobslib includes implementation which uses
+  `Consul <https://www.consul.io/>`_.
+- Metrics – mechanism for exporting metrics. Jobslib includes implementation
+  which uses `InfluxDB <https://www.influxdata.com/>`_.
+- One Instance Lock – lock, which allowes only one running instance at the
+  same time. Jobslib includes implementation which uses
+  `Consul <https://www.consul.io/>`_.
 
-Instalation and quick start
----------------------------
+Instalation
+-----------
 
 Installation from source code:
 
@@ -45,6 +50,9 @@ Installation from PyPi:
     $ cd jobslib
     $ pip install tox
     $ tox --skip-missing-interpreters
+
+Usage
+-----
 
 Task is launched from command line using :command:`runjob` command:
 
@@ -88,9 +96,25 @@ Finally, when both classes are successfuly initialized, instance of the task
 argument) is created and launched.
 
 If you want to write your own task, inherit :class:`jobslib.BaseTask` class
-and override :meth:`jobslib.BaseTask.task` method. According to your
-requirements inherit and override :class:`jobslib.Config` and/or
-:class:`jobslib.Context` and set :mod:`!settings` module:
+and override :meth:`jobslib.BaseTask.task` method:
+
+.. code-block:: python
+    :caption: helloworld/task.py
+
+    import sys
+
+    from jobslib import BaseTask
+
+    class HelloWorld(BaseTask):
+
+        name = 'helloworld'
+        description = 'prints hello world'
+
+        def task(self):
+            sys.stdout.write('Hello World!\n')
+            sys.stdout.flush()
+
+Configure your task in :mod:`!settings` module:
 
 .. code-block:: python
     :caption: helloworld/settings.py
@@ -121,19 +145,8 @@ requirements inherit and override :class:`jobslib.Config` and/or
         },
     }
 
-.. code-block:: python
-    :caption: helloworld/task.py
-
-    from jobslib import BaseTask
-
-    class HelloWorld(BaseTask):
-
-    name = 'helloworld'
-    description = 'prints hello world'
-
-    def task(self):
-        sys.stdout.write('Hello World!\n')
-        sys.stdout.flush()
+Optionally you can override :class:`jobslib.Config` and/or
+:class:`jobslib.Context`. Finally run your task:
 
 .. code-block:: console
 
@@ -155,4 +168,6 @@ Source code and license
 
 Source codes are available on GitHub `https://github.com/seznam/jobslib
 <https://github.com/seznam/jobslib>`_ under the `3-clause BSD license
-<https://opensource.org/licenses/BSD-3-Clause>`_.
+<https://opensource.org/licenses/BSD-3-Clause>`_. `Semantic Versioning
+<https://semver.org/>`_ and `Keep a Changelog
+<https://keepachangelog.com/en/1.0.0/>`_ for changelog is used.
