@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 description = 'Library for launching tasks in parallel environment'
 
 try:
-    with open('README.md', 'rt') as f:
+    with open('README.rst', 'rt') as f:
         long_description = f.read()
 except Exception:
     long_description = description
@@ -26,7 +26,7 @@ setup(
     author_email='doporucovani-vyvoj@firma.seznam.cz',
     description=description,
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type='text/x-rst',
     license='BSD',
     # url='https://github.com/seznam/jobslib.git',
     classifiers=[

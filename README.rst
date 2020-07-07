@@ -1,59 +1,93 @@
-# jobslib
 
-## Introduction
+jobslib
+=======
 
-Library for launching tasks in parallel environment. Task is launched from
-command line using `runjob` command:
+**Jobslib** is a library for launching Python tasks in parallel environment.
+Our use-case is. We have two datacenters (in near future three datacenters),
+in each datacenter is run server with some task. However only one task may
+be active at one time across all datacenters. **Jobslib** solves this problem.
 
-    runjob [-s SETTINGS] [--disable-one-instance] [--run-once]
-           [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]
-           [--keep-lock]
-           task_cls
+Main features are:
 
-    runjob -s myapp.settings --run-once myapp.task.HelloWorld
+- Ancestor for class which holds configuration.
+- Ancestor for container for shared resources, e.g. database connection.
+- Ancestor for class with task.
+- Configurable either from configuration file or from environmet variables.
+- Liveness – mechanism for exporting informations about health state of
+  the task. Jobslib includes implementation which uses
+  `Consul <https://www.consul.io/>`_.
+- Metrics – mechanism for exporting metrics. Jobslib includes implementation
+  which uses `InfluxDB <https://www.influxdata.com/>`_.
+- One Instance Lock – lock, which allowes only one running instance at the
+  same time. Jobslib includes implementation which uses
+  `Consul <https://www.consul.io/>`_.
 
-    export JOBSLIB_SETTINGS_MODULE="myapp.settings"
-    runjob --run-once myapp.task.HelloWorld
+Installation
+------------
 
-Task is normally run in infinite loop, delay in seconds between individual
-launches is controlled by either `--sleep-interval` or `--run-interval`
-argument. `--sleep-interval` is interval in seconds, which is used to
-sleep after task is done. `--run-interval` tells that task is run every
-run interval seconds. Both arguments may not be used together. `--keep-lock`
-argument causes that lock will be kept during sleeping, it is useful when you
-have several machines and you want to keep the task still on the same machine.
-If you don't want to launch task forever, use `--run-once` argument. Library
-provides locking mechanism for launching tasks on several machines and only
-one instance at one time may be launched. If you don't want this locking, use
-`--disable-one-instance` argument. Optional argument `-s`/`--settings`
-defines Python's module where configuration is stored. Or you can pass
-settings module using `JOBSLIB_SETTINGS_MODULE`.
+Installation from source code:
 
-During task initialization instances of the `Config` and `Context` classes
-are created. You can define your own classes in the **settings** module.
-`Config` is container which holds configuration. `Context` is container
-which holds resources which are necessary for your task, for example
-database connection. Finally, when both classes are successfuly initialized,
-instance of the task (subclass of the `BaseTask` passed as `task_cls`
-argument) is created and launched.
+::
+
+    $ git clone https://github.com/seznam/jobslib.git
+    $ cd jobslib
+    $ python setup.py install
+
+Installation from PyPi:
+
+::
+
+    $ pip install jobslib
+
+`Tox <https://tox.readthedocs.io/en/latest/>`_ is used for testing:
+
+::
+
+    $ git clone https://github.com/seznam/jobslib.git
+    $ cd jobslib
+    $ pip install tox
+    $ tox --skip-missing-interpreters
+
+Usage
+-----
+
+Task is launched from command line using `runjob` command:
+
+::
+
+    $ runjob [-s SETTINGS] [--disable-one-instance] [--run-once]
+             [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]
+             [--keep-lock]
+             task_cls
+
+    # Pass settings module using -s argument
+    $ runjob -s myapp.settings myapp.task.HelloWorldTask --run-once
+
+    # Pass settings module using environment variable
+    $ export JOBSLIB_SETTINGS_MODULE="myapp.settings"
+    $ runjob myapp.task.HelloWorldTask --run-once
 
 If you want to write your own task, inherit `BaseTask` class and override
 `BaseTask.task()` method. According to your requirements inherit and
 override `Config` and/or `Context` and set **settings** module.
 
-## Testing
+::
 
-`tox` is used for testing:
+    class HelloWorldTask(BaseTask):
 
-    pip install tox
-    tox
+        name = 'helloworld'
+        description = 'prints hello world'
 
-## License
+        def task(self):
+            sys.stdout.write('Hello World!\n')
+            sys.stdout.flush()
+
+License
+-------
 
 3-clause BSD
 
-## Incompatible changes between 2.x and 1.x
+Documentation
+-------------
 
-* removed `ttl` parameter from `jobslib.oneinstance.BaseLock.refresh` method
-* `jobslib.oneinstance.consul.ConsulLock.get_lock_owner_info` returns **dict**
-  or **None** if information of the lock owner is not available
+https://pythonhosted.org/jobslib/
