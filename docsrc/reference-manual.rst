@@ -214,7 +214,7 @@ module and :func:`logging.config.dictConfig` function documentation.
 .. autoclass:: jobslib.BaseTask
    :member-order: bysource
    :members: name,
-             help,
+             description,
              arguments,
              task,
              extend_lock

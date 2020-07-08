@@ -27,9 +27,9 @@ class JobStatus(enum.Enum):
 class BaseTask(object):
     """
     Ancestor for task. Inherit this class and adjust :attr:`name`,
-    :attr:`help` and optionally :attr:`arguments` attributes and override
-    :meth:`task` method. Constructor's argument *config* is instance of
-    the :class:`~jobslib.Config` (or descendant).
+    :attr:`description` and optionally :attr:`arguments` attributes and
+    override :meth:`task` method. Constructor's argument *config* is
+    instance of the :class:`~jobslib.Config` (or descendant).
 
     There are several attributes which are set during initialization.
     :attr:`context` is instance of the :class:`~jobslib.Context`.
@@ -45,7 +45,7 @@ class BaseTask(object):
         class HelloWorldTask(BaseTask):
 
             name = 'hello'
-            help = 'prints hello world'
+            description = 'prints hello world'
             arguments = (
                 argument('--to-stderr', action='strore_true', default=False,
                          help='use stderr instead of stdout'),
@@ -66,7 +66,7 @@ class BaseTask(object):
     Task name.
     """
 
-    help = ''
+    description = ''
     """
     Task description.
     """
