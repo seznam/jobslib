@@ -211,6 +211,14 @@ class BaseTask(object):
     def terminate_process(self, unused_signal_number, unused_frame):
         raise Terminate
 
+    def extend_lock(self):
+        """
+        Refresh existing lock. Return :data:`!True` if lock has been
+        successfuly refreshed, otherwise return :data:`!False`. See
+        :mod:`jobslib.oneinstance`.
+        """
+        return self.context.one_instance_lock.refresh()
+
 
 class _Task(BaseTask):
     """
