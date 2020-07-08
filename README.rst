@@ -90,4 +90,4 @@ License
 Documentation
 -------------
 
-https://pythonhosted.org/jobslib/
+https://seznam.github.io/jobslib/

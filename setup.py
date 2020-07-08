@@ -29,6 +29,9 @@ setup(
     long_description_content_type='text/x-rst',
     license='BSD',
     url='https://github.com/seznam/jobslib.git',
+    project_urls={
+        'Documentation': 'https://seznam.github.io/jobslib/',
+    },
     classifiers=[
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
