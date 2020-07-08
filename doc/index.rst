@@ -78,13 +78,13 @@ tells that task is run every run interval seconds. Both arguments may not be
 used together. :option:`--keep-lock` argument causes that lock will be kept
 during sleeping, it is useful when you have several machines and you want to
 keep the task still on the same machine. If you don't want to launch task
-forever, use ``--run-once`` argument. Library provides locking mechanism for
-launching tasks on several machines and only one instance at one time may be
-launched. If you don't want this locking, use :option:`--disable-one-instance`
-argument. All these options can be set in :mod:`!settings` module. Optional
-argument :option:`-s/--settings` defines Python module where configuration
-is stored. Or you can pass settings module using
-:envvar:`JOBSLIB_SETTINGS_MODULE`.
+forever, use :option:`--run-once` argument. Library provides locking
+mechanism for launching tasks on several machines and only one instance at
+one time may be launched. If you don't want this locking, use
+:option:`--disable-one-instance` argument. All these options can be set in
+:mod:`!settings` module. Optional argument :option:`-s/--settings` defines
+Python module where configuration is stored. Or you can pass settings module
+using :envvar:`JOBSLIB_SETTINGS_MODULE`.
 
 During task initialization instances of the :class:`jobslib.Config` and
 :class:`jobslib.Context` classes are created. You can define your own classes
@@ -114,7 +114,7 @@ and override :meth:`jobslib.BaseTask.task` method:
             sys.stdout.write('Hello World!\n')
             sys.stdout.flush()
 
-Configure your task in :mod:`!settings` module:
+Configure your task in the :mod:`!settings` module:
 
 .. code-block:: python
     :caption: helloworld/settings.py

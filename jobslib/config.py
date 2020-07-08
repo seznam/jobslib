@@ -48,7 +48,7 @@ class Config(OptionsContainer):
     Python module defined by either ``JOBSLIB_SETTINGS_MODULE`` environment
     variable or ``-s/--settings`` command line argument. *args_parser* is
     instance of the :class:`argparse.Namespace`. Both values are available
-    on class, *settings* as a **_settings** attribute, *args_parser* as a
+    on class, *settings* as a **_settings** attribute, *args_parser* as an
     **_args_parser** attribute.
 
     Configuration options are placed on class as methods decorated by
