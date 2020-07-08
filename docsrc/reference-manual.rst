@@ -206,6 +206,19 @@ module and :func:`logging.config.dictConfig` function documentation.
              consul,
              influxdb
 
+``Task`` – class which encapsulates task
+----------------------------------------
+
+.. automodule:: jobslib.tasks
+
+.. autoclass:: jobslib.BaseTask
+   :member-order: bysource
+   :members: name,
+             help,
+             arguments,
+             task,
+             extend_lock
+
 ``Liveness`` – informations about health state of the task
 ----------------------------------------------------------
 

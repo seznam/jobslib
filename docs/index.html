@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jobslib &#8212; jobslib 3.0.0rc1 documentation</title>
+    <title>Jobslib &#8212; jobslib 3.0.0rc2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -108,15 +108,15 @@ one time may be launched. If you don’t want this locking, use
 Python module where configuration is stored. Or you can pass settings module
 using <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">JOBSLIB_SETTINGS_MODULE</span></code>.</p>
 <p>During task initialization instances of the <a class="reference internal" href="reference-manual.html#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Config</span></code></a> and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code> classes are created. You can define your own classes
+<a class="reference internal" href="reference-manual.html#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code></a> classes are created. You can define your own classes
 in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code> module. <a class="reference internal" href="reference-manual.html#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Config</span></code></a> is a container which
-holds configuration. <code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code> is a container which holds
+holds configuration. <a class="reference internal" href="reference-manual.html#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code></a> is a container which holds
 resources which are necessary for your task, for example database connection.
 Finally, when both classes are successfuly initialized, instance of the task
-(subclass of the <code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.BaseTask</span></code> passed as a <code class="xref std std-option docutils literal notranslate"><span class="pre">task_cls</span></code>
+(subclass of the <a class="reference internal" href="reference-manual.html#jobslib.BaseTask" title="jobslib.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.BaseTask</span></code></a> passed as a <code class="xref std std-option docutils literal notranslate"><span class="pre">task_cls</span></code>
 argument) is created and launched.</p>
-<p>If you want to write your own task, inherit <code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.BaseTask</span></code> class
-and override <code class="xref py py-meth docutils literal notranslate"><span class="pre">jobslib.BaseTask.task()</span></code> method:</p>
+<p>If you want to write your own task, inherit <a class="reference internal" href="reference-manual.html#jobslib.BaseTask" title="jobslib.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.BaseTask</span></code></a> class
+and override <a class="reference internal" href="reference-manual.html#jobslib.BaseTask.task" title="jobslib.BaseTask.task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jobslib.BaseTask.task()</span></code></a> method:</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">helloworld/task.py</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
@@ -166,7 +166,7 @@ and override <code class="xref py py-meth docutils literal notranslate"><span cl
 </div>
 </div>
 <p>Optionally you can override <a class="reference internal" href="reference-manual.html#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Config</span></code></a> and/or
-<code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code>. Finally run your task:</p>
+<a class="reference internal" href="reference-manual.html#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code></a>. Finally run your task:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> runjob -s helloworld.settings --run-once helloworld.task.HelloWorld
 <span class="go">2020-07-03 14:53:25 helloworld.task.HelloWorld INFO Run task</span>
 <span class="go">Hello World!</span>
@@ -182,6 +182,7 @@ and override <code class="xref py py-meth docutils literal notranslate"><span cl
 <li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code> – basic configuration of your application</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.config"><code class="docutils literal notranslate"><span class="pre">Config</span></code> – container for configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.context"><code class="docutils literal notranslate"><span class="pre">Context</span></code> – container for shared resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.tasks"><code class="docutils literal notranslate"><span class="pre">Task</span></code> – class which encapsulates task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.liveness"><code class="docutils literal notranslate"><span class="pre">Liveness</span></code> – informations about health state of the task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.metrics"><code class="docutils literal notranslate"><span class="pre">Metrics</span></code> – task metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.oneinstance"><code class="docutils literal notranslate"><span class="pre">One</span> <span class="pre">Instance</span> <span class="pre">Lock</span></code> – only one running instance at the same time</a></li>

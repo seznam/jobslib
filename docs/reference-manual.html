@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reference manual &#8212; jobslib 3.0.0rc1 documentation</title>
+    <title>Reference manual &#8212; jobslib 3.0.0rc2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -70,7 +70,7 @@ options for basic application settings.</p>
 <p>Default: <code class="docutils literal notranslate"><span class="pre">'jobslib.Context'</span></code></p>
 <p>Application context class. Context is a container for shared
 resources, e.g. database connection. Jobslib provides default
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code> class.</p>
+<a class="reference internal" href="#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> class.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CONTEXT_CLASS</span> <span class="o">=</span> <span class="s1">&#39;myapplicaton.context.Context&#39;</span>
 </pre></div>
 </div>
@@ -280,13 +280,13 @@ is <a class="reference external" href="https://docs.python.org/3/library/logging
 <dl class="py attribute">
 <dt id="jobslib.Config.context_class">
 <code class="sig-name descname">context_class</code><a class="reference internal" href="_modules/jobslib/config.html#Config.context_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.context_class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Context class, either <code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code> class or subclass.</p>
+<dd><p>Context class, either <a class="reference internal" href="#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> class or subclass.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="jobslib.Config.task_class">
 <code class="sig-name descname">task_class</code><a class="reference internal" href="_modules/jobslib/config.html#Config.task_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.task_class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Task class, subclass of the <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code>.</p>
+<dd><p>Task class, subclass of the <a class="reference internal" href="#jobslib.BaseTask" title="jobslib.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -350,14 +350,14 @@ Instance of the <code class="xref py py-class docutils literal notranslate"><spa
 <p>Module <a class="reference internal" href="#module-jobslib.context" title="jobslib.context"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jobslib.context</span></code></a> provides base class which encapsulates
 necessary resources (configuration, database connection, …) for tasks.</p>
 <dl class="py class">
-<dt id="jobslib.context.Context">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.context.</code><code class="sig-name descname">Context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/context.html#Context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.context.Context" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context">
+<em class="property">class </em><code class="sig-prename descclassname">jobslib.</code><code class="sig-name descname">Context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/context.html#Context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Context" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class which encapsulates resources (configuration, database connection,
 …). Instance of this class is created during task initialization. So in
 your task you have access to all necessary resources. Inherit this class
 and enrich it of necessary properties. According to your requirements
 cache values using <code class="xref py py-func docutils literal notranslate"><span class="pre">cached_property()</span></code> decorator.</p>
-<p>Example of the custom <a class="reference internal" href="#jobslib.context.Context" title="jobslib.context.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> class:</p>
+<p>Example of the custom <a class="reference internal" href="#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> class:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xmlrpc.client</span> <span class="kn">import</span> <span class="n">ServerProxy</span>
 
 <span class="kn">from</span> <span class="nn">jobslib</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">cached_property</span>
@@ -374,56 +374,135 @@ cache values using <code class="xref py py-func docutils literal notranslate"><s
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="jobslib.context.Context.initialize">
-<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/context.html#Context.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.context.Context.initialize" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/context.html#Context.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Context.initialize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize instance attributes. You can override this method in
 the subclasses.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.context.Context.config">
-<code class="sig-name descname">config</code><a class="headerlink" href="#jobslib.context.Context.config" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context.config">
+<code class="sig-name descname">config</code><a class="headerlink" href="#jobslib.Context.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Application’s configuration, instance of the <a class="reference internal" href="#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.context.Context.fqdn">
-<code class="sig-name descname">fqdn</code><a class="headerlink" href="#jobslib.context.Context.fqdn" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context.fqdn">
+<code class="sig-name descname">fqdn</code><a class="headerlink" href="#jobslib.Context.fqdn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fully qualified domain name of the local machine as <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.context.Context.one_instance_lock">
-<code class="sig-name descname">one_instance_lock</code><a class="headerlink" href="#jobslib.context.Context.one_instance_lock" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context.one_instance_lock">
+<code class="sig-name descname">one_instance_lock</code><a class="headerlink" href="#jobslib.Context.one_instance_lock" title="Permalink to this definition">¶</a></dt>
 <dd><p>One instance lock, instance of the
 <a class="reference internal" href="#jobslib.oneinstance.BaseLock" title="jobslib.oneinstance.BaseLock"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.oneinstance.BaseLock</span></code></a> descendant.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.context.Context.liveness">
-<code class="sig-name descname">liveness</code><a class="headerlink" href="#jobslib.context.Context.liveness" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context.liveness">
+<code class="sig-name descname">liveness</code><a class="headerlink" href="#jobslib.Context.liveness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Health state writer, instance of the
 <a class="reference internal" href="#jobslib.liveness.BaseLiveness" title="jobslib.liveness.BaseLiveness"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.liveness.BaseLiveness</span></code></a> descendant.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.context.Context.metrics">
-<code class="sig-name descname">metrics</code><a class="headerlink" href="#jobslib.context.Context.metrics" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context.metrics">
+<code class="sig-name descname">metrics</code><a class="headerlink" href="#jobslib.Context.metrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metrics writer, instance of the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.liveness.BaseMetrics</span></code> descendant.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.context.Context.consul">
-<code class="sig-name descname">consul</code><a class="headerlink" href="#jobslib.context.Context.consul" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context.consul">
+<code class="sig-name descname">consul</code><a class="headerlink" href="#jobslib.Context.consul" title="Permalink to this definition">¶</a></dt>
 <dd><p>HashiCorp Consul client, instance of the <code class="xref py py-class docutils literal notranslate"><span class="pre">consul.Consul</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.context.Context.influxdb">
-<code class="sig-name descname">influxdb</code><a class="headerlink" href="#jobslib.context.Context.influxdb" title="Permalink to this definition">¶</a></dt>
+<dt id="jobslib.Context.influxdb">
+<code class="sig-name descname">influxdb</code><a class="headerlink" href="#jobslib.Context.influxdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>InfluxDb client, instance of the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">influxdb.client.InfluxDBClient</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-jobslib.tasks">
+<span id="task-class-which-encapsulates-task"></span><h2><code class="docutils literal notranslate"><span class="pre">Task</span></code> – class which encapsulates task<a class="headerlink" href="#module-jobslib.tasks" title="Permalink to this headline">¶</a></h2>
+<p>Module <code class="xref py py-mod docutils literal notranslate"><span class="pre">shelter.tasks</span></code> provides an ancestor class for writing tasks.</p>
+<dl class="py class">
+<dt id="jobslib.BaseTask">
+<em class="property">class </em><code class="sig-prename descclassname">jobslib.</code><code class="sig-name descname">BaseTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.BaseTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ancestor for task. Inherit this class and adjust <a class="reference internal" href="#jobslib.BaseTask.name" title="jobslib.BaseTask.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">name</span></code></a>,
+<a class="reference internal" href="#jobslib.BaseTask.help" title="jobslib.BaseTask.help"><code class="xref py py-attr docutils literal notranslate"><span class="pre">help</span></code></a> and optionally <a class="reference internal" href="#jobslib.BaseTask.arguments" title="jobslib.BaseTask.arguments"><code class="xref py py-attr docutils literal notranslate"><span class="pre">arguments</span></code></a> attributes and override
+<a class="reference internal" href="#jobslib.BaseTask.task" title="jobslib.BaseTask.task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">task()</span></code></a> method. Constructor’s argument <em>config</em> is instance of
+the <a class="reference internal" href="#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> (or descendant).</p>
+<p>There are several attributes which are set during initialization.
+<a class="reference internal" href="#module-jobslib.context" title="jobslib.context"><code class="xref py py-attr docutils literal notranslate"><span class="pre">context</span></code></a> is instance of the <a class="reference internal" href="#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a>.
+Configuration is available on context as <a class="reference internal" href="#jobslib.Context.config" title="jobslib.Context.config"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Context.config</span></code></a>
+attribute. <code class="xref py py-attr docutils literal notranslate"><span class="pre">logger</span></code> is instance of the <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Logger</span></code></a>.
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">stderr</span></code> are file-like objects for standard
+output and error.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jobslib</span> <span class="kn">import</span> <span class="n">BaseTask</span><span class="p">,</span> <span class="n">argument</span>
+
+<span class="k">class</span> <span class="nc">HelloWorldTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span>
+    <span class="n">help</span> <span class="o">=</span> <span class="s1">&#39;prints hello world&#39;</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--to-stderr&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;strore_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;use stderr instead of stdout&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">to_stderr</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stderr</span><span class="p">(</span><span class="s2">&quot;Hello world</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">(</span><span class="s2">&quot;Hello world</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt id="jobslib.BaseTask.name">
+<code class="sig-name descname">name</code><em class="property"> = ''</em><a class="headerlink" href="#jobslib.BaseTask.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="jobslib.BaseTask.help">
+<code class="sig-name descname">help</code><em class="property"> = ''</em><a class="headerlink" href="#jobslib.BaseTask.help" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task description.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="jobslib.BaseTask.arguments">
+<code class="sig-name descname">arguments</code><em class="property"> = ()</em><a class="headerlink" href="#jobslib.BaseTask.arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task command line arguments. <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> containing command line
+arguments. Each argument is defined using <a class="reference internal" href="#jobslib.argument" title="jobslib.argument"><code class="xref py py-func docutils literal notranslate"><span class="pre">argument()</span></code></a>
+function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arguments</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--file&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;filename&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jobslib.BaseTask.task">
+<code class="sig-name descname">task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask.task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.BaseTask.task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task body, override this method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jobslib.BaseTask.extend_lock">
+<code class="sig-name descname">extend_lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask.extend_lock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.BaseTask.extend_lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh existing lock. Return <code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code> if lock has been
+successfuly refreshed, otherwise return <code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code>. See
+<a class="reference internal" href="#module-jobslib.oneinstance" title="jobslib.oneinstance"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jobslib.oneinstance</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -611,7 +690,7 @@ line argument is passed. When acquiring the lock is not possible, task is not
 run and process is slept for <code class="docutils literal notranslate"><span class="pre">--sleep-interval</span></code> seconds. Then <code class="docutils literal notranslate"><span class="pre">runjob</span></code>
 will try to acquire lock again. If implementation of the lock supports TTL
 and you need extend the lock, it is possible call <a class="reference internal" href="#jobslib.oneinstance.BaseLock.refresh" title="jobslib.oneinstance.BaseLock.refresh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseLock.refresh()</span></code></a>
-inside your <code class="xref py py-meth docutils literal notranslate"><span class="pre">jobslib.BaseTask.task()</span></code>. Otherwise task is aborted.</p>
+inside your <a class="reference internal" href="#jobslib.BaseTask.task" title="jobslib.BaseTask.task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jobslib.BaseTask.task()</span></code></a>. Otherwise task is aborted.</p>
 <p><a class="reference internal" href="#jobslib.oneinstance.BaseLock" title="jobslib.oneinstance.BaseLock"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLock</span></code></a> is ancestor, it is an abstract class which defines API,
 not locking functionality. Override the class if you want write own
 implementation of the lock.</p>
@@ -769,6 +848,7 @@ for Consul).</p>
 <li class="toctree-l2"><a class="reference internal" href="#module-settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code> – basic configuration of your application</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-jobslib.config"><code class="docutils literal notranslate"><span class="pre">Config</span></code> – container for configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-jobslib.context"><code class="docutils literal notranslate"><span class="pre">Context</span></code> – container for shared resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-jobslib.tasks"><code class="docutils literal notranslate"><span class="pre">Task</span></code> – class which encapsulates task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-jobslib.liveness"><code class="docutils literal notranslate"><span class="pre">Liveness</span></code> – informations about health state of the task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-jobslib.metrics"><code class="docutils literal notranslate"><span class="pre">Metrics</span></code> – task metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-jobslib.oneinstance"><code class="docutils literal notranslate"><span class="pre">One</span> <span class="pre">Instance</span> <span class="pre">Lock</span></code> – only one running instance at the same time</a></li>
