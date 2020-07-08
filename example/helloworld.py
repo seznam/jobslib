@@ -5,6 +5,8 @@ from jobslib import BaseTask, argument, Config, option
 
 # settings --------------------------------------------------------------------
 
+RUN_ONCE = True
+
 CONFIG_CLASS = 'example.helloworld.HelloWorldConfig'
 
 ONE_INSTANCE = {
