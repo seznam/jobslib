@@ -4,4 +4,5 @@ build
 dist
 docsrc/_build
 .*
+!*.keep
 !docs/.nojekyll
