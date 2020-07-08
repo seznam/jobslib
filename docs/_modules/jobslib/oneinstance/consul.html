@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jobslib.oneinstance.consul &#8212; jobslib 3.0.0rc1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for jobslib.oneinstance.consul</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module :mod:`jobslib.oneinstance.consul` provides :class:`ConsulLock`</span>
+<span class="sd">lock. It is based on HashiCorp Consul, so lock is distributed among</span>
+<span class="sd">datacenters.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections.abc</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">objectvalidator</span> <span class="kn">import</span> <span class="n">option</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseLock</span><span class="p">,</span> <span class="n">OneInstanceWatchdogError</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">ConfigGroup</span>
+<span class="kn">from</span> <span class="nn">..time</span> <span class="kn">import</span> <span class="n">get_current_time</span><span class="p">,</span> <span class="n">to_local</span><span class="p">,</span> <span class="n">to_utc</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ConsulLock&#39;</span><span class="p">]</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">ONE_DAY_SECONDS</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span>
+
+
+<div class="viewcode-block" id="ConsulLock"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock">[docs]</a><span class="k">class</span> <span class="nc">ConsulLock</span><span class="p">(</span><span class="n">BaseLock</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Consul lock implementation, provides locking among datacenters.</span>
+<span class="sd">    When the lock expires due to TTL, :exc:`OneInstanceWatchdogError`</span>
+<span class="sd">    is raised. It is possible to extend the lock using :meth:`refresh`.</span>
+<span class="sd">    Lock is not extended immediately, but request for extending is</span>
+<span class="sd">    made and lock will be extended asynchronously when **SIGALRM** is</span>
+<span class="sd">    received. So use conservative TTL and periodically extend the lock.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        :class:`ConsulLock` uses :mod:`signal` and :data:`signal.SIGALRM`</span>
+<span class="sd">        for TTL mechanism, so don&#39;t use :data:`~!signal.SIGALRM` in your</span>
+<span class="sd">        task. And don&#39;t use multiple instances of the :class:`ConsulLock`</span>
+<span class="sd">        at the same time, becase :data:`~!signal.SIGALRM` can&#39;t be shared</span>
+<span class="sd">        among multiple instances.</span>
+
+<span class="sd">    For using the :class:`ConsulLock` configure backend in :mod:`settings`:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        CONSUL = {</span>
+<span class="sd">            &#39;host&#39;: &#39;hostname&#39;,</span>
+<span class="sd">            &#39;port&#39;: 8500,</span>
+<span class="sd">            &#39;timeout&#39;: 1.0,</span>
+<span class="sd">        }</span>
+
+<span class="sd">        ONE_INSTANCE = {</span>
+<span class="sd">            &#39;backend&#39;: &#39;jobslib.oneinstance.consul.ConsulLock&#39;,</span>
+<span class="sd">            &#39;options&#39;: {</span>
+<span class="sd">                &#39;key&#39;: &#39;jobs/example/lock&#39;,</span>
+<span class="sd">                &#39;ttl&#39;: 60.0,</span>
+<span class="sd">                &#39;lock_delay&#39;: 15.0,</span>
+<span class="sd">            },</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConsulLock.OptionsConfig"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig">[docs]</a>    <span class="k">class</span> <span class="nc">OptionsConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Consul lock options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConsulLock.OptionsConfig.key"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.key">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Key under which the lock is stored.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_ONE_INSTANCE_OPTIONS_KEY&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">key</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConsulLock.OptionsConfig.ttl"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.ttl">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">ttl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Maximum lock lifespan in seconds, must be between 10 seconds</span>
+<span class="sd">            and one day. If value is omitted, default is one day (maximum</span>
+<span class="sd">            for Consul).</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="s1">&#39;JOBSLIB_ONE_INSTANCE_OPTIONS_TTL&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+                <span class="n">ttl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;JOBSLIB_ONE_INSTANCE_OPTIONS_TTL&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ttl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ttl&#39;</span><span class="p">,</span> <span class="n">ONE_DAY_SECONDS</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ttl</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="ow">or</span> <span class="n">ttl</span> <span class="o">&gt;</span> <span class="n">ONE_DAY_SECONDS</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;TTL must be between 10 and </span><span class="si">{}</span><span class="s1"> seconds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">ONE_DAY_SECONDS</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">ttl</span></div>
+
+<div class="viewcode-block" id="ConsulLock.OptionsConfig.lock_delay"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.lock_delay">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">lock_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            When sessions invalidation request is received, wait</span>
+<span class="sd">            *lock_delay* seconds before session is truly invalidated.</span>
+<span class="sd">            Value must be between 0 and 60 seconds, default is 1.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="s1">&#39;JOBSLIB_ONE_INSTANCE_LOCK_DELAY&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+                <span class="n">delay</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_ONE_INSTANCE_LOCK_DELAY&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lock_delay&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">delay</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;lock_delay must be between 0 and 60 seconds&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">delay</span></div></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_lock_flag</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">get_current_time</span><span class="p">()</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;fqdn&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">fqdn</span><span class="p">,</span>
+            <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+            <span class="s1">&#39;time_utc&#39;</span><span class="p">:</span> <span class="n">to_utc</span><span class="p">(</span><span class="n">timestamp</span><span class="p">),</span>
+            <span class="s1">&#39;time_local&#39;</span><span class="p">:</span> <span class="n">to_local</span><span class="p">(</span><span class="n">timestamp</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="n">session_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">ttl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">ttl</span><span class="p">,</span> <span class="n">lock_delay</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">lock_delay</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">record</span><span class="p">),</span> <span class="n">acquire</span><span class="o">=</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t acquire lock&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span> <span class="o">=</span> <span class="n">session_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_lock_flag</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># Set SIGALRM refresh handler. If lock is not released or</span>
+                <span class="c1"># extended before ttl is reached, task will be killed.</span>
+                <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alarm_handler</span><span class="p">)</span>
+                <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">ttl</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Can&#39;t acquire lock&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">destroy</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t release lock&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_lock_flag</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># Cancel SIGALRM</span>
+                <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Can&#39;t release lock&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_lock_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_alarm_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unused_signum</span><span class="p">,</span> <span class="n">unused_frame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        **SIGALRM** signal handler, it is called at the end</span>
+<span class="sd">        of Consuls&#39; session TTL. Extend the lock if request</span>
+<span class="sd">        for extending is presented, otherwise raise</span>
+<span class="sd">        :exc:`OneInstanceWatchdogError`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_lock_flag</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">renew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t extend lock&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_lock_flag</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="c1"># Restart SIGALRM</span>
+                    <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">ttl</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Can&#39;t extend lock&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">OneInstanceWatchdogError</span>
+
+    <span class="k">def</span> <span class="nf">get_lock_owner_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">owner_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">unused_index</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">owner_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">owner_info</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Lock owner info is not a JSON Object&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t get lock owner info&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">owner_info</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">jobslib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../reference-manual.html">Reference manual</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../oneinstance.html">jobslib.oneinstance</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018 – 2020, Seznam.cz, a.s..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

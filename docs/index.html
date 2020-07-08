@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobslib &#8212; jobslib 3.0.0rc1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reference manual" href="reference-manual.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="jobslib">
+<h1>Jobslib<a class="headerlink" href="#jobslib" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p><strong>Jobslib</strong> is a library for launching Python tasks in parallel environment.
+Our use-case is. We have two datacenters (in near future three datacenters),
+in each datacenter is run server with some task. However only one task may
+be active at one time across all datacenters. <strong>Jobslib</strong> solves this problem.</p>
+<p>Main features are:</p>
+<ul class="simple">
+<li><p>Ancestor for class which holds configuration.</p></li>
+<li><p>Ancestor for container for shared resources, e.g. database connection.</p></li>
+<li><p>Ancestor for class with task.</p></li>
+<li><p>Configurable either from configuration file or from environmet variables.</p></li>
+<li><p>Liveness – mechanism for exporting informations about health state of
+the task. Jobslib includes implementation which uses
+<a class="reference external" href="https://www.consul.io/">Consul</a>.</p></li>
+<li><p>Metrics – mechanism for exporting metrics. Jobslib includes implementation
+which uses <a class="reference external" href="https://www.influxdata.com/">InfluxDB</a>.</p></li>
+<li><p>One Instance Lock – lock, which allowes only one running instance at the
+same time. Jobslib includes implementation which uses
+<a class="reference external" href="https://www.consul.io/">Consul</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="instalation">
+<h2>Instalation<a class="headerlink" href="#instalation" title="Permalink to this headline">¶</a></h2>
+<p>Installation from source code:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/seznam/jobslib.git
+<span class="gp">$</span> <span class="nb">cd</span> jobslib
+<span class="gp">$</span> python setup.py install
+</pre></div>
+</div>
+<p>Installation from PyPi:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install jobslib
+</pre></div>
+</div>
+<p><a class="reference external" href="https://tox.readthedocs.io/en/latest/">Tox</a> is used for testing:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/seznam/jobslib.git
+<span class="gp">$</span> <span class="nb">cd</span> jobslib
+<span class="gp">$</span> pip install tox
+<span class="gp">$</span> tox --skip-missing-interpreters
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Task is launched from command line using <strong class="command">runjob</strong> command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> runjob <span class="o">[</span>-s SETTINGS<span class="o">]</span> <span class="o">[</span>--disable-one-instance<span class="o">]</span> <span class="o">[</span>--run-once<span class="o">]</span>
+<span class="go">         [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]</span>
+<span class="go">         [--keep-lock]</span>
+<span class="go">         task_cls</span>
+
+<span class="gp">$</span> <span class="c1"># Pass settings module using -s argument</span>
+<span class="gp">$</span> runjob -s myapp.settings myapp.task.HelloWorld --run-once
+
+<span class="gp">$</span> <span class="c1"># Pass settings module using environment variable</span>
+<span class="gp">$</span> <span class="nb">export</span> <span class="nv">JOBSLIB_SETTINGS_MODULE</span><span class="o">=</span><span class="s2">&quot;myapp.settings&quot;</span>
+<span class="gp">$</span> runjob myapp.task.HelloWorld --run-once
+</pre></div>
+</div>
+<p>Task is normally run in infinite loop, delay in seconds between individual
+launches is controlled by either <code class="xref std std-option docutils literal notranslate"><span class="pre">--sleep-interval</span></code> or
+<code class="xref std std-option docutils literal notranslate"><span class="pre">--run-interval</span></code> argument. <code class="xref std std-option docutils literal notranslate"><span class="pre">--sleep-interval</span></code> is interval in
+seconds, which is used to sleep after task is done. <code class="xref std std-option docutils literal notranslate"><span class="pre">--run-interval</span></code>
+tells that task is run every run interval seconds. Both arguments may not be
+used together. <code class="xref std std-option docutils literal notranslate"><span class="pre">--keep-lock</span></code> argument causes that lock will be kept
+during sleeping, it is useful when you have several machines and you want to
+keep the task still on the same machine. If you don’t want to launch task
+forever, use <code class="xref std std-option docutils literal notranslate"><span class="pre">--run-once</span></code> argument. Library provides locking
+mechanism for launching tasks on several machines and only one instance at
+one time may be launched. If you don’t want this locking, use
+<code class="xref std std-option docutils literal notranslate"><span class="pre">--disable-one-instance</span></code> argument. All these options can be set in
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code> module. Optional argument <code class="xref std std-option docutils literal notranslate"><span class="pre">-s/--settings</span></code> defines
+Python module where configuration is stored. Or you can pass settings module
+using <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">JOBSLIB_SETTINGS_MODULE</span></code>.</p>
+<p>During task initialization instances of the <a class="reference internal" href="reference-manual.html#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Config</span></code></a> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code> classes are created. You can define your own classes
+in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code> module. <a class="reference internal" href="reference-manual.html#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Config</span></code></a> is a container which
+holds configuration. <code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code> is a container which holds
+resources which are necessary for your task, for example database connection.
+Finally, when both classes are successfuly initialized, instance of the task
+(subclass of the <code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.BaseTask</span></code> passed as a <code class="xref std std-option docutils literal notranslate"><span class="pre">task_cls</span></code>
+argument) is created and launched.</p>
+<p>If you want to write your own task, inherit <code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.BaseTask</span></code> class
+and override <code class="xref py py-meth docutils literal notranslate"><span class="pre">jobslib.BaseTask.task()</span></code> method:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">helloworld/task.py</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">jobslib</span> <span class="kn">import</span> <span class="n">BaseTask</span>
+
+<span class="k">class</span> <span class="nc">HelloWorld</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;helloworld&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;prints hello world&#39;</span>
+
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Hello World!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Configure your task in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code> module:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">helloworld/settings.py</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ONE_INSTANCE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;backend&#39;</span><span class="p">:</span> <span class="s1">&#39;jobslib.oneinstance.dummy.DummyLock&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;formatters&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;datefmt&#39;</span><span class="p">:</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;console&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;NOTSET&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;root&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;console&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;INFO&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>Optionally you can override <a class="reference internal" href="reference-manual.html#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Config</span></code></a> and/or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code>. Finally run your task:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> runjob -s helloworld.settings --run-once helloworld.task.HelloWorld
+<span class="go">2020-07-03 14:53:25 helloworld.task.HelloWorld INFO Run task</span>
+<span class="go">Hello World!</span>
+<span class="go">2020-07-03 14:53:25 helloworld.task.HelloWorld INFO Task done</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reference-manual">
+<h2>Reference manual<a class="headerlink" href="#reference-manual" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference-manual.html">Reference manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code> – basic configuration of your application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.config"><code class="docutils literal notranslate"><span class="pre">Config</span></code> – container for configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.context"><code class="docutils literal notranslate"><span class="pre">Context</span></code> – container for shared resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.liveness"><code class="docutils literal notranslate"><span class="pre">Liveness</span></code> – informations about health state of the task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.metrics"><code class="docutils literal notranslate"><span class="pre">Metrics</span></code> – task metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference-manual.html#module-jobslib.oneinstance"><code class="docutils literal notranslate"><span class="pre">One</span> <span class="pre">Instance</span> <span class="pre">Lock</span></code> – only one running instance at the same time</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="source-code-and-license">
+<h2>Source code and license<a class="headerlink" href="#source-code-and-license" title="Permalink to this headline">¶</a></h2>
+<p>Source codes are available on GitHub <a class="reference external" href="https://github.com/seznam/jobslib">https://github.com/seznam/jobslib</a> under the <a class="reference external" href="https://opensource.org/licenses/BSD-3-Clause">3-clause BSD license</a>. <a class="reference external" href="https://semver.org/">Semantic Versioning</a> and <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a> for changelog is used.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">jobslib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference-manual.html">Reference manual</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="reference-manual.html" title="next chapter">Reference manual</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018 – 2020, Seznam.cz, a.s..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

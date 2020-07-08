@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jobslib.config &#8212; jobslib 3.0.0rc1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for jobslib.config</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module :mod:`jobslib.config` provides base class which encapsulates</span>
+<span class="sd">configuration.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging.config</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">objectvalidator</span> <span class="kn">import</span> <span class="n">option</span><span class="p">,</span> <span class="n">OptionsContainer</span>
+
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">.imports</span> <span class="kn">import</span> <span class="n">import_object</span>
+<span class="kn">from</span> <span class="nn">.logging</span> <span class="kn">import</span> <span class="n">BASE_LOGGING</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Config&#39;</span><span class="p">,</span> <span class="s1">&#39;ConfigGroup&#39;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">ConfigGroup</span><span class="p">(</span><span class="n">OptionsContainer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for configuration. During initialization values from all</span>
+<span class="sd">    methods decorated by :class:`option` decorator are read. So if class</span>
+<span class="sd">    is successfuly initialized, all options are validated and cached.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">unused_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize instance attributes. You can override this method in</span>
+<span class="sd">        the subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span> <span class="o">=</span> <span class="n">args</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">as_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return all options as a :class:`dict`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">option</span><span class="o">.</span><span class="n">get_option_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="p">}</span>
+
+
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">OptionsContainer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class which encapsulates configuration. It joins configuration values</span>
+<span class="sd">    from :mod:`settings` module and from command line. :mod:`settings` is</span>
+<span class="sd">    Python module defined by either ``JOBSLIB_SETTINGS_MODULE`` environment</span>
+<span class="sd">    variable or ``-s/--settings`` command line argument. *args_parser* is</span>
+<span class="sd">    instance of the :class:`argparse.Namespace`. Both values are available</span>
+<span class="sd">    on class, *settings* as a **_settings** attribute, *args_parser* as an</span>
+<span class="sd">    **_args_parser** attribute.</span>
+
+<span class="sd">    Configuration options are placed on class as methods decorated by</span>
+<span class="sd">    :class:`option` decorator. During class initialization all decorated</span>
+<span class="sd">    methods are read, so it implies values validation a caching. If you want</span>
+<span class="sd">    nested configurations options, use :class:`ConfigGroup`. Reading value of</span>
+<span class="sd">    the nested class during initialization implies the same mechanism, so all</span>
+<span class="sd">    configuration will be validated and cached recursively.</span>
+
+<span class="sd">    Example of the custom :class:`Config` class:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import os</span>
+
+<span class="sd">        from jobslib import Config, ConfigGroup, option</span>
+
+<span class="sd">        class AuthServiceConfig(ConfigGroup):</span>
+
+<span class="sd">            @option(required=True, attrtype=str)</span>
+<span class="sd">            def uri(self):</span>
+<span class="sd">                # First try reading value from command line</span>
+<span class="sd">                uri = self._args_parser.auth_servise_uri</span>
+<span class="sd">                if uri:</span>
+<span class="sd">                    return uri</span>
+
+<span class="sd">                # Then try reading value from environment variable</span>
+<span class="sd">                uri = os.environ.get(&#39;MYAPP_AUTH_SERVICE_URI&#39;)</span>
+<span class="sd">                if uri is not None:</span>
+<span class="sd">                    return uri</span>
+
+<span class="sd">                # Finally try reading value from settings</span>
+<span class="sd">                return self._settings[&#39;uri&#39;]</span>
+
+<span class="sd">        class MyAppConfig(Config):</span>
+
+<span class="sd">            @option</span>
+<span class="sd">            def auth_service(self):</span>
+<span class="sd">                return AuthServiceConfig(</span>
+<span class="sd">                    self._settings[&#39;AUTH_SERVICE&#39;], self._args_parser)</span>
+
+<span class="sd">    And write into :mod:`settings` module:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        CONFIG_CLASS = &#39;myapp.config.MyAppConfig&#39;</span>
+
+<span class="sd">        AUTH_SERVICE = {</span>
+<span class="sd">            &#39;uri&#39;: &#39;http://example.com/api/v1/auth&#39;,</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Configuration options are available on the :class:`Config` as</span>
+<span class="sd">    attributes. If any configuration value is not valid, exception will</span>
+<span class="sd">    be raised and instance will not be created.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        &gt;&gt;&gt; context.config.auth_service.uri</span>
+<span class="sd">        &#39;http://example.com/api/v1/auth&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">args_parser</span><span class="p">,</span> <span class="n">task_cls</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="n">settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span> <span class="o">=</span> <span class="n">args_parser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task_cls</span> <span class="o">=</span> <span class="n">task_cls</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">: </span><span class="si">{:#x}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Config.initialize"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize instance attributes. You can override this method in</span>
+<span class="sd">        the subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_configure_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configure Python&#39;s logging according to configuration stored in the</span>
+<span class="sd">        :attr:`logging` property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logging</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Config.logging"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.logging">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Python&#39;s logging configuration or :data:`BASE_LOGGING` if value is</span>
+<span class="sd">        not defined. :data:`BASE_LOGGING` allowes :data:`~logging.INFO`</span>
+<span class="sd">        and higher leveled messages and forwards them onto console. Format</span>
+<span class="sd">        is :func:`logging.config.dictConfig`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging_cfg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_LOGGING&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">logging_cfg</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">logging_cfg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;LOGGING&#39;</span><span class="p">,</span> <span class="n">BASE_LOGGING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Config.context_class"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.context_class">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">context_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Context class, either :class:`~jobslib.Context` class or subclass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">context_cls_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;CONTEXT_CLASS&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">context_cls_name</span><span class="p">:</span>
+            <span class="n">context_class</span> <span class="o">=</span> <span class="n">import_object</span><span class="p">(</span><span class="n">context_cls_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context_class</span> <span class="o">=</span> <span class="n">Context</span>
+        <span class="k">return</span> <span class="n">context_class</span></div>
+
+<div class="viewcode-block" id="Config.task_class"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.task_class">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">task_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Task class, subclass of the :class:`~jobslib.BaseTask`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_cls</span></div>
+
+<div class="viewcode-block" id="Config.run_once"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.run_once">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">run_once</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :class:`!bool` that indicates that task will be run only once.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">run_once</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">run_once</span>
+        <span class="n">run_once</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_RUN_ONCE&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">run_once</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">run_once</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;RUN_ONCE&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Config.sleep_interval"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.sleep_interval">[docs]</a>    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sleep_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sleep interval in seconds after task is done.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">sleep_interval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sleep_interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">sleep_interval</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sleep_interval</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_SLEEP_INTERVAL&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sleep_interval</span><span class="p">:</span>
+                <span class="n">sleep_interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sleep_interval</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sleep_interval</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;SLEEP_INTERVAL&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sleep_interval</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Run interval may not be less than 0&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sleep_interval</span></div>
+
+<div class="viewcode-block" id="Config.run_interval"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.run_interval">[docs]</a>    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">run_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run interval in seconds. If task is run longer than this interval,</span>
+<span class="sd">        next loop is run imediately after task is done.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">run_interval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">run_interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">run_interval</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">run_interval</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_RUN_INTERVAL&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">run_interval</span><span class="p">:</span>
+                <span class="n">run_interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">run_interval</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">run_interval</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;RUN_INTERVAL&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">run_interval</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Run interval may not be less than 0&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">run_interval</span></div>
+
+<div class="viewcode-block" id="Config.keep_lock"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.keep_lock">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">keep_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :class:`!bool` that indicates that lock will be kept during sleeping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">keep_lock</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">keep_lock</span>
+        <span class="n">keep_lock</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_KEEP_LOCK&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">keep_lock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">keep_lock</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;KEEP_LOCK&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Config.one_instance"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.one_instance">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">one_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configuration of the one instance lock. Instance of the</span>
+<span class="sd">        :class:`OneInstanceConfig`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">OneInstanceConfig</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;ONE_INSTANCE&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Config.liveness"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.liveness">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">liveness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configuration of the health state writer. Instance of the</span>
+<span class="sd">        :class:`LivenessConfig`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LivenessConfig</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;LIVENESS&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span></div>
+
+    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">MetricsConfig</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;METRICS&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Config.consul"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.consul">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">consul</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configuration of the connection arguments to HashiCorp Consul.</span>
+<span class="sd">        Instance of the :class:`ConsulConfig`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ConsulConfig</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;CONSUL&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Config.influxdb"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.influxdb">[docs]</a>    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">influxdb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configuration of the connection arguments to InfluxDb.</span>
+<span class="sd">        Instance of the :class:`InfluxDbConfig`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">InfluxDbConfig</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;INFLUXDB&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">OneInstanceConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configuration of the one instance lock.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        One instance lock implementation class. Value must be Python&#39;s module</span>
+<span class="sd">        path ``[package.[submodule.]]module.ClassName``. For development</span>
+<span class="sd">        purposes you can use ``jobslib.oneinstance.dummy.DummyLock``. If</span>
+<span class="sd">        ``--disable-one-instance`` argument is passed,</span>
+<span class="sd">        :class:`jobslib.oneinstance.dummy.DummyLock` will be forced.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="o">.</span><span class="n">disable_one_instance</span><span class="p">:</span>
+            <span class="n">cls_name</span> <span class="o">=</span> <span class="s1">&#39;jobslib.oneinstance.dummy.DummyLock&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cls_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_ONE_INSTANCE_BACKEND&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">cls_name</span><span class="p">:</span>
+                <span class="n">cls_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">[</span><span class="s1">&#39;backend&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">import_object</span><span class="p">(</span><span class="n">cls_name</span><span class="p">)</span>
+
+    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor&#39;s arguments of the one instance implementation class.</span>
+<span class="sd">        It depends on :meth:`backend` attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">OptionsConfig</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;options&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">LivenessConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configuration of the liveness writer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Liveness implementation class. If value is not defined, default</span>
+<span class="sd">        value ``jobslib.liveness.dummy.DummyLiveness`` is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_LIVENESS_BACKEND&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cls_name</span><span class="p">:</span>
+            <span class="n">cls_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s1">&#39;backend&#39;</span><span class="p">,</span> <span class="s1">&#39;jobslib.liveness.dummy.DummyLiveness&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">import_object</span><span class="p">(</span><span class="n">cls_name</span><span class="p">)</span>
+
+    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor&#39;s arguments of the liveness implementation class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">OptionsConfig</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;options&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">MetricsConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configuration of the metrics writer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Metrics implementation class. If value is not defined, default</span>
+<span class="sd">        value ``jobslib.metrics.dummy.DummyMetrics`` is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_BACKEND&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cls_name</span><span class="p">:</span>
+            <span class="n">cls_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s1">&#39;backend&#39;</span><span class="p">,</span> <span class="s1">&#39;jobslib.metrics.dummy.DummyMetrics&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">import_object</span><span class="p">(</span><span class="n">cls_name</span><span class="p">)</span>
+
+    <span class="nd">@option</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor&#39;s arguments of the metrics implementation class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">OptionsConfig</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;options&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ConsulConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configuration of the connection to HashiCorp Consul, see `Consul</span>
+<span class="sd">    documentation &lt;http://python-consul.readthedocs.io/en/latest/#consul&gt;`_</span>
+<span class="sd">    for details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">scheme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        URI scheme, in current implementation always ``http``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;http&#39;</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        IP address or hostname of the Consul server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_CONSUL_HOST&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">host</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">host</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">)</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Port where the Consul server listening on.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_CONSUL_PORT&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">)</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Http requests timeout in seconds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_CONSUL_TIMEOUT&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">InfluxDbConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        InfluxDB host</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_HOST&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">host</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">host</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="s1">&#39;localhost&#39;</span><span class="p">)</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        InfluxDB port</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_PORT&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="mi">8086</span><span class="p">)</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">username</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        InfluxDB username</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_USERNAME&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">username</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">username</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        InfluxDB password</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_PASSWORD&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">password</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">password</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        InfluxDB database</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_DBNAME&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">database</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">database</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">jobslib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference-manual.html">Reference manual</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018 – 2020, Seznam.cz, a.s..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
