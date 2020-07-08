@@ -195,7 +195,7 @@ module and :func:`logging.config.dictConfig` function documentation.
 
 .. automodule:: jobslib.context
 
-.. autoclass:: jobslib.context.Context
+.. autoclass:: jobslib.Context
    :member-order: bysource
    :members: initialize,
              config,

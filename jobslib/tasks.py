@@ -1,5 +1,5 @@
 """
-Module :module:`shelter.tasks` provides an ancestor class for writing tasks.
+Module :mod:`shelter.tasks` provides an ancestor class for writing tasks.
 """
 
 import enum
@@ -63,17 +63,17 @@ class BaseTask(object):
 
     name = ''
     """
-    Task's name.
+    Task name.
     """
 
     help = ''
     """
-    Task's description.
+    Task description.
     """
 
     arguments = ()
     """
-    Task's command line arguments. :class:`tuple` containing command line
+    Task command line arguments. :class:`tuple` containing command line
     arguments. Each argument is defined using :func:`~jobslib.argument`
     function.
 
