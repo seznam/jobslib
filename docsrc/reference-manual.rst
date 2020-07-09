@@ -24,6 +24,10 @@ options for basic application settings.
 List of basic settings
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Some options try obtainig values from several sources. First from command
+line argument, then from environment variable and finally from :mod:`settings`
+module. Environment variables are ``JOBSLIB_`` prefixed.
+
 .. py:data:: settings.CONFIG_CLASS
 
 Default: ``'jobslib.Config'``
@@ -50,19 +54,78 @@ resources, e.g. database connection. Jobslib provides default
     CONTEXT_CLASS = 'myapplicaton.context.Context'
 
 
+.. option:: --run-once
+.. envvar:: JOBSLIB_RUN_ONCE
+.. py:data:: settings.RUN_ONCE
+
+Default: ``False``
+
+If set to :data:`!True`, indicates that task will be run only once.
+
+.. code-block:: python
+
+    RUN_ONCE = True
+
+
+.. option:: --sleep-interval
+.. envvar:: JOBSLIB_SLEEP_INTERVAL
+.. py:data:: settings.SLEEP_INTERVAL
+
+Default: ``0``
+
+Sleep interval in seconds after task is done.
+
+.. code-block:: python
+
+    SLEEP_INTERVAL = 60.0
+
+
+.. option:: --run-interval
+.. envvar:: JOBSLIB_RUN_INTERVAL
+.. py:data:: settings.RUN_INTERVAL
+
+Default: ``0``
+
+Run interval in seconds. If task is run longer than this interval,
+next loop is run imediately after task is done.
+
+.. code-block:: python
+
+    RUN_INTERVAL = 60.0
+
+
+.. option:: --keep-lock
+.. envvar:: JOBSLIB_KEEP_LOCK
+.. py:data:: settings.KEEP_LOCK
+
+Default: ``False``
+
+If set to :data:`!True`, indicates that lock will be kept during sleeping.
+
+.. code-block:: python
+
+    KEEP_LOCK = True
+
+
 .. py:data:: settings.LIVENESS
 
 Default: ``{'backend': 'jobslib.liveness.dummy.DummyLiveness'}``
 
-Liveness implementation class. Value must be Python's module path
-``[package.[submodule.]]module.ClassName``. If value is not defined,
-default value ``jobslib.liveness.dummy.DummyLiveness`` is used.
+Liveness implementation class. Value must be :class:`!dict` containing
+``backend`` key, which is Python's module path
+``[package.[submodule.]]module.ClassName``. Or
+:envvar:`JOBSLIB_LIVENESS_BACKEND` can be used. If value is not defined,
+default value ``jobslib.liveness.dummy.DummyLiveness`` is used. See
+:mod:`jobslib.oneinstance`.
 
 .. code-block:: python
 
     LIVENESS = {
         'backend': 'jobslib.liveness.consul.ConsulLiveness',
         'options': {
+            'host': 'hostname',
+            'port': 8500,
+            'timeout': 1.0,
             'key': 'jobs/example/liveness',
         },
     }
@@ -72,14 +135,24 @@ default value ``jobslib.liveness.dummy.DummyLiveness`` is used.
 
 Default: ``{'backend': 'jobslib.metrics.dummy.DummyMetrics'}``
 
-Metrics implementation class. Value must be Python's module path
-``[package.[submodule.]]module.ClassName``. If value is not defined,
-default value ``jobslib.metrics.dummy.DummyMetrics`` is used.
+Metrics implementation class. Value must be :class:`!dict` containing
+``backend`` key, which is Python's module path
+``[package.[submodule.]]module.ClassName``. Or
+:envvar:`JOBSLIB_METRICS_BACKEND` can be used. If value is not defined,
+default value ``jobslib.metrics.dummy.DummyMetrics`` is used. See
+:mod:`jobslib.metrics`.
 
 .. code-block:: python
 
     METRICS = {
         'backend': 'jobslib.metrics.influxdb.InfluxDBMetrics',
+        'options': {
+            'host': 'hostname',
+            'port': 8086,
+            'username': 'root',
+            'password': 'root',
+            'database': 'dbname',
+        },
     }
 
 
@@ -87,56 +160,30 @@ default value ``jobslib.metrics.dummy.DummyMetrics`` is used.
 
 Default: no default value, required option
 
-One instance lock implementation class. Value must be Python's
-module path ``[package.[submodule.]]module.ClassName``. For
-development purposes you can use ``jobslib.oneinstance.dummy.DummyLock``.
-If :option:`--disable-one-instance` argument is passed, dummy lock will
-be forced.
+One instance lock implementation class. Value must be :class:`!dict`
+containing ``backend`` key, which is Python's module path
+``[package.[submodule.]]module.ClassName``. Or
+:envvar:`JOBSLIB_ONE_INSTANCE_BACKEND` can be used. For development
+purposes you can use ``jobslib.oneinstance.dummy.DummyLock``. If
+:option:`--disable-one-instance` argument is passed, dummy lock will
+be forced. See :mod:`jobslib.oneinstance`.
 
 .. code-block:: python
 
     ONE_INSTANCE = {
         'backend': 'jobslib.oneinstance.consul.ConsulLock',
         'options': {
+            'host': 'hostname',
+            'port': 8500,
+            'timeout': 1.0,
             'key': 'jobs/example/oneinstance/lock',
             'ttl': 30,
         }
     }
 
 
-.. py:data:: settings.CONSUL
-
-Default: ``{}`` (empty :class:`!dict`)
-
-Configuration of the connection arguments to HashiCorp Consul.
-
-.. code-block:: python
-
-    CONSUL = {
-        'host': 'hostname',
-        'port': 8500,
-        'timeout': 1.0,
-    }
-
-
-.. py:data:: settings.INFLUXDB
-
-Default: ``{}`` (empty :class:`!dict`)
-
-Configuration of the connection arguments to InfluxDb.
-
-.. code-block:: python
-
-    INFLUXDB = {
-        'host': 'hostname',
-        'port': 8086,
-        'username': 'root',
-        'password': 'root',
-        'database': 'dbname',
-    }
-
-
 .. py:data:: settings.LOGGING
+.. envvar:: JOBSLIB_LOGGING
 
 Default: root logger which logs to console:
 
@@ -166,6 +213,9 @@ module and :func:`logging.config.dictConfig` function documentation.
             'level': 'INFO',
         },
     }
+
+If logging configuration is passed in evironment variable, JSON object is
+expected.
 
 ``Config`` – container for configuration
 ----------------------------------------
