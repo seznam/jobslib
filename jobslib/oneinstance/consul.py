@@ -10,6 +10,7 @@ import logging
 import signal
 import os
 
+from consul import Consul
 from objectvalidator import option
 
 from . import BaseLock, OneInstanceWatchdogError
@@ -44,26 +45,70 @@ class ConsulLock(BaseLock):
 
     .. code-block:: python
 
-        CONSUL = {
-            'host': 'hostname',
-            'port': 8500,
-            'timeout': 1.0,
-        }
-
         ONE_INSTANCE = {
             'backend': 'jobslib.oneinstance.consul.ConsulLock',
             'options': {
+                'host': 'hostname',
+                'port': 8500,
+                'timeout': 1.0,
                 'key': 'jobs/example/lock',
                 'ttl': 60.0,
                 'lock_delay': 15.0,
             },
         }
+
+    Or use :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_HOST`,
+    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_PORT`,
+    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT`,
+    :envvar:`JOBSLIB_ONE_INSTANCE_OPTIONS_KEY`,
+    :envvar:`JOBSLIB_ONE_INSTANCE_OPTIONS_TTL` and
+    :envvar:`JOBSLIB_ONE_INSTANCE_LOCK_DELAY` environment variables.
     """
 
     class OptionsConfig(ConfigGroup):
         """
         Consul lock options.
         """
+
+        @option(required=True, attrtype=str)
+        def scheme(self):
+            """
+            URI scheme, in current implementation always ``http``.
+            """
+            return 'http'
+
+        @option(required=True, attrtype=str)
+        def host(self):
+            """
+            IP address or hostname of the Consul server.
+            """
+            host = os.environ.get('JOBSLIB_ONE_INSTANCE_CONSUL_HOST')
+            if host:
+                return host
+            return self._settings.get('host', '127.0.0.1')
+
+        @option(required=True, attrtype=int)
+        def port(self):
+            """
+            Port where the Consul server listening on.
+            """
+            port = os.environ.get('JOBSLIB_ONE_INSTANCE_CONSUL_PORT')
+            if port:
+                return int(port)
+            return self._settings.get('port', 8500)
+
+        @option(required=True, attrtype=float)
+        def timeout(self):
+            """
+            Timeout in seconds for connect/read/write operation.
+            """
+            timeout = os.environ.get('JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT')
+            if timeout:
+                return float(timeout)
+            timeout = self._settings.get('timeout', 5.0)
+            if isinstance(timeout, int):
+                timeout = float(timeout)
+            return timeout
 
         @option(required=True, attrtype=str)
         def key(self):
@@ -111,6 +156,12 @@ class ConsulLock(BaseLock):
         super().__init__(context, options)
         self._session_id = None
         self._refresh_lock_flag = False
+        self._consul = Consul(
+            scheme=self.options.scheme,
+            host=self.options.host,
+            port=self.options.port,
+            timeout=self.options.timeout,
+        )
 
     def acquire(self):
         timestamp = get_current_time()
@@ -121,10 +172,10 @@ class ConsulLock(BaseLock):
             'time_local': to_local(timestamp),
         }
 
-        session_id = self.context.consul.session.create(
+        session_id = self._consul.session.create(
             ttl=self.options.ttl, lock_delay=self.options.lock_delay)
         try:
-            res = self.context.consul.kv.put(
+            res = self._consul.kv.put(
                 self.options.key, json.dumps(record), acquire=session_id)
         except Exception:
             logger.exception("Can't acquire lock")
@@ -138,12 +189,12 @@ class ConsulLock(BaseLock):
                 signal.alarm(self.options.ttl)
                 return True
             logger.error("Can't acquire lock")
-        self.context.consul.session.destroy(session_id)
+        self._consul.session.destroy(session_id)
         return False
 
     def release(self):
         try:
-            res = self.context.consul.kv.put(
+            res = self._consul.kv.put(
                 self.options.key, None, release=self._session_id)
         except Exception:
             logger.exception("Can't release lock")
@@ -171,7 +222,7 @@ class ConsulLock(BaseLock):
         """
         if self._refresh_lock_flag:
             try:
-                res = self.context.consul.session.renew(self._session_id)
+                res = self._consul.session.renew(self._session_id)
             except Exception:
                 logger.exception("Can't extend lock")
             else:
@@ -186,7 +237,7 @@ class ConsulLock(BaseLock):
     def get_lock_owner_info(self):
         owner_info = None
         try:
-            unused_index, res = self.context.consul.kv.get(self.options.key)
+            unused_index, res = self._consul.kv.get(self.options.key)
             if res is not None and res['Value'] is not None:
                 owner_info = json.loads(res['Value'])
                 if not isinstance(owner_info, collections.abc.Mapping):

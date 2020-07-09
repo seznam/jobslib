@@ -14,21 +14,26 @@ SLEEP_INTERVAL = 5
 ONE_INSTANCE = {
     'backend': 'jobslib.oneinstance.consul.ConsulLock',
     'options': {
+        'host': 'localhost',
         'key': 'jobs/example/oneinstance/lock',
         'ttl': 30,
         'lock_delay': 5,
-    }
+    },
 }
 
 LIVENESS = {
     'backend': 'jobslib.liveness.consul.ConsulLiveness',
     'options': {
+        'host': 'localhost',
         'key': 'jobs/example/oneinstance/liveness',
-    }
+    },
 }
 
-CONSUL = {
-    'host': '127.0.0.1',
+METRICS = {
+    'backend': 'jobslib.metrics.influxdb.InfluxDBMetrics',
+    'options': {
+        'database': 'oneinstance',
+    },
 }
 
 

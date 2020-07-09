@@ -6,8 +6,6 @@ necessary resources (configuration, database connection, …) for tasks.
 import socket
 
 from cached_property import cached_property
-from consul import Consul
-from influxdb.client import InfluxDBClient
 
 __all__ = ['Context']
 
@@ -100,24 +98,3 @@ class Context(object):
         """
         return self._config.metrics.backend(
             self, self._config.metrics.options)
-
-    @cached_property
-    def consul(self):
-        """
-        HashiCorp Consul client, instance of the :class:`consul.Consul`.
-        """
-        kwargs = {
-            k: v for k, v in self._config.consul.as_kwargs.items()
-            if v is not None}
-        return Consul(**kwargs)
-
-    @cached_property
-    def influxdb(self):
-        """
-        InfluxDb client, instance of the
-        :class:`influxdb.client.InfluxDBClient`.
-        """
-        kwargs = {
-            k: v for k, v in self._config.influxdb.as_kwargs.items()
-            if v is not None}
-        return InfluxDBClient(**kwargs)

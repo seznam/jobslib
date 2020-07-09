@@ -186,9 +186,7 @@ module and :func:`logging.config.dictConfig` function documentation.
              keep_lock,
              one_instance,
              liveness,
-             metrics,
-             consul,
-             influxdb
+             metrics
 
 ``Context`` – container for shared resources
 --------------------------------------------
@@ -202,9 +200,7 @@ module and :func:`logging.config.dictConfig` function documentation.
              fqdn,
              one_instance_lock,
              liveness,
-             metrics,
-             consul,
-             influxdb
+             metrics
 
 ``Task`` – class which encapsulates task
 ----------------------------------------

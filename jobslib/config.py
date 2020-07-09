@@ -45,11 +45,11 @@ class Config(OptionsContainer):
     """
     Class which encapsulates configuration. It joins configuration values
     from :mod:`settings` module and from command line. :mod:`settings` is
-    Python module defined by either ``JOBSLIB_SETTINGS_MODULE`` environment
-    variable or ``-s/--settings`` command line argument. *args_parser* is
-    instance of the :class:`argparse.Namespace`. Both values are available
-    on class, *settings* as a **_settings** attribute, *args_parser* as an
-    **_args_parser** attribute.
+    Python module defined by either :envvar:`JOBSLIB_SETTINGS_MODULE`
+    environment variable or :option:`-s/--settings` command line argument.
+    *args_parser* is instance of the :class:`argparse.Namespace`. Both values
+    are available on class, *settings* as a :attr:`_settings` attribute and
+    *args_parser* as an :attr:`_args_parser` attribute.
 
     Configuration options are placed on class as methods decorated by
     :class:`option` decorator. During class initialization all decorated
@@ -249,24 +249,6 @@ class Config(OptionsContainer):
         return MetricsConfig(
             getattr(self._settings, 'METRICS', {}), self._args_parser)
 
-    @option
-    def consul(self):
-        """
-        Configuration of the connection arguments to HashiCorp Consul.
-        Instance of the :class:`ConsulConfig`.
-        """
-        return ConsulConfig(
-            getattr(self._settings, 'CONSUL', {}), self._args_parser)
-
-    @option
-    def influxdb(self):
-        """
-        Configuration of the connection arguments to InfluxDb.
-        Instance of the :class:`InfluxDbConfig`.
-        """
-        return InfluxDbConfig(
-            getattr(self._settings, 'INFLUXDB', {}), self._args_parser)
-
 
 class OneInstanceConfig(ConfigGroup):
     """
@@ -350,101 +332,3 @@ class MetricsConfig(ConfigGroup):
         """
         return self.backend.OptionsConfig(
             self._settings.get('options', {}), self._args_parser)
-
-
-class ConsulConfig(ConfigGroup):
-    """
-    Configuration of the connection to HashiCorp Consul, see `Consul
-    documentation <http://python-consul.readthedocs.io/en/latest/#consul>`_
-    for details.
-    """
-
-    @option(attrtype=str)
-    def scheme(self):
-        """
-        URI scheme, in current implementation always ``http``.
-        """
-        return 'http'
-
-    @option(required=True, attrtype=str)
-    def host(self):
-        """
-        IP address or hostname of the Consul server.
-        """
-        host = os.environ.get('JOBSLIB_CONSUL_HOST')
-        if host:
-            return host
-        return self._settings.get('host', '127.0.0.1')
-
-    @option(attrtype=int)
-    def port(self):
-        """
-        Port where the Consul server listening on.
-        """
-        port = os.environ.get('JOBSLIB_CONSUL_PORT')
-        if port:
-            return int(port)
-        return self._settings.get('port')
-
-    @option(attrtype=float)
-    def timeout(self):
-        """
-        Http requests timeout in seconds.
-        """
-        timeout = os.environ.get('JOBSLIB_CONSUL_TIMEOUT')
-        if timeout:
-            return float(timeout)
-        return self._settings.get('timeout', 5.0)
-
-
-class InfluxDbConfig(ConfigGroup):
-
-    @option(required=True, attrtype=str)
-    def host(self):
-        """
-        InfluxDB host
-        """
-        host = os.environ.get('JOBSLIB_METRICS_INFLUXDB_HOST')
-        if host:
-            return host
-        return self._settings.get('host', 'localhost')
-
-    @option(attrtype=int)
-    def port(self):
-        """
-        InfluxDB port
-        """
-        port = os.environ.get('JOBSLIB_METRICS_INFLUXDB_PORT')
-        if port:
-            return int(port)
-        return self._settings.get('port', 8086)
-
-    @option(required=True, attrtype=str)
-    def username(self):
-        """
-        InfluxDB username
-        """
-        username = os.environ.get('JOBSLIB_METRICS_INFLUXDB_USERNAME')
-        if username:
-            return username
-        return self._settings.get('username', "root")
-
-    @option(required=True, attrtype=str)
-    def password(self):
-        """
-        InfluxDB password
-        """
-        password = os.environ.get('JOBSLIB_METRICS_INFLUXDB_PASSWORD')
-        if password:
-            return password
-        return self._settings.get('password', "root")
-
-    @option(attrtype=str)
-    def database(self):
-        """
-        InfluxDB database
-        """
-        database = os.environ.get('JOBSLIB_METRICS_INFLUXDB_DBNAME')
-        if database:
-            return database
-        return self._settings.get('database')
