@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index &#8212; jobslib 3.0.0rc2 documentation</title>
+    <title>Index &#8212; jobslib 3.0.0rc4 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -35,13 +35,15 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#A"><strong>A</strong></a>
+ <a href="#Symbols"><strong>Symbols</strong></a>
+ | <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
  | <a href="#K"><strong>K</strong></a>
@@ -56,6 +58,42 @@
  | <a href="#W"><strong>W</strong></a>
  
 </div>
+<h2 id="Symbols">Symbols</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    --keep-lock
+
+      <ul>
+        <li><a href="reference-manual.html#cmdoption-keep-lock">command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --run-interval
+
+      <ul>
+        <li><a href="reference-manual.html#cmdoption-run-interval">command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    --run-once
+
+      <ul>
+        <li><a href="reference-manual.html#cmdoption-run-once">command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --sleep-interval
+
+      <ul>
+        <li><a href="reference-manual.html#cmdoption-sleep-interval">command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -97,18 +135,25 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference-manual.html#jobslib.liveness.BaseLiveness.check">check() (jobslib.liveness.BaseLiveness method)</a>
 </li>
-      <li><a href="reference-manual.html#jobslib.Config">Config (class in jobslib)</a>
-</li>
-      <li><a href="reference-manual.html#jobslib.Context.config">config (jobslib.Context attribute)</a>
-</li>
-      <li><a href="reference-manual.html#jobslib.Config.consul">consul (jobslib.Config attribute)</a>
+      <li>
+    command line option
 
       <ul>
-        <li><a href="reference-manual.html#jobslib.Context.consul">(jobslib.Context attribute)</a>
+        <li><a href="reference-manual.html#cmdoption-keep-lock">--keep-lock</a>
+</li>
+        <li><a href="reference-manual.html#cmdoption-run-interval">--run-interval</a>
+</li>
+        <li><a href="reference-manual.html#cmdoption-run-once">--run-once</a>
+</li>
+        <li><a href="reference-manual.html#cmdoption-sleep-interval">--sleep-interval</a>
 </li>
       </ul></li>
+      <li><a href="reference-manual.html#jobslib.Config">Config (class in jobslib)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference-manual.html#jobslib.Context.config">config (jobslib.Context attribute)</a>
+</li>
       <li><a href="reference-manual.html#jobslib.liveness.consul.ConsulLiveness">ConsulLiveness (class in jobslib.liveness.consul)</a>
 </li>
       <li><a href="reference-manual.html#jobslib.liveness.consul.ConsulLiveness.OptionsConfig">ConsulLiveness.OptionsConfig (class in jobslib.liveness.consul)</a>
@@ -147,7 +192,53 @@
     environment variable
 
       <ul>
-        <li><a href="index.html#index-0">JOBSLIB_SETTINGS_MODULE</a>, <a href="reference-manual.html#index-0">[1]</a>
+        <li><a href="reference-manual.html#envvar-JOBSLIB_KEEP_LOCK">JOBSLIB_KEEP_LOCK</a>
+</li>
+        <li><a href="reference-manual.html#index-1">JOBSLIB_LIVENESS_BACKEND</a>
+</li>
+        <li><a href="reference-manual.html#index-5">JOBSLIB_LIVENESS_CONSUL_HOST</a>
+</li>
+        <li><a href="reference-manual.html#index-6">JOBSLIB_LIVENESS_CONSUL_PORT</a>
+</li>
+        <li><a href="reference-manual.html#index-7">JOBSLIB_LIVENESS_CONSUL_TIMEOUT</a>
+</li>
+        <li><a href="reference-manual.html#index-8">JOBSLIB_LIVENESS_OPTIONS_KEY</a>
+</li>
+        <li><a href="reference-manual.html#envvar-JOBSLIB_LOGGING">JOBSLIB_LOGGING</a>
+</li>
+        <li><a href="reference-manual.html#index-2">JOBSLIB_METRICS_BACKEND</a>
+</li>
+        <li><a href="reference-manual.html#index-13">JOBSLIB_METRICS_INFLUXDB_DBNAME</a>
+</li>
+        <li><a href="reference-manual.html#index-9">JOBSLIB_METRICS_INFLUXDB_HOST</a>
+</li>
+        <li><a href="reference-manual.html#index-12">JOBSLIB_METRICS_INFLUXDB_PASSWORD</a>
+</li>
+        <li><a href="reference-manual.html#index-10">JOBSLIB_METRICS_INFLUXDB_PORT</a>
+</li>
+        <li><a href="reference-manual.html#index-11">JOBSLIB_METRICS_INFLUXDB_USERNAME</a>
+</li>
+        <li><a href="reference-manual.html#index-3">JOBSLIB_ONE_INSTANCE_BACKEND</a>
+</li>
+        <li><a href="reference-manual.html#index-14">JOBSLIB_ONE_INSTANCE_CONSUL_HOST</a>
+</li>
+        <li><a href="reference-manual.html#index-15">JOBSLIB_ONE_INSTANCE_CONSUL_PORT</a>
+</li>
+        <li><a href="reference-manual.html#index-16">JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT</a>
+</li>
+        <li><a href="reference-manual.html#index-19">JOBSLIB_ONE_INSTANCE_LOCK_DELAY</a>
+</li>
+        <li><a href="reference-manual.html#index-17">JOBSLIB_ONE_INSTANCE_OPTIONS_KEY</a>
+</li>
+        <li><a href="reference-manual.html#index-18">JOBSLIB_ONE_INSTANCE_OPTIONS_TTL</a>
+</li>
+        <li><a href="reference-manual.html#envvar-JOBSLIB_RUN_INTERVAL">JOBSLIB_RUN_INTERVAL</a>
+</li>
+        <li><a href="reference-manual.html#envvar-JOBSLIB_RUN_ONCE">JOBSLIB_RUN_ONCE</a>
+</li>
+        <li><a href="index.html#index-0">JOBSLIB_SETTINGS_MODULE</a>, <a href="reference-manual.html#index-0">[1]</a>, <a href="reference-manual.html#index-4">[2]</a>
+</li>
+        <li><a href="reference-manual.html#envvar-JOBSLIB_SLEEP_INTERVAL">JOBSLIB_SLEEP_INTERVAL</a>
 </li>
       </ul></li>
   </ul></td>
@@ -177,19 +268,25 @@
   </ul></td>
 </tr></table>
 
-<h2 id="I">I</h2>
+<h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference-manual.html#jobslib.Config.influxdb">influxdb (jobslib.Config attribute)</a>
+      <li><a href="reference-manual.html#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.host">host (jobslib.liveness.consul.ConsulLiveness.OptionsConfig attribute)</a>
 
       <ul>
-        <li><a href="reference-manual.html#jobslib.Context.influxdb">(jobslib.Context attribute)</a>
+        <li><a href="reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.host">(jobslib.oneinstance.consul.ConsulLock.OptionsConfig attribute)</a>
 </li>
       </ul></li>
   </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference-manual.html#jobslib.metrics.influxdb.InfluxDBMetrics">InfluxDBMetrics (class in jobslib.metrics.influxdb)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference-manual.html#jobslib.Config.initialize">initialize() (jobslib.Config method)</a>
 
       <ul>
@@ -223,8 +320,6 @@
         <li><a href="reference-manual.html#module-jobslib.liveness">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     jobslib.metrics
 
@@ -246,7 +341,45 @@
         <li><a href="reference-manual.html#module-jobslib.tasks">module</a>
 </li>
       </ul></li>
-      <li><a href="index.html#index-0">JOBSLIB_SETTINGS_MODULE</a>, <a href="reference-manual.html#index-0">[1]</a>
+      <li><a href="reference-manual.html#index-1">JOBSLIB_LIVENESS_BACKEND</a>
+</li>
+      <li><a href="reference-manual.html#index-5">JOBSLIB_LIVENESS_CONSUL_HOST</a>
+</li>
+      <li><a href="reference-manual.html#index-6">JOBSLIB_LIVENESS_CONSUL_PORT</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference-manual.html#index-7">JOBSLIB_LIVENESS_CONSUL_TIMEOUT</a>
+</li>
+      <li><a href="reference-manual.html#index-8">JOBSLIB_LIVENESS_OPTIONS_KEY</a>
+</li>
+      <li><a href="reference-manual.html#index-2">JOBSLIB_METRICS_BACKEND</a>
+</li>
+      <li><a href="reference-manual.html#index-13">JOBSLIB_METRICS_INFLUXDB_DBNAME</a>
+</li>
+      <li><a href="reference-manual.html#index-9">JOBSLIB_METRICS_INFLUXDB_HOST</a>
+</li>
+      <li><a href="reference-manual.html#index-12">JOBSLIB_METRICS_INFLUXDB_PASSWORD</a>
+</li>
+      <li><a href="reference-manual.html#index-10">JOBSLIB_METRICS_INFLUXDB_PORT</a>
+</li>
+      <li><a href="reference-manual.html#index-11">JOBSLIB_METRICS_INFLUXDB_USERNAME</a>
+</li>
+      <li><a href="reference-manual.html#index-3">JOBSLIB_ONE_INSTANCE_BACKEND</a>
+</li>
+      <li><a href="reference-manual.html#index-14">JOBSLIB_ONE_INSTANCE_CONSUL_HOST</a>
+</li>
+      <li><a href="reference-manual.html#index-15">JOBSLIB_ONE_INSTANCE_CONSUL_PORT</a>
+</li>
+      <li><a href="reference-manual.html#index-16">JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT</a>
+</li>
+      <li><a href="reference-manual.html#index-19">JOBSLIB_ONE_INSTANCE_LOCK_DELAY</a>
+</li>
+      <li><a href="reference-manual.html#index-17">JOBSLIB_ONE_INSTANCE_OPTIONS_KEY</a>
+</li>
+      <li><a href="reference-manual.html#index-18">JOBSLIB_ONE_INSTANCE_OPTIONS_TTL</a>
+</li>
+      <li><a href="index.html#index-0">JOBSLIB_SETTINGS_MODULE</a>, <a href="reference-manual.html#index-0">[1]</a>, <a href="reference-manual.html#index-4">[2]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -337,6 +470,14 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference-manual.html#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.port">port (jobslib.liveness.consul.ConsulLiveness.OptionsConfig attribute)</a>
+
+      <ul>
+        <li><a href="reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.port">(jobslib.oneinstance.consul.ConsulLock.OptionsConfig attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference-manual.html#jobslib.metrics.BaseMetrics.push">push() (jobslib.metrics.BaseMetrics method)</a>
 </li>
   </ul></td>
@@ -363,6 +504,12 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference-manual.html#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.scheme">scheme (jobslib.liveness.consul.ConsulLiveness.OptionsConfig attribute)</a>
+
+      <ul>
+        <li><a href="reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.scheme">(jobslib.oneinstance.consul.ConsulLock.OptionsConfig attribute)</a>
+</li>
+      </ul></li>
       <li>
     settings
 
@@ -372,14 +519,12 @@
       </ul></li>
       <li><a href="reference-manual.html#settings.settings.CONFIG_CLASS">settings.CONFIG_CLASS (in module settings)</a>
 </li>
-      <li><a href="reference-manual.html#settings.settings.CONSUL">settings.CONSUL (in module settings)</a>
-</li>
       <li><a href="reference-manual.html#settings.settings.CONTEXT_CLASS">settings.CONTEXT_CLASS (in module settings)</a>
+</li>
+      <li><a href="reference-manual.html#settings.settings.KEEP_LOCK">settings.KEEP_LOCK (in module settings)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference-manual.html#settings.settings.INFLUXDB">settings.INFLUXDB (in module settings)</a>
-</li>
       <li><a href="reference-manual.html#settings.settings.LIVENESS">settings.LIVENESS (in module settings)</a>
 </li>
       <li><a href="reference-manual.html#settings.settings.LOGGING">settings.LOGGING (in module settings)</a>
@@ -387,6 +532,12 @@
       <li><a href="reference-manual.html#settings.settings.METRICS">settings.METRICS (in module settings)</a>
 </li>
       <li><a href="reference-manual.html#settings.settings.ONE_INSTANCE">settings.ONE_INSTANCE (in module settings)</a>
+</li>
+      <li><a href="reference-manual.html#settings.settings.RUN_INTERVAL">settings.RUN_INTERVAL (in module settings)</a>
+</li>
+      <li><a href="reference-manual.html#settings.settings.RUN_ONCE">settings.RUN_ONCE (in module settings)</a>
+</li>
+      <li><a href="reference-manual.html#settings.settings.SLEEP_INTERVAL">settings.SLEEP_INTERVAL (in module settings)</a>
 </li>
       <li><a href="reference-manual.html#jobslib.Config.sleep_interval">sleep_interval (jobslib.Config attribute)</a>
 </li>
@@ -398,10 +549,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference-manual.html#jobslib.BaseTask.task">task() (jobslib.BaseTask method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference-manual.html#jobslib.Config.task_class">task_class (jobslib.Config attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference-manual.html#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.timeout">timeout (jobslib.liveness.consul.ConsulLiveness.OptionsConfig attribute)</a>
+
+      <ul>
+        <li><a href="reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.timeout">(jobslib.oneinstance.consul.ConsulLock.OptionsConfig attribute)</a>
+</li>
+      </ul></li>
       <li><a href="reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.ttl">ttl (jobslib.oneinstance.consul.ConsulLock.OptionsConfig attribute)</a>
 </li>
   </ul></td>

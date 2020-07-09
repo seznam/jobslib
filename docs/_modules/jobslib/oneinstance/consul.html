@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jobslib.oneinstance.consul &#8212; jobslib 3.0.0rc2 documentation</title>
+    <title>jobslib.oneinstance.consul &#8212; jobslib 3.0.0rc4 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -44,6 +44,7 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
+<span class="kn">from</span> <span class="nn">consul</span> <span class="kn">import</span> <span class="n">Consul</span>
 <span class="kn">from</span> <span class="nn">objectvalidator</span> <span class="kn">import</span> <span class="n">option</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseLock</span><span class="p">,</span> <span class="n">OneInstanceWatchdogError</span>
@@ -78,26 +79,70 @@
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        CONSUL = {</span>
-<span class="sd">            &#39;host&#39;: &#39;hostname&#39;,</span>
-<span class="sd">            &#39;port&#39;: 8500,</span>
-<span class="sd">            &#39;timeout&#39;: 1.0,</span>
-<span class="sd">        }</span>
-
 <span class="sd">        ONE_INSTANCE = {</span>
 <span class="sd">            &#39;backend&#39;: &#39;jobslib.oneinstance.consul.ConsulLock&#39;,</span>
 <span class="sd">            &#39;options&#39;: {</span>
+<span class="sd">                &#39;host&#39;: &#39;hostname&#39;,</span>
+<span class="sd">                &#39;port&#39;: 8500,</span>
+<span class="sd">                &#39;timeout&#39;: 1.0,</span>
 <span class="sd">                &#39;key&#39;: &#39;jobs/example/lock&#39;,</span>
 <span class="sd">                &#39;ttl&#39;: 60.0,</span>
 <span class="sd">                &#39;lock_delay&#39;: 15.0,</span>
 <span class="sd">            },</span>
 <span class="sd">        }</span>
+
+<span class="sd">    Or use :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_HOST`,</span>
+<span class="sd">    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_PORT`,</span>
+<span class="sd">    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT`,</span>
+<span class="sd">    :envvar:`JOBSLIB_ONE_INSTANCE_OPTIONS_KEY`,</span>
+<span class="sd">    :envvar:`JOBSLIB_ONE_INSTANCE_OPTIONS_TTL` and</span>
+<span class="sd">    :envvar:`JOBSLIB_ONE_INSTANCE_LOCK_DELAY` environment variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ConsulLock.OptionsConfig"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig">[docs]</a>    <span class="k">class</span> <span class="nc">OptionsConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Consul lock options.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConsulLock.OptionsConfig.scheme"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.scheme">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">scheme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            URI scheme, in current implementation always ``http``.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="s1">&#39;http&#39;</span></div>
+
+<div class="viewcode-block" id="ConsulLock.OptionsConfig.host"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.host">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            IP address or hostname of the Consul server.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_ONE_INSTANCE_CONSUL_HOST&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">host</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">host</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConsulLock.OptionsConfig.port"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.port">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Port where the Consul server listening on.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_ONE_INSTANCE_CONSUL_PORT&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConsulLock.OptionsConfig.timeout"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.timeout">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Timeout in seconds for connect/read/write operation.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">timeout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">timeout</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">timeout</span></div>
 
 <div class="viewcode-block" id="ConsulLock.OptionsConfig.key"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.key">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -145,6 +190,12 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_lock_flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span> <span class="o">=</span> <span class="n">Consul</span><span class="p">(</span>
+            <span class="n">scheme</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">get_current_time</span><span class="p">()</span>
@@ -155,10 +206,10 @@
             <span class="s1">&#39;time_local&#39;</span><span class="p">:</span> <span class="n">to_local</span><span class="p">(</span><span class="n">timestamp</span><span class="p">),</span>
         <span class="p">}</span>
 
-        <span class="n">session_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">session_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">ttl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">ttl</span><span class="p">,</span> <span class="n">lock_delay</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">lock_delay</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">record</span><span class="p">),</span> <span class="n">acquire</span><span class="o">=</span><span class="n">session_id</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t acquire lock&quot;</span><span class="p">)</span>
@@ -172,12 +223,12 @@
                 <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">ttl</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Can&#39;t acquire lock&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">destroy</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">destroy</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t release lock&quot;</span><span class="p">)</span>
@@ -205,7 +256,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_lock_flag</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">renew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span><span class="p">)</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">renew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_session_id</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t extend lock&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -220,7 +271,7 @@
     <span class="k">def</span> <span class="nf">get_lock_owner_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">owner_info</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">unused_index</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">unused_index</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">owner_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">])</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">owner_info</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>

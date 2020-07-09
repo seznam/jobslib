@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jobslib.config &#8212; jobslib 3.0.0rc2 documentation</title>
+    <title>jobslib.config &#8212; jobslib 3.0.0rc4 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -79,11 +79,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class which encapsulates configuration. It joins configuration values</span>
 <span class="sd">    from :mod:`settings` module and from command line. :mod:`settings` is</span>
-<span class="sd">    Python module defined by either ``JOBSLIB_SETTINGS_MODULE`` environment</span>
-<span class="sd">    variable or ``-s/--settings`` command line argument. *args_parser* is</span>
-<span class="sd">    instance of the :class:`argparse.Namespace`. Both values are available</span>
-<span class="sd">    on class, *settings* as a **_settings** attribute, *args_parser* as an</span>
-<span class="sd">    **_args_parser** attribute.</span>
+<span class="sd">    Python module defined by either :envvar:`JOBSLIB_SETTINGS_MODULE`</span>
+<span class="sd">    environment variable or :option:`-s/--settings` command line argument.</span>
+<span class="sd">    *args_parser* is instance of the :class:`argparse.Namespace`. Both values</span>
+<span class="sd">    are available on class, *settings* as a :attr:`_settings` attribute and</span>
+<span class="sd">    *args_parser* as an :attr:`_args_parser` attribute.</span>
 
 <span class="sd">    Configuration options are placed on class as methods decorated by</span>
 <span class="sd">    :class:`option` decorator. During class initialization all decorated</span>
@@ -281,25 +281,7 @@
     <span class="nd">@option</span>
     <span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">MetricsConfig</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;METRICS&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Config.consul"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.consul">[docs]</a>    <span class="nd">@option</span>
-    <span class="k">def</span> <span class="nf">consul</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Configuration of the connection arguments to HashiCorp Consul.</span>
-<span class="sd">        Instance of the :class:`ConsulConfig`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ConsulConfig</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;CONSUL&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Config.influxdb"><a class="viewcode-back" href="../../reference-manual.html#jobslib.Config.influxdb">[docs]</a>    <span class="nd">@option</span>
-    <span class="k">def</span> <span class="nf">influxdb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Configuration of the connection arguments to InfluxDb.</span>
-<span class="sd">        Instance of the :class:`InfluxDbConfig`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">InfluxDbConfig</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;INFLUXDB&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span></div></div>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="s1">&#39;METRICS&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">OneInstanceConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
@@ -384,104 +366,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">OptionsConfig</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;options&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">ConsulConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Configuration of the connection to HashiCorp Consul, see `Consul</span>
-<span class="sd">    documentation &lt;http://python-consul.readthedocs.io/en/latest/#consul&gt;`_</span>
-<span class="sd">    for details.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">scheme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        URI scheme, in current implementation always ``http``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;http&#39;</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        IP address or hostname of the Consul server.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_CONSUL_HOST&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">host</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">host</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">)</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Port where the Consul server listening on.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_CONSUL_PORT&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">)</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Http requests timeout in seconds.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">timeout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_CONSUL_TIMEOUT&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">InfluxDbConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        InfluxDB host</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_HOST&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">host</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">host</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="s1">&#39;localhost&#39;</span><span class="p">)</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        InfluxDB port</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_PORT&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="mi">8086</span><span class="p">)</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">username</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        InfluxDB username</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">username</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_USERNAME&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">username</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">username</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        InfluxDB password</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">password</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_PASSWORD&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">password</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">password</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span>
-
-    <span class="nd">@option</span><span class="p">(</span><span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        InfluxDB database</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">database</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JOBSLIB_METRICS_INFLUXDB_DBNAME&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">database</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">database</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
 </pre></div>
 
           </div>

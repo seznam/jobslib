@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jobslib &#8212; jobslib 3.0.0rc2 documentation</title>
+    <title>Jobslib &#8212; jobslib 3.0.0rc4 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -93,14 +93,14 @@ same time. Jobslib includes implementation which uses
 </pre></div>
 </div>
 <p>Task is normally run in infinite loop, delay in seconds between individual
-launches is controlled by either <code class="xref std std-option docutils literal notranslate"><span class="pre">--sleep-interval</span></code> or
-<code class="xref std std-option docutils literal notranslate"><span class="pre">--run-interval</span></code> argument. <code class="xref std std-option docutils literal notranslate"><span class="pre">--sleep-interval</span></code> is interval in
-seconds, which is used to sleep after task is done. <code class="xref std std-option docutils literal notranslate"><span class="pre">--run-interval</span></code>
+launches is controlled by either <a class="reference internal" href="reference-manual.html#cmdoption-sleep-interval"><code class="xref std std-option docutils literal notranslate"><span class="pre">--sleep-interval</span></code></a> or
+<a class="reference internal" href="reference-manual.html#cmdoption-run-interval"><code class="xref std std-option docutils literal notranslate"><span class="pre">--run-interval</span></code></a> argument. <a class="reference internal" href="reference-manual.html#cmdoption-sleep-interval"><code class="xref std std-option docutils literal notranslate"><span class="pre">--sleep-interval</span></code></a> is interval in
+seconds, which is used to sleep after task is done. <a class="reference internal" href="reference-manual.html#cmdoption-run-interval"><code class="xref std std-option docutils literal notranslate"><span class="pre">--run-interval</span></code></a>
 tells that task is run every run interval seconds. Both arguments may not be
-used together. <code class="xref std std-option docutils literal notranslate"><span class="pre">--keep-lock</span></code> argument causes that lock will be kept
+used together. <a class="reference internal" href="reference-manual.html#cmdoption-keep-lock"><code class="xref std std-option docutils literal notranslate"><span class="pre">--keep-lock</span></code></a> argument causes that lock will be kept
 during sleeping, it is useful when you have several machines and you want to
 keep the task still on the same machine. If you don’t want to launch task
-forever, use <code class="xref std std-option docutils literal notranslate"><span class="pre">--run-once</span></code> argument. Library provides locking
+forever, use <a class="reference internal" href="reference-manual.html#cmdoption-run-once"><code class="xref std std-option docutils literal notranslate"><span class="pre">--run-once</span></code></a> argument. Library provides locking
 mechanism for launching tasks on several machines and only one instance at
 one time may be launched. If you don’t want this locking, use
 <code class="xref std std-option docutils literal notranslate"><span class="pre">--disable-one-instance</span></code> argument. All these options can be set in
