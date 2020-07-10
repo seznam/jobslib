@@ -84,7 +84,7 @@ one time may be launched. If you don't want this locking, use
 :option:`--disable-one-instance` argument. All these options can be set in
 :mod:`!settings` module. Optional argument :option:`-s/--settings` defines
 Python module where configuration is stored. Or you can pass settings module
-using :envvar:`JOBSLIB_SETTINGS_MODULE`.
+using :envvar:`JOBSLIB_SETTINGS_MODULE` environment variable.
 
 During task initialization instances of the :class:`jobslib.Config` and
 :class:`jobslib.Context` classes are created. You can define your own classes
