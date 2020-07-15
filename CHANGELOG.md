@@ -1,5 +1,9 @@
 # Jobslib
 
+## [3.0.1] - 2020-07-15 08:05 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Fixed
+- version of the `colored` dependency
+
 ## [3.0.0] - 2020-06-26 15:18 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Added
 - `tox` configuration (DOP-3793)

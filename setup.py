@@ -47,7 +47,7 @@ setup(
     zip_safe=True,
     install_requires=[
         'cached-property',
-        'colored<1.3',
+        'colored',
         'influxdb',
         'objectvalidator',
         'python-consul2',
