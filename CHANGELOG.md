@@ -1,5 +1,9 @@
 # Jobslib
 
+## [3.0.3] - 2020-07-29 16:01 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Fixed
+- influxdb metrics `push` method
+
 ## [3.0.2] - 2020-07-29 14:42 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Fixed
 - liveness consul key env name
