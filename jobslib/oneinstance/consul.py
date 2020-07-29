@@ -57,7 +57,8 @@ class ConsulLock(BaseLock):
             },
         }
 
-    Or use :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_HOST`,
+    Or use
+    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_HOST`,
     :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_PORT`,
     :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT`,
     :envvar:`JOBSLIB_ONE_INSTANCE_OPTIONS_KEY`,

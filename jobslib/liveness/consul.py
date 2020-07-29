@@ -37,10 +37,11 @@ class ConsulLiveness(BaseLiveness):
             },
         }
 
-    Or use :envvar:`JOBSLIB_LIVENESS_CONSUL_HOST`,
+    Or use
+    :envvar:`JOBSLIB_LIVENESS_CONSUL_HOST`,
     :envvar:`JOBSLIB_LIVENESS_CONSUL_PORT`,
     :envvar:`JOBSLIB_LIVENESS_CONSUL_TIMEOUT` and
-    :envvar:`JOBSLIB_LIVENESS_OPTIONS_KEY` environment variables.
+    :envvar:`JOBSLIB_LIVENESS_CONSUL_KEY` environment variables.
     """
 
     class OptionsConfig(ConfigGroup):
@@ -93,7 +94,7 @@ class ConsulLiveness(BaseLiveness):
             """
             Key under which the health state is stored.
             """
-            key = os.environ.get('JOBSLIB_LIVENESS_OPTIONS_KEY')
+            key = os.environ.get('JOBSLIB_LIVENESS_CONSUL_KEY')
             if key:
                 return key
             return self._settings['key']

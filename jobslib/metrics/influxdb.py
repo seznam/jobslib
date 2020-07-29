@@ -38,7 +38,8 @@ class InfluxDBMetrics(BaseMetrics):
             },
         }
 
-    Or use :envvar:`JOBSLIB_METRICS_INFLUXDB_HOST`,
+    Or use
+    :envvar:`JOBSLIB_METRICS_INFLUXDB_HOST`,
     :envvar:`JOBSLIB_METRICS_INFLUXDB_PORT`,
     :envvar:`JOBSLIB_METRICS_INFLUXDB_USERNAME`,
     :envvar:`JOBSLIB_METRICS_INFLUXDB_PASSWORD` and
