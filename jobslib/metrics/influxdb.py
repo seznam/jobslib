@@ -130,7 +130,7 @@ class InfluxDBMetrics(BaseMetrics):
                     'tags': tags,
                     'time': ts,
                     'fields': {
-                        'value': metric_value['value'],
+                        'value': float(metric_value['value']),
                     },
                 }
                 points.append(metric)
