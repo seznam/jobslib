@@ -1,5 +1,9 @@
 # Jobslib
 
+## [3.0.2] - 2020-07-29 14:42 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Fixed
+- liveness consul key env name
+
 ## [3.0.1] - 2020-07-15 08:05 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Fixed
 - version of the `colored` dependency
