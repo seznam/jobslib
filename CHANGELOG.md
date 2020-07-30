@@ -1,5 +1,9 @@
 # Jobslib
 
+## [3.0.4] - 2020-07-30 13:27 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Fixed
+- release lock when task is terminated
+
 ## [3.0.3] - 2020-07-29 16:01 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Fixed
 - influxdb metrics `push` method
