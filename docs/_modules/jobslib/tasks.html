@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jobslib.tasks &#8212; jobslib 3.0.3 documentation</title>
+    <title>jobslib.tasks &#8212; jobslib 3.0.4 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -141,6 +141,7 @@
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">():</span>
+                    <span class="n">terminate</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Run task&quot;</span><span class="p">)</span>
 
@@ -153,8 +154,13 @@
                             <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">)</span>
 
                         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task done&quot;</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="n">Terminate</span><span class="p">:</span>
+                        <span class="n">terminate</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">raise</span>
                     <span class="k">finally</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">keep_lock</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">run_once</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">keep_lock</span>
+                                <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">run_once</span>
+                                <span class="ow">and</span> <span class="ow">not</span> <span class="n">terminate</span><span class="p">):</span>
                             <span class="n">lock</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
