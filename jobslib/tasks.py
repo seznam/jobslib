@@ -107,6 +107,7 @@ class BaseTask(object):
 
             try:
                 if lock.acquire():
+                    terminate = False
                     try:
                         self.logger.info("Run task")
 
@@ -119,8 +120,13 @@ class BaseTask(object):
                             signal.signal(signal.SIGINT, signal.SIG_DFL)
 
                         self.logger.info("Task done")
+                    except Terminate:
+                        terminate = True
+                        raise
                     finally:
-                        if keep_lock and not self.context.config.run_once:
+                        if (keep_lock
+                                and not self.context.config.run_once
+                                and not terminate):
                             lock.refresh()
                         else:
                             lock.release()
