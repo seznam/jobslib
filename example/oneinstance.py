@@ -30,12 +30,8 @@ LIVENESS = {
 }
 
 METRICS = {
-    'backend': 'jobslib.metrics.influxdb.InfluxDBMetrics',
-    'options': {
-        'database': 'oneinstance',
-    },
+    'backend': 'jobslib.metrics.dummy.DummyMetrics',
 }
-
 
 # task ------------------------------------------------------------------------
 
