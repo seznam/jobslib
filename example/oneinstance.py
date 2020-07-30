@@ -33,6 +33,7 @@ METRICS = {
     'backend': 'jobslib.metrics.dummy.DummyMetrics',
 }
 
+
 # task ------------------------------------------------------------------------
 
 class OneInstance(BaseTask):
