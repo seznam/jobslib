@@ -1,5 +1,9 @@
 # Jobslib
 
+## [3.0.5] - 2020-08-02 22:37 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Fixed
+- release lock when sleeping is terminated
+
 ## [3.0.4] - 2020-07-30 13:27 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Fixed
 - release lock when task is terminated
