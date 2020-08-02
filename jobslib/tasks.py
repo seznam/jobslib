@@ -189,12 +189,20 @@ class BaseTask(object):
                 self.logger.info(
                     "Sleep for %d seconds, lock is kept", sleep_time)
 
-                sleep_start_time = time.time()
-                sleep_stop_time = sleep_start_time + sleep_time
-                while time.time() < sleep_stop_time:
-                    lock.refresh()
-                    time.sleep(1)
-                lock.release()
+                signal.signal(signal.SIGTERM, self.terminate_process)
+                signal.signal(signal.SIGINT, self.terminate_process)
+                try:
+                    sleep_start_time = time.time()
+                    sleep_stop_time = sleep_start_time + sleep_time
+                    try:
+                        while time.time() < sleep_stop_time:
+                            lock.refresh()
+                            time.sleep(1)
+                    finally:
+                        lock.release()
+                finally:
+                    signal.signal(signal.SIGTERM, signal.SIG_DFL)
+                    signal.signal(signal.SIGINT, signal.SIG_DFL)
             else:
                 self.logger.info(
                     "Sleep for %d seconds", sleep_time)
