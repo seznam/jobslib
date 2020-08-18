@@ -12,6 +12,7 @@ import os
 
 from consul import Consul
 from objectvalidator import option
+from retrying import retry
 
 from . import BaseLock, OneInstanceWatchdogError
 from ..config import ConfigGroup
@@ -175,9 +176,13 @@ class ConsulLock(BaseLock):
 
         session_id = self._consul.session.create(
             ttl=self.options.ttl, lock_delay=self.options.lock_delay)
+
+        @retry(stop_max_attempt_number=5, wait_random_max=100)
+        def _retry_acquire(consul, key):
+            return consul.kv.put(key, json.dumps(record), acquire=session_id)
+
         try:
-            res = self._consul.kv.put(
-                self.options.key, json.dumps(record), acquire=session_id)
+            res = _retry_acquire(self._consul, self.options.key)
         except Exception:
             logger.exception("Can't acquire lock")
         else:
@@ -194,9 +199,13 @@ class ConsulLock(BaseLock):
         return False
 
     def release(self):
+        @retry(stop_max_attempt_number=5, wait_random_max=100)
+        def _retry_release(consul, key, session_id):
+            return consul.kv.put(key, None, release=session_id)
+
         try:
-            res = self._consul.kv.put(
-                self.options.key, None, release=self._session_id)
+            res = _retry_release(
+                self._consul, self.options.key, self._session_id)
         except Exception:
             logger.exception("Can't release lock")
         else:

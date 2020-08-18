@@ -1,5 +1,9 @@
 # Jobslib
 
+## [3.0.6] - 2020-08-18 10:00 - Alan Stolc <alan.stolc@firma.seznam.cz>
+### Fixed
+- retry when acquire and release lock
+
 ## [3.0.5] - 2020-08-02 22:37 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Fixed
 - release lock when sleeping is terminated
