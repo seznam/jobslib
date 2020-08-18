@@ -182,8 +182,6 @@ class ConsulLock(BaseLock):
             res = _retry_acquire(self._consul, self.options.key)
         except Exception:
             logger.exception("Can't acquire lock")
-        except Exception:
-            logger.exception("Can't acquire lock")
         else:
             if res is True:
                 self._session_id = session_id
