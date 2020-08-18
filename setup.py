@@ -51,6 +51,7 @@ setup(
         'influxdb',
         'objectvalidator',
         'python-consul2',
+        'retrying',
     ],
     entry_points={
         'console_scripts': [
