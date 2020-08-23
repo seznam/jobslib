@@ -8,11 +8,13 @@ import logging
 import os
 import time
 
+import retrying
+
 from influxdb.client import InfluxDBClient
 from objectvalidator import option
 
 from . import BaseMetrics
-from ..config import ConfigGroup
+from ..config import ConfigGroup, RetryConfigMixin
 
 __all__ = ['InfluxDBMetrics']
 
@@ -35,6 +37,8 @@ class InfluxDBMetrics(BaseMetrics):
                 'username': 'root',
                 'password': 'root',
                 'database': 'dbname',
+                'retry_max_attempts': 10,
+                'retry_wait_multiplier': 50,
             },
         }
 
@@ -42,14 +46,19 @@ class InfluxDBMetrics(BaseMetrics):
     :envvar:`JOBSLIB_METRICS_INFLUXDB_HOST`,
     :envvar:`JOBSLIB_METRICS_INFLUXDB_PORT`,
     :envvar:`JOBSLIB_METRICS_INFLUXDB_USERNAME`,
-    :envvar:`JOBSLIB_METRICS_INFLUXDB_PASSWORD` and
-    :envvar:`JOBSLIB_METRICS_INFLUXDB_DBNAME` environment variables.
+    :envvar:`JOBSLIB_METRICS_INFLUXDB_PASSWORD`,
+    :envvar:`JOBSLIB_METRICS_INFLUXDB_DBNAME`,
+    :envvar:`JOBSLIB_METRICS_INFLUXDB_RETRY_MAX_ATTEMPTS` and
+    :envvar:`JOBSLIB_METRICS_INFLUXDB_RETRY_WAIT_MULTIPLIER`
+    environment variables.
     """
 
-    class OptionsConfig(ConfigGroup):
+    class OptionsConfig(RetryConfigMixin, ConfigGroup):
         """
         Consul liveness options.
         """
+
+        retry_env_prefix = 'JOBSLIB_METRICS_INFLUXDB_'
 
         @option(required=True, attrtype=str)
         def host(self):
@@ -112,6 +121,12 @@ class InfluxDBMetrics(BaseMetrics):
         )
 
     def push(self, metrics):
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _write_points(points):
+            self._influxdb.write_points(points)
+
         current_dt = datetime.datetime.utcfromtimestamp(time.time())
         ts = current_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
         task_name = self.context.config.task_class.name
@@ -134,6 +149,6 @@ class InfluxDBMetrics(BaseMetrics):
                     },
                 }
                 points.append(metric)
-            self._influxdb.write_points(points)
+            _write_points(points)
         except Exception:
             logger.exception('Push monitoring metrics into InfluxDb failed')

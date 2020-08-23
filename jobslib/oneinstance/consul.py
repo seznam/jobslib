@@ -10,11 +10,13 @@ import logging
 import signal
 import os
 
+import retrying
+
 from consul import Consul
 from objectvalidator import option
 
 from . import BaseLock, OneInstanceWatchdogError
-from ..config import ConfigGroup
+from ..config import ConfigGroup, RetryConfigMixin
 from ..time import get_current_time, to_local, to_utc
 
 __all__ = ['ConsulLock']
@@ -54,6 +56,8 @@ class ConsulLock(BaseLock):
                 'key': 'jobs/example/lock',
                 'ttl': 60.0,
                 'lock_delay': 15.0,
+                'retry_max_attempts': 10,
+                'retry_wait_multiplier': 50,
             },
         }
 
@@ -61,15 +65,20 @@ class ConsulLock(BaseLock):
     :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_HOST`,
     :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_PORT`,
     :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT`,
-    :envvar:`JOBSLIB_ONE_INSTANCE_OPTIONS_KEY`,
-    :envvar:`JOBSLIB_ONE_INSTANCE_OPTIONS_TTL` and
-    :envvar:`JOBSLIB_ONE_INSTANCE_LOCK_DELAY` environment variables.
+    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_KEY`,
+    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_TTL`,
+    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_LOCK_DELAY`,
+    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_RETRY_MAX_ATTEMPTS` and
+    :envvar:`JOBSLIB_ONE_INSTANCE_CONSUL_RETRY_WAIT_MULTIPLIER`
+    environment variables.
     """
 
-    class OptionsConfig(ConfigGroup):
+    class OptionsConfig(RetryConfigMixin, ConfigGroup):
         """
         Consul lock options.
         """
+
+        retry_env_prefix = 'JOBSLIB_ONE_INSTANCE_CONSUL_'
 
         @option(required=True, attrtype=str)
         def scheme(self):
@@ -116,6 +125,10 @@ class ConsulLock(BaseLock):
             """
             Key under which the lock is stored.
             """
+            key = os.environ.get('JOBSLIB_ONE_INSTANCE_CONSUL_KEY')
+            if key:
+                return key
+            # env for backward compatibility
             key = os.environ.get('JOBSLIB_ONE_INSTANCE_OPTIONS_KEY')
             if key:
                 return key
@@ -128,7 +141,10 @@ class ConsulLock(BaseLock):
             and one day. If value is omitted, default is one day (maximum
             for Consul).
             """
-            if 'JOBSLIB_ONE_INSTANCE_OPTIONS_TTL' in os.environ:
+            if 'JOBSLIB_ONE_INSTANCE_CONSUL_TTL' in os.environ:
+                ttl = int(os.environ['JOBSLIB_ONE_INSTANCE_CONSUL_TTL'])
+            elif 'JOBSLIB_ONE_INSTANCE_OPTIONS_TTL' in os.environ:
+                # env for backward compatibility
                 ttl = int(os.environ['JOBSLIB_ONE_INSTANCE_OPTIONS_TTL'])
             else:
                 ttl = self._settings.get('ttl', ONE_DAY_SECONDS)
@@ -145,7 +161,10 @@ class ConsulLock(BaseLock):
             *lock_delay* seconds before session is truly invalidated.
             Value must be between 0 and 60 seconds, default is 1.
             """
-            if 'JOBSLIB_ONE_INSTANCE_LOCK_DELAY' in os.environ:
+            if 'JOBSLIB_ONE_INSTANCE_CONSUL_LOCK_DELAY' in os.environ:
+                delay = int(os.environ.get(
+                    'JOBSLIB_ONE_INSTANCE_CONSUL_LOCK_DELAY'))
+            elif 'JOBSLIB_ONE_INSTANCE_LOCK_DELAY' in os.environ:
                 delay = int(os.environ.get('JOBSLIB_ONE_INSTANCE_LOCK_DELAY'))
             else:
                 delay = self._settings.get('lock_delay', 1)
@@ -165,6 +184,26 @@ class ConsulLock(BaseLock):
         )
 
     def acquire(self):
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _create_session():
+            return self._consul.session.create(
+                ttl=self.options.ttl, lock_delay=self.options.lock_delay)
+
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _acquire_lock(data, session_id):
+            return self._consul.kv.put(
+                self.options.key, data, acquire=session_id)
+
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _destroy_session(session_id):
+            self._consul.session.destroy(session_id)
+
         timestamp = get_current_time()
         record = {
             'fqdn': self.context.fqdn,
@@ -173,11 +212,9 @@ class ConsulLock(BaseLock):
             'time_local': to_local(timestamp),
         }
 
-        session_id = self._consul.session.create(
-            ttl=self.options.ttl, lock_delay=self.options.lock_delay)
+        session_id = _create_session()
         try:
-            res = self._consul.kv.put(
-                self.options.key, json.dumps(record), acquire=session_id)
+            res = _acquire_lock(json.dumps(record), session_id)
         except Exception:
             logger.exception("Can't acquire lock")
         else:
@@ -190,13 +227,19 @@ class ConsulLock(BaseLock):
                 signal.alarm(self.options.ttl)
                 return True
             logger.error("Can't acquire lock")
-        self._consul.session.destroy(session_id)
+        _destroy_session(session_id)
         return False
 
     def release(self):
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _release_lock(session_id):
+            return self._consul.kv.put(
+                self.options.key, None, release=session_id)
+
         try:
-            res = self._consul.kv.put(
-                self.options.key, None, release=self._session_id)
+            res = _release_lock(self._session_id)
         except Exception:
             logger.exception("Can't release lock")
         else:
@@ -221,9 +264,15 @@ class ConsulLock(BaseLock):
         for extending is presented, otherwise raise
         :exc:`OneInstanceWatchdogError`.
         """
+        @retrying.retry(
+            stop_max_delay=self.options.lock_delay,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _renew_session(session_id):
+            return self._consul.session.renew(session_id)
+
         if self._refresh_lock_flag:
             try:
-                res = self._consul.session.renew(self._session_id)
+                res = _renew_session(self._session_id)
             except Exception:
                 logger.exception("Can't extend lock")
             else:
@@ -236,9 +285,15 @@ class ConsulLock(BaseLock):
         raise OneInstanceWatchdogError
 
     def get_lock_owner_info(self):
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _get_lock_owner_info():
+            return self._consul.kv.get(self.options.key)[1]
+
         owner_info = None
         try:
-            unused_index, res = self._consul.kv.get(self.options.key)
+            res = _get_lock_owner_info()
             if res is not None and res['Value'] is not None:
                 owner_info = json.loads(res['Value'])
                 if not isinstance(owner_info, collections.abc.Mapping):

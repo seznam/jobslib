@@ -332,3 +332,33 @@ class MetricsConfig(ConfigGroup):
         """
         return self.backend.OptionsConfig(
             self._settings.get('options', {}), self._args_parser)
+
+
+class RetryConfigMixin(object):
+
+    @option(required=True, attrtype=int)
+    def retry_max_attempts(self):
+        """
+        Number of attempts when some operation failes. Default is 0.
+        """
+        env_name = "{}{}".format(self.retry_env_prefix, 'RETRY_MAX_ATTEMPTS')
+        if env_name in os.environ:
+            retry_max_attempts = int(os.environ.get(env_name))
+        else:
+            retry_max_attempts = self._settings.get('retry_max_attempts', 0)
+        return retry_max_attempts
+
+    @option(required=True, attrtype=int)
+    def retry_wait_multiplier(self):
+        """
+        Wait ``2^x * multiplier`` milliseconds between each retry. Default
+        is 50. So waits between each retries will be 0.1 sec, 0.2 sec,
+        0.4 sec, 0.8 sec, 1.6 sec, 3.2 sec, ...
+        """
+        env_name = "{}{}".format(
+            self.retry_env_prefix, 'RETRY_WAIT_MULTIPLIER')
+        if env_name in os.environ:
+            multiplier = int(os.environ.get(env_name))
+        else:
+            multiplier = self._settings.get('retry_wait_multiplier', 50)
+        return multiplier

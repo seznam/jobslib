@@ -7,11 +7,13 @@ import json
 import logging
 import os
 
+import retrying
+
 from consul import Consul
 from objectvalidator import option
 
 from . import BaseLiveness
-from ..config import ConfigGroup
+from ..config import ConfigGroup, RetryConfigMixin
 
 __all__ = ['ConsulLiveness']
 
@@ -34,20 +36,27 @@ class ConsulLiveness(BaseLiveness):
                 'port': 8500,
                 'timeout': 1.0,
                 'key': 'jobs/example/liveness',
+                'retry_max_attempts': 10,
+                'retry_wait_multiplier': 50,
             },
         }
 
     Or use
     :envvar:`JOBSLIB_LIVENESS_CONSUL_HOST`,
     :envvar:`JOBSLIB_LIVENESS_CONSUL_PORT`,
-    :envvar:`JOBSLIB_LIVENESS_CONSUL_TIMEOUT` and
-    :envvar:`JOBSLIB_LIVENESS_CONSUL_KEY` environment variables.
+    :envvar:`JOBSLIB_LIVENESS_CONSUL_TIMEOUT`,
+    :envvar:`JOBSLIB_LIVENESS_CONSUL_KEY`,
+    :envvar:`JOBSLIB_LIVENESS_CONSUL_RETRY_MAX_ATTEMPTS` and
+    :envvar:`JOBSLIB_LIVENESS_CONSUL_RETRY_WAIT_MULTIPLIER`
+    environment variables.
     """
 
-    class OptionsConfig(ConfigGroup):
+    class OptionsConfig(RetryConfigMixin, ConfigGroup):
         """
         Consul liveness options.
         """
+
+        retry_env_prefix = 'JOBSLIB_LIVENESS_CONSUL_'
 
         @option(required=True, attrtype=str)
         def scheme(self):
@@ -109,17 +118,29 @@ class ConsulLiveness(BaseLiveness):
         )
 
     def write(self):
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _write(data):
+            return self._consul.kv.put(self.options.key, data)
+
         try:
             state = self.get_state()
             data = json.dumps(state)
-            if not self._consul.kv.put(self.options.key, data):
+            if not _write(data):
                 logger.error("Can't write liveness state")
         except Exception:
             logger.exception("Can't write liveness state")
 
     def read(self):
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _read():
+            return self._consul.kv.get(self.options.key)[1]
+
         try:
-            unused_index, data = self._consul.kv.get(self.options.key)
+            data = _read()
             if data is None:
                 raise KeyError(self.options.key)
             record = json.loads(data['Value'])
