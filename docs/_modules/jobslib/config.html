@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jobslib.config &#8212; jobslib 3.0.5 documentation</title>
+    <title>jobslib.config &#8212; jobslib 3.1.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -366,6 +366,36 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">OptionsConfig</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;options&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_parser</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">RetryConfigMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">retry_max_attempts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Number of attempts when some operation failes. Default is 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">env_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retry_env_prefix</span><span class="p">,</span> <span class="s1">&#39;RETRY_MAX_ATTEMPTS&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">env_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">retry_max_attempts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">env_name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">retry_max_attempts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;retry_max_attempts&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retry_max_attempts</span>
+
+    <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">retry_wait_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait ``2^x * multiplier`` milliseconds between each retry. Default</span>
+<span class="sd">        is 50. So waits between each retries will be 0.1 sec, 0.2 sec,</span>
+<span class="sd">        0.4 sec, 0.8 sec, 1.6 sec, 3.2 sec, ...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">env_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">retry_env_prefix</span><span class="p">,</span> <span class="s1">&#39;RETRY_WAIT_MULTIPLIER&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">env_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">multiplier</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">env_name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">multiplier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;retry_wait_multiplier&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">multiplier</span>
 </pre></div>
 
           </div>

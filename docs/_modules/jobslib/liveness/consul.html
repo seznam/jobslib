@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jobslib.liveness.consul &#8212; jobslib 3.0.5 documentation</title>
+    <title>jobslib.liveness.consul &#8212; jobslib 3.1.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -41,11 +41,13 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
+<span class="kn">import</span> <span class="nn">retrying</span>
+
 <span class="kn">from</span> <span class="nn">consul</span> <span class="kn">import</span> <span class="n">Consul</span>
 <span class="kn">from</span> <span class="nn">objectvalidator</span> <span class="kn">import</span> <span class="n">option</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseLiveness</span>
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">ConfigGroup</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">ConfigGroup</span><span class="p">,</span> <span class="n">RetryConfigMixin</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ConsulLiveness&#39;</span><span class="p">]</span>
 
@@ -68,20 +70,27 @@
 <span class="sd">                &#39;port&#39;: 8500,</span>
 <span class="sd">                &#39;timeout&#39;: 1.0,</span>
 <span class="sd">                &#39;key&#39;: &#39;jobs/example/liveness&#39;,</span>
+<span class="sd">                &#39;retry_max_attempts&#39;: 10,</span>
+<span class="sd">                &#39;retry_wait_multiplier&#39;: 50,</span>
 <span class="sd">            },</span>
 <span class="sd">        }</span>
 
 <span class="sd">    Or use</span>
 <span class="sd">    :envvar:`JOBSLIB_LIVENESS_CONSUL_HOST`,</span>
 <span class="sd">    :envvar:`JOBSLIB_LIVENESS_CONSUL_PORT`,</span>
-<span class="sd">    :envvar:`JOBSLIB_LIVENESS_CONSUL_TIMEOUT` and</span>
-<span class="sd">    :envvar:`JOBSLIB_LIVENESS_CONSUL_KEY` environment variables.</span>
+<span class="sd">    :envvar:`JOBSLIB_LIVENESS_CONSUL_TIMEOUT`,</span>
+<span class="sd">    :envvar:`JOBSLIB_LIVENESS_CONSUL_KEY`,</span>
+<span class="sd">    :envvar:`JOBSLIB_LIVENESS_CONSUL_RETRY_MAX_ATTEMPTS` and</span>
+<span class="sd">    :envvar:`JOBSLIB_LIVENESS_CONSUL_RETRY_WAIT_MULTIPLIER`</span>
+<span class="sd">    environment variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ConsulLiveness.OptionsConfig"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.liveness.consul.ConsulLiveness.OptionsConfig">[docs]</a>    <span class="k">class</span> <span class="nc">OptionsConfig</span><span class="p">(</span><span class="n">ConfigGroup</span><span class="p">):</span>
+<div class="viewcode-block" id="ConsulLiveness.OptionsConfig"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.liveness.consul.ConsulLiveness.OptionsConfig">[docs]</a>    <span class="k">class</span> <span class="nc">OptionsConfig</span><span class="p">(</span><span class="n">RetryConfigMixin</span><span class="p">,</span> <span class="n">ConfigGroup</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Consul liveness options.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">retry_env_prefix</span> <span class="o">=</span> <span class="s1">&#39;JOBSLIB_LIVENESS_CONSUL_&#39;</span>
 
 <div class="viewcode-block" id="ConsulLiveness.OptionsConfig.scheme"><a class="viewcode-back" href="../../../reference-manual.html#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.scheme">[docs]</a>        <span class="nd">@option</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attrtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">scheme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -143,17 +152,29 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nd">@retrying</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span>
+            <span class="n">stop_max_attempt_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">retry_max_attempts</span><span class="p">,</span>
+            <span class="n">wait_exponential_multiplier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">retry_wait_multiplier</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_write</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_write</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Can&#39;t write liveness state&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t write liveness state&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nd">@retrying</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span>
+            <span class="n">stop_max_attempt_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">retry_max_attempts</span><span class="p">,</span>
+            <span class="n">wait_exponential_multiplier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">retry_wait_multiplier</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_read</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">unused_index</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consul</span><span class="o">.</span><span class="n">kv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">_read</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
             <span class="n">record</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">])</span>
