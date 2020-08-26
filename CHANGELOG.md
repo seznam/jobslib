@@ -1,5 +1,11 @@
 # Jobslib
 
+## [3.1.0] - 2020-08-26 09:33 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Added
+- retry when liveness/metrics/oneinstance failed
+### Fixed
+- one instance environment variables names
+
 ## [3.0.5] - 2020-08-02 22:37 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Fixed
 - release lock when sleeping is terminated
