@@ -201,6 +201,13 @@ class ConsulLock(BaseLock):
         @retrying.retry(
             stop_max_attempt_number=self.options.retry_max_attempts,
             wait_exponential_multiplier=self.options.retry_wait_multiplier)
+        def _delete_lock():
+            return self._consul.kv.delete(
+                self.options.key)
+
+        @retrying.retry(
+            stop_max_attempt_number=self.options.retry_max_attempts,
+            wait_exponential_multiplier=self.options.retry_wait_multiplier)
         def _destroy_session(session_id):
             self._consul.session.destroy(session_id)
 
@@ -211,7 +218,10 @@ class ConsulLock(BaseLock):
             'time_utc': to_utc(timestamp),
             'time_local': to_local(timestamp),
         }
-
+        lock_owner_info = self.get_lock_owner_info()
+        if lock_owner_info and lock_owner_info['fqdn'] == record['fqdn']:
+            _delete_lock()
+            logger.error("Lock has not been released after last run, deleting")
         session_id = _create_session()
         try:
             res = _acquire_lock(json.dumps(record), session_id)
