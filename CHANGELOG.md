@@ -1,5 +1,9 @@
 # Jobslib
 
+## [3.2.0] - 2022-09-05 09:33 - Ondrej Voves <ondrej.voves@firma.seznam.cz>
+### Added
+- Option to release lock on error (DOP-7864)
+
 ## [3.1.0] - 2020-08-26 09:33 - Jan Seifert <jan.seifert@firma.seznam.cz>
 ### Added
 - retry when liveness/metrics/oneinstance failed
