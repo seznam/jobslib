@@ -97,12 +97,12 @@ def test_config(run_interval, sleep_interval):
 
     ArgsParser = collections.namedtuple('ArgsParser', [
         'disable_one_instance', 'run_once', 'run_interval',
-        'sleep_interval', 'keep_lock', 'task_cls'])
+        'sleep_interval', 'keep_lock', 'task_cls', 'release_on_error'])
 
     args_parser = ArgsParser(
         disable_one_instance=False, run_once=True, run_interval=run_interval,
         sleep_interval=sleep_interval, keep_lock=True,
-        task_cls='mock_task.TaskClassMockClass')
+        task_cls='mock_task.TaskClassMockClass', release_on_error=False)
 
     config = Config(settings, args_parser, mock.Mock())
 
