@@ -186,7 +186,8 @@ class BaseTask(object):
                 next_run = start_time + self.context.config.run_interval
                 sleep_time = max(next_run - time.time(), 0)
 
-            failed_and_release = (job_status == JobStatus.FAILED) and release_on_error
+            failed_and_release = \
+                (job_status == JobStatus.FAILED) and release_on_error
 
             if keep_lock and not failed_and_release:
                 self.logger.info(
@@ -207,8 +208,10 @@ class BaseTask(object):
                     signal.signal(signal.SIGTERM, signal.SIG_DFL)
                     signal.signal(signal.SIGINT, signal.SIG_DFL)
             else:
-                # we need wait 2*sleep_time because another instance need time to take lock
-                sleep_time = sleep_time if not failed_and_release else sleep_time * 2
+                # we need wait 2*sleep_time
+                # because another instance need time to take lock
+                sleep_time = \
+                    sleep_time if not failed_and_release else sleep_time * 2
 
                 if failed_and_release:
                     lock.release()

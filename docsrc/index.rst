@@ -1,4 +1,3 @@
-
 Jobslib
 =======
 
@@ -60,7 +59,7 @@ Task is launched from command line using :command:`runjob` command:
 
     $ runjob [-s SETTINGS] [--disable-one-instance] [--run-once]
              [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]
-             [--keep-lock]
+             [--keep-lock] [--release-on-error]
              task_cls
 
     $ # Pass settings module using -s argument
@@ -77,7 +76,9 @@ seconds, which is used to sleep after task is done. :option:`--run-interval`
 tells that task is run every run interval seconds. Both arguments may not be
 used together. :option:`--keep-lock` argument causes that lock will be kept
 during sleeping, it is useful when you have several machines and you want to
-keep the task still on the same machine. If you don't want to launch task
+keep the task still on the same machine. You can force release lock on error
+with :option:`--release-on-error` if you use :option:`--keep-lock`.
+If you don't want to launch task
 forever, use :option:`--run-once` argument. Library provides locking
 mechanism for launching tasks on several machines and only one instance at
 one time may be launched. If you don't want this locking, use

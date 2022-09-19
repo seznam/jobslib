@@ -57,7 +57,7 @@ Task is launched from command line using `runjob` command:
 
     $ runjob [-s SETTINGS] [--disable-one-instance] [--run-once]
              [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]
-             [--keep-lock]
+             [--keep-lock] [--release-on-error]
              task_cls
 
     # Pass settings module using -s argument

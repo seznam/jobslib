@@ -106,6 +106,17 @@ If set to :data:`!True`, indicates that lock will be kept during sleeping.
 
     KEEP_LOCK = True
 
+.. option:: --release-on-error
+.. envvar:: JOBSLIB_RELEASE_ON_ERROR
+.. py:data:: settings.RELEASE_ON_ERROR
+
+Default: ``False``
+
+If set to :data:`!True`, indicates that lock will be release on error (work with :option:`--keep-lock`).
+
+.. code-block:: python
+
+    KEEP_LOCK = True
 
 .. py:data:: settings.LIVENESS
 
@@ -236,7 +247,8 @@ expected.
              keep_lock,
              one_instance,
              liveness,
-             metrics
+             metrics,
+             release_on_error
 
 ``Context`` – container for shared resources
 --------------------------------------------
