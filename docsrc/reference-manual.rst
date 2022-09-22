@@ -114,9 +114,12 @@ Default: ``False``
 
 If set to :data:`!True`, indicates that lock will be release on error (work with :option:`--keep-lock`).
 
+.. warning::
+    If lock is released on error job wait 2*sleep_time.
+
 .. code-block:: python
 
-    KEEP_LOCK = True
+    RELEASE_ON_ERROR = True
 
 .. py:data:: settings.LIVENESS
 
