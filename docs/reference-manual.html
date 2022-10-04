@@ -1,18 +1,20 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reference manual &#8212; jobslib 3.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Reference manual &#8212; jobslib 3.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Jobslib" href="index.html" />
@@ -32,30 +34,30 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="reference-manual">
-<h1>Reference manual<a class="headerlink" href="#reference-manual" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-settings">
-<span id="settings-basic-configuration-of-your-application"></span><h2><code class="docutils literal notranslate"><span class="pre">Settings</span></code> – basic configuration of your application<a class="headerlink" href="#module-settings" title="Permalink to this headline">¶</a></h2>
+  <section id="reference-manual">
+<h1>Reference manual<a class="headerlink" href="#reference-manual" title="Permalink to this heading">¶</a></h1>
+<section id="module-settings">
+<span id="settings-basic-configuration-of-your-application"></span><h2><code class="docutils literal notranslate"><span class="pre">Settings</span></code> – basic configuration of your application<a class="headerlink" href="#module-settings" title="Permalink to this heading">¶</a></h2>
 <p>Basic configuration of your task is placed in <code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code> module.
 It is common Python module, which is passed into Jobslib using either
 <code class="xref std std-option docutils literal notranslate"><span class="pre">-s/--settings</span></code> command line argument or
 <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">JOBSLIB_SETTINGS_MODULE</span></code> environment variable. It contains a few
 options for basic application settings.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="c1"># Pass settings module using -s argument</span>
-<span class="gp">$</span> runjob -s myapp.settings myapp.task.HelloWorld
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="c1"># Pass settings module using -s argument</span>
+<span class="gp">$ </span>runjob -s myapp.settings myapp.task.HelloWorld
 
-<span class="gp">$</span> <span class="c1"># Pass settings module using environment variable</span>
-<span class="gp">$</span> <span class="nv">JOBSLIB_SETTINGS_MODULE</span><span class="o">=</span>myapp.settings runjob myapp.task.HelloWorld
+<span class="gp">$ </span><span class="c1"># Pass settings module using environment variable</span>
+<span class="gp">$ </span><span class="nv">JOBSLIB_SETTINGS_MODULE</span><span class="o">=</span>myapp.settings runjob myapp.task.HelloWorld
 </pre></div>
 </div>
-<div class="section" id="list-of-basic-settings">
-<h3>List of basic settings<a class="headerlink" href="#list-of-basic-settings" title="Permalink to this headline">¶</a></h3>
+<section id="list-of-basic-settings">
+<h3>List of basic settings<a class="headerlink" href="#list-of-basic-settings" title="Permalink to this heading">¶</a></h3>
 <p>Some options try obtainig values from several sources. First from command
 line argument, then from environment variable and finally from <a class="reference internal" href="#module-settings" title="settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code></a>
 module. Environment variables are <code class="docutils literal notranslate"><span class="pre">JOBSLIB_</span></code> prefixed.</p>
 <dl class="py data">
-<dt id="settings.settings.CONFIG_CLASS">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">CONFIG_CLASS</code><a class="headerlink" href="#settings.settings.CONFIG_CLASS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.CONFIG_CLASS">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">CONFIG_CLASS</span></span><a class="headerlink" href="#settings.settings.CONFIG_CLASS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: <code class="docutils literal notranslate"><span class="pre">'jobslib.Config'</span></code></p>
@@ -66,8 +68,8 @@ module. Environment variables are <code class="docutils literal notranslate"><sp
 </pre></div>
 </div>
 <dl class="py data">
-<dt id="settings.settings.CONTEXT_CLASS">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">CONTEXT_CLASS</code><a class="headerlink" href="#settings.settings.CONTEXT_CLASS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.CONTEXT_CLASS">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">CONTEXT_CLASS</span></span><a class="headerlink" href="#settings.settings.CONTEXT_CLASS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: <code class="docutils literal notranslate"><span class="pre">'jobslib.Context'</span></code></p>
@@ -78,18 +80,18 @@ resources, e.g. database connection. Jobslib provides default
 </pre></div>
 </div>
 <dl class="std option">
-<dt id="cmdoption-run-once">
-<code class="sig-name descname">--run-once</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-run-once" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-run-once">
+<span class="sig-name descname"><span class="pre">--run-once</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-run-once" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-JOBSLIB_RUN_ONCE">
-<code class="sig-name descname">JOBSLIB_RUN_ONCE</code><a class="headerlink" href="#envvar-JOBSLIB_RUN_ONCE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-JOBSLIB_RUN_ONCE">
+<span class="sig-name descname"><span class="pre">JOBSLIB_RUN_ONCE</span></span><a class="headerlink" href="#envvar-JOBSLIB_RUN_ONCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt id="settings.settings.RUN_ONCE">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">RUN_ONCE</code><a class="headerlink" href="#settings.settings.RUN_ONCE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.RUN_ONCE">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">RUN_ONCE</span></span><a class="headerlink" href="#settings.settings.RUN_ONCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
@@ -98,18 +100,18 @@ resources, e.g. database connection. Jobslib provides default
 </pre></div>
 </div>
 <dl class="std option">
-<dt id="cmdoption-sleep-interval">
-<code class="sig-name descname">--sleep-interval</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sleep-interval" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-sleep-interval">
+<span class="sig-name descname"><span class="pre">--sleep-interval</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sleep-interval" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-JOBSLIB_SLEEP_INTERVAL">
-<code class="sig-name descname">JOBSLIB_SLEEP_INTERVAL</code><a class="headerlink" href="#envvar-JOBSLIB_SLEEP_INTERVAL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-JOBSLIB_SLEEP_INTERVAL">
+<span class="sig-name descname"><span class="pre">JOBSLIB_SLEEP_INTERVAL</span></span><a class="headerlink" href="#envvar-JOBSLIB_SLEEP_INTERVAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt id="settings.settings.SLEEP_INTERVAL">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">SLEEP_INTERVAL</code><a class="headerlink" href="#settings.settings.SLEEP_INTERVAL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.SLEEP_INTERVAL">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">SLEEP_INTERVAL</span></span><a class="headerlink" href="#settings.settings.SLEEP_INTERVAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: <code class="docutils literal notranslate"><span class="pre">0</span></code></p>
@@ -118,18 +120,18 @@ resources, e.g. database connection. Jobslib provides default
 </pre></div>
 </div>
 <dl class="std option">
-<dt id="cmdoption-run-interval">
-<code class="sig-name descname">--run-interval</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-run-interval" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-run-interval">
+<span class="sig-name descname"><span class="pre">--run-interval</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-run-interval" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-JOBSLIB_RUN_INTERVAL">
-<code class="sig-name descname">JOBSLIB_RUN_INTERVAL</code><a class="headerlink" href="#envvar-JOBSLIB_RUN_INTERVAL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-JOBSLIB_RUN_INTERVAL">
+<span class="sig-name descname"><span class="pre">JOBSLIB_RUN_INTERVAL</span></span><a class="headerlink" href="#envvar-JOBSLIB_RUN_INTERVAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt id="settings.settings.RUN_INTERVAL">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">RUN_INTERVAL</code><a class="headerlink" href="#settings.settings.RUN_INTERVAL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.RUN_INTERVAL">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">RUN_INTERVAL</span></span><a class="headerlink" href="#settings.settings.RUN_INTERVAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: <code class="docutils literal notranslate"><span class="pre">0</span></code></p>
@@ -139,18 +141,18 @@ next loop is run imediately after task is done.</p>
 </pre></div>
 </div>
 <dl class="std option">
-<dt id="cmdoption-keep-lock">
-<code class="sig-name descname">--keep-lock</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-keep-lock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="cmdoption-keep-lock">
+<span class="sig-name descname"><span class="pre">--keep-lock</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-keep-lock" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-JOBSLIB_KEEP_LOCK">
-<code class="sig-name descname">JOBSLIB_KEEP_LOCK</code><a class="headerlink" href="#envvar-JOBSLIB_KEEP_LOCK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-JOBSLIB_KEEP_LOCK">
+<span class="sig-name descname"><span class="pre">JOBSLIB_KEEP_LOCK</span></span><a class="headerlink" href="#envvar-JOBSLIB_KEEP_LOCK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt id="settings.settings.KEEP_LOCK">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">KEEP_LOCK</code><a class="headerlink" href="#settings.settings.KEEP_LOCK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.KEEP_LOCK">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">KEEP_LOCK</span></span><a class="headerlink" href="#settings.settings.KEEP_LOCK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
@@ -158,9 +160,33 @@ next loop is run imediately after task is done.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">KEEP_LOCK</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-release-on-error">
+<span class="sig-name descname"><span class="pre">--release-on-error</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-release-on-error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-JOBSLIB_RELEASE_ON_ERROR">
+<span class="sig-name descname"><span class="pre">JOBSLIB_RELEASE_ON_ERROR</span></span><a class="headerlink" href="#envvar-JOBSLIB_RELEASE_ON_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py data">
-<dt id="settings.settings.LIVENESS">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">LIVENESS</code><a class="headerlink" href="#settings.settings.LIVENESS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.RELEASE_ON_ERROR">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">RELEASE_ON_ERROR</span></span><a class="headerlink" href="#settings.settings.RELEASE_ON_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<p>If set to <code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code>, indicates that lock will be release on error (work with <a class="reference internal" href="#cmdoption-keep-lock"><code class="xref std std-option docutils literal notranslate"><span class="pre">--keep-lock</span></code></a>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If lock is released on error job wait 2*sleep_time.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RELEASE_ON_ERROR</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<dl class="py data">
+<dt class="sig sig-object py" id="settings.settings.LIVENESS">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">LIVENESS</span></span><a class="headerlink" href="#settings.settings.LIVENESS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: <code class="docutils literal notranslate"><span class="pre">{'backend':</span> <span class="pre">'jobslib.liveness.dummy.DummyLiveness'}</span></code></p>
@@ -182,8 +208,8 @@ default value <code class="docutils literal notranslate"><span class="pre">jobsl
 </pre></div>
 </div>
 <dl class="py data">
-<dt id="settings.settings.METRICS">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">METRICS</code><a class="headerlink" href="#settings.settings.METRICS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.METRICS">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">METRICS</span></span><a class="headerlink" href="#settings.settings.METRICS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: <code class="docutils literal notranslate"><span class="pre">{'backend':</span> <span class="pre">'jobslib.metrics.dummy.DummyMetrics'}</span></code></p>
@@ -206,8 +232,8 @@ default value <code class="docutils literal notranslate"><span class="pre">jobsl
 </pre></div>
 </div>
 <dl class="py data">
-<dt id="settings.settings.ONE_INSTANCE">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">ONE_INSTANCE</code><a class="headerlink" href="#settings.settings.ONE_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.ONE_INSTANCE">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">ONE_INSTANCE</span></span><a class="headerlink" href="#settings.settings.ONE_INSTANCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: no default value, required option</p>
@@ -231,18 +257,18 @@ be forced. See <a class="reference internal" href="#module-jobslib.oneinstance" 
 </pre></div>
 </div>
 <dl class="py data">
-<dt id="settings.settings.LOGGING">
-<code class="sig-prename descclassname">settings.</code><code class="sig-name descname">LOGGING</code><a class="headerlink" href="#settings.settings.LOGGING" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="settings.settings.LOGGING">
+<span class="sig-prename descclassname"><span class="pre">settings.</span></span><span class="sig-name descname"><span class="pre">LOGGING</span></span><a class="headerlink" href="#settings.settings.LOGGING" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="std envvar">
-<dt id="envvar-JOBSLIB_LOGGING">
-<code class="sig-name descname">JOBSLIB_LOGGING</code><a class="headerlink" href="#envvar-JOBSLIB_LOGGING" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-JOBSLIB_LOGGING">
+<span class="sig-name descname"><span class="pre">JOBSLIB_LOGGING</span></span><a class="headerlink" href="#envvar-JOBSLIB_LOGGING" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Default: root logger which logs to console:</p>
-<p>Takes the logging configuration from a dictionary. See <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#module-logging.config" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code></a>
-module and <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">logging.config.dictConfig()</span></code></a> function documentation.</p>
+<p>Takes the logging configuration from a dictionary. See <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#module-logging.config" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code></a>
+module and <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">logging.config.dictConfig()</span></code></a> function documentation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
@@ -268,28 +294,28 @@ module and <a class="reference external" href="https://docs.python.org/3/library
 </div>
 <p>If logging configuration is passed in evironment variable, JSON object is
 expected.</p>
-</div>
-</div>
-<div class="section" id="module-jobslib.config">
-<span id="config-container-for-configuration"></span><h2><code class="docutils literal notranslate"><span class="pre">Config</span></code> – container for configuration<a class="headerlink" href="#module-jobslib.config" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="module-jobslib.config">
+<span id="config-container-for-configuration"></span><h2><code class="docutils literal notranslate"><span class="pre">Config</span></code> – container for configuration<a class="headerlink" href="#module-jobslib.config" title="Permalink to this heading">¶</a></h2>
 <p>Module <a class="reference internal" href="#module-jobslib.config" title="jobslib.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jobslib.config</span></code></a> provides base class which encapsulates
 configuration.</p>
 <dl class="py function">
-<dt id="jobslib.argument">
-<code class="sig-prename descclassname">jobslib.</code><code class="sig-name descname">argument</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/cmdlineparser.html#argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.argument" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.argument">
+<span class="sig-prename descclassname"><span class="pre">jobslib.</span></span><span class="sig-name descname"><span class="pre">argument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/cmdlineparser.html#argument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.argument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define how a single command-line argument should be parsed.
 <em>args</em> and <em>kwargs</em> have the same meaning as
-<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_argument" title="(in Python v3.8)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">argparse.ArgumentParser.add_argument()</span></code></a> method.</p>
+<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_argument" title="(in Python v3.10)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">argparse.ArgumentParser.add_argument()</span></code></a> method.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="jobslib.Config">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.</code><code class="sig-name descname">Config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">settings</span></em>, <em class="sig-param"><span class="n">args_parser</span></em>, <em class="sig-param"><span class="n">task_cls</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/config.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/config.html#Config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class which encapsulates configuration. It joins configuration values
 from <a class="reference internal" href="#module-settings" title="settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code></a> module and from command line. <a class="reference internal" href="#module-settings" title="settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code></a> is
 Python module defined by either <span class="target" id="index-4"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">JOBSLIB_SETTINGS_MODULE</span></code>
 environment variable or <code class="xref std std-option docutils literal notranslate"><span class="pre">-s/--settings</span></code> command line argument.
-<em>args_parser</em> is instance of the <a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></a>. Both values
+<em>args_parser</em> is instance of the <a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></a>. Both values
 are available on class, <em>settings</em> as a <code class="xref py py-attr docutils literal notranslate"><span class="pre">_settings</span></code> attribute and
 <em>args_parser</em> as an <code class="xref py py-attr docutils literal notranslate"><span class="pre">_args_parser</span></code> attribute.</p>
 <p>Configuration options are placed on class as methods decorated by
@@ -344,82 +370,88 @@ be raised and instance will not be created.</p>
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="jobslib.Config.initialize">
-<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/config.html#Config.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.initialize" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/config.html#Config.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.initialize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize instance attributes. You can override this method in
 the subclasses.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.logging">
-<code class="sig-name descname">logging</code><a class="reference internal" href="_modules/jobslib/config.html#Config.logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.logging" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.logging">
+<span class="sig-name descname"><span class="pre">logging</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Python’s logging configuration or <code class="xref py py-data docutils literal notranslate"><span class="pre">BASE_LOGGING</span></code> if value is
 not defined. <code class="xref py py-data docutils literal notranslate"><span class="pre">BASE_LOGGING</span></code> allowes <code class="xref py py-data docutils literal notranslate"><span class="pre">INFO</span></code>
 and higher leveled messages and forwards them onto console. Format
-is <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">logging.config.dictConfig()</span></code></a>.</p>
+is <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">logging.config.dictConfig()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.context_class">
-<code class="sig-name descname">context_class</code><a class="reference internal" href="_modules/jobslib/config.html#Config.context_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.context_class" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.context_class">
+<span class="sig-name descname"><span class="pre">context_class</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.context_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.context_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Context class, either <a class="reference internal" href="#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a> class or subclass.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.task_class">
-<code class="sig-name descname">task_class</code><a class="reference internal" href="_modules/jobslib/config.html#Config.task_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.task_class" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.task_class">
+<span class="sig-name descname"><span class="pre">task_class</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.task_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.task_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task class, subclass of the <a class="reference internal" href="#jobslib.BaseTask" title="jobslib.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.run_once">
-<code class="sig-name descname">run_once</code><a class="reference internal" href="_modules/jobslib/config.html#Config.run_once"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.run_once" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.run_once">
+<span class="sig-name descname"><span class="pre">run_once</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.run_once"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.run_once" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> that indicates that task will be run only once.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.sleep_interval">
-<code class="sig-name descname">sleep_interval</code><a class="reference internal" href="_modules/jobslib/config.html#Config.sleep_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.sleep_interval" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.sleep_interval">
+<span class="sig-name descname"><span class="pre">sleep_interval</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.sleep_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.sleep_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sleep interval in seconds after task is done.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.run_interval">
-<code class="sig-name descname">run_interval</code><a class="reference internal" href="_modules/jobslib/config.html#Config.run_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.run_interval" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.run_interval">
+<span class="sig-name descname"><span class="pre">run_interval</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.run_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.run_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run interval in seconds. If task is run longer than this interval,
 next loop is run imediately after task is done.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.keep_lock">
-<code class="sig-name descname">keep_lock</code><a class="reference internal" href="_modules/jobslib/config.html#Config.keep_lock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.keep_lock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.release_on_error">
+<span class="sig-name descname"><span class="pre">release_on_error</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.release_on_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.release_on_error" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> that indicates that lock will be release  on task error.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jobslib.Config.keep_lock">
+<span class="sig-name descname"><span class="pre">keep_lock</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.keep_lock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.keep_lock" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> that indicates that lock will be kept during sleeping.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.one_instance">
-<code class="sig-name descname">one_instance</code><a class="reference internal" href="_modules/jobslib/config.html#Config.one_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.one_instance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.one_instance">
+<span class="sig-name descname"><span class="pre">one_instance</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.one_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.one_instance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configuration of the one instance lock. Instance of the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">OneInstanceConfig</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Config.liveness">
-<code class="sig-name descname">liveness</code><a class="reference internal" href="_modules/jobslib/config.html#Config.liveness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Config.liveness" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Config.liveness">
+<span class="sig-name descname"><span class="pre">liveness</span></span><a class="reference internal" href="_modules/jobslib/config.html#Config.liveness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Config.liveness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configuration of the health state writer. Instance of the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">LivenessConfig</span></code>.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-jobslib.context">
-<span id="context-container-for-shared-resources"></span><h2><code class="docutils literal notranslate"><span class="pre">Context</span></code> – container for shared resources<a class="headerlink" href="#module-jobslib.context" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-jobslib.context">
+<span id="context-container-for-shared-resources"></span><h2><code class="docutils literal notranslate"><span class="pre">Context</span></code> – container for shared resources<a class="headerlink" href="#module-jobslib.context" title="Permalink to this heading">¶</a></h2>
 <p>Module <a class="reference internal" href="#module-jobslib.context" title="jobslib.context"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jobslib.context</span></code></a> provides base class which encapsulates
 necessary resources (configuration, database connection, …) for tasks.</p>
 <dl class="py class">
-<dt id="jobslib.Context">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.</code><code class="sig-name descname">Context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/context.html#Context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Context" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Context">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.</span></span><span class="sig-name descname"><span class="pre">Context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/context.html#Context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Context" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class which encapsulates resources (configuration, database connection,
 …). Instance of this class is created during task initialization. So in
 your task you have access to all necessary resources. Inherit this class
@@ -442,54 +474,54 @@ cache values using <code class="xref py py-func docutils literal notranslate"><s
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="jobslib.Context.initialize">
-<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/context.html#Context.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.Context.initialize" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Context.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/context.html#Context.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.Context.initialize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize instance attributes. You can override this method in
 the subclasses.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Context.config">
-<code class="sig-name descname">config</code><a class="headerlink" href="#jobslib.Context.config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Context.config">
+<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#jobslib.Context.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Application’s configuration, instance of the <a class="reference internal" href="#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Context.fqdn">
-<code class="sig-name descname">fqdn</code><a class="headerlink" href="#jobslib.Context.fqdn" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Context.fqdn">
+<span class="sig-name descname"><span class="pre">fqdn</span></span><a class="headerlink" href="#jobslib.Context.fqdn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fully qualified domain name of the local machine as <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Context.one_instance_lock">
-<code class="sig-name descname">one_instance_lock</code><a class="headerlink" href="#jobslib.Context.one_instance_lock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Context.one_instance_lock">
+<span class="sig-name descname"><span class="pre">one_instance_lock</span></span><a class="headerlink" href="#jobslib.Context.one_instance_lock" title="Permalink to this definition">¶</a></dt>
 <dd><p>One instance lock, instance of the
 <a class="reference internal" href="#jobslib.oneinstance.BaseLock" title="jobslib.oneinstance.BaseLock"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.oneinstance.BaseLock</span></code></a> descendant.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Context.liveness">
-<code class="sig-name descname">liveness</code><a class="headerlink" href="#jobslib.Context.liveness" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Context.liveness">
+<span class="sig-name descname"><span class="pre">liveness</span></span><a class="headerlink" href="#jobslib.Context.liveness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Health state writer, instance of the
 <a class="reference internal" href="#jobslib.liveness.BaseLiveness" title="jobslib.liveness.BaseLiveness"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.liveness.BaseLiveness</span></code></a> descendant.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.Context.metrics">
-<code class="sig-name descname">metrics</code><a class="headerlink" href="#jobslib.Context.metrics" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.Context.metrics">
+<span class="sig-name descname"><span class="pre">metrics</span></span><a class="headerlink" href="#jobslib.Context.metrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metrics writer, instance of the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.liveness.BaseMetrics</span></code> descendant.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-jobslib.tasks">
-<span id="task-class-which-encapsulates-task"></span><h2><code class="docutils literal notranslate"><span class="pre">Task</span></code> – class which encapsulates task<a class="headerlink" href="#module-jobslib.tasks" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-jobslib.tasks">
+<span id="task-class-which-encapsulates-task"></span><h2><code class="docutils literal notranslate"><span class="pre">Task</span></code> – class which encapsulates task<a class="headerlink" href="#module-jobslib.tasks" title="Permalink to this heading">¶</a></h2>
 <p>Module <code class="xref py py-mod docutils literal notranslate"><span class="pre">shelter.tasks</span></code> provides an ancestor class for writing tasks.</p>
 <dl class="py class">
-<dt id="jobslib.BaseTask">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.</code><code class="sig-name descname">BaseTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.BaseTask" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.BaseTask">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.</span></span><span class="sig-name descname"><span class="pre">BaseTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.BaseTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ancestor for task. Inherit this class and adjust <a class="reference internal" href="#jobslib.BaseTask.name" title="jobslib.BaseTask.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">name</span></code></a>,
 <a class="reference internal" href="#jobslib.BaseTask.description" title="jobslib.BaseTask.description"><code class="xref py py-attr docutils literal notranslate"><span class="pre">description</span></code></a> and optionally <a class="reference internal" href="#jobslib.BaseTask.arguments" title="jobslib.BaseTask.arguments"><code class="xref py py-attr docutils literal notranslate"><span class="pre">arguments</span></code></a> attributes and
 override <a class="reference internal" href="#jobslib.BaseTask.task" title="jobslib.BaseTask.task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">task()</span></code></a> method. Constructor’s argument <em>config</em> is
@@ -497,7 +529,7 @@ instance of the <a class="reference internal" href="#jobslib.Config" title="jobs
 <p>There are several attributes which are set during initialization.
 <a class="reference internal" href="#module-jobslib.context" title="jobslib.context"><code class="xref py py-attr docutils literal notranslate"><span class="pre">context</span></code></a> is instance of the <a class="reference internal" href="#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a>.
 Configuration is available on context as <a class="reference internal" href="#jobslib.Context.config" title="jobslib.Context.config"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Context.config</span></code></a>
-attribute. <code class="xref py py-attr docutils literal notranslate"><span class="pre">logger</span></code> is instance of the <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Logger</span></code></a>.
+attribute. <code class="xref py py-attr docutils literal notranslate"><span class="pre">logger</span></code> is instance of the <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Logger</span></code></a>.
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">stderr</span></code> are file-like objects for standard
 output and error.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jobslib</span> <span class="kn">import</span> <span class="n">BaseTask</span><span class="p">,</span> <span class="n">argument</span>
@@ -522,21 +554,21 @@ output and error.</p>
 </pre></div>
 </div>
 <dl class="py attribute">
-<dt id="jobslib.BaseTask.name">
-<code class="sig-name descname">name</code><em class="property"> = ''</em><a class="headerlink" href="#jobslib.BaseTask.name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.BaseTask.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#jobslib.BaseTask.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task name.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.BaseTask.description">
-<code class="sig-name descname">description</code><em class="property"> = ''</em><a class="headerlink" href="#jobslib.BaseTask.description" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.BaseTask.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#jobslib.BaseTask.description" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task description.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.BaseTask.arguments">
-<code class="sig-name descname">arguments</code><em class="property"> = ()</em><a class="headerlink" href="#jobslib.BaseTask.arguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Task command line arguments. <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> containing command line
+<dt class="sig sig-object py" id="jobslib.BaseTask.arguments">
+<span class="sig-name descname"><span class="pre">arguments</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#jobslib.BaseTask.arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task command line arguments. <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> containing command line
 arguments. Each argument is defined using <a class="reference internal" href="#jobslib.argument" title="jobslib.argument"><code class="xref py py-func docutils literal notranslate"><span class="pre">argument()</span></code></a>
 function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arguments</span> <span class="o">=</span> <span class="p">(</span>
@@ -547,14 +579,14 @@ function.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.BaseTask.task">
-<code class="sig-name descname">task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask.task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.BaseTask.task" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.BaseTask.task">
+<span class="sig-name descname"><span class="pre">task</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask.task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.BaseTask.task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task body, override this method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.BaseTask.extend_lock">
-<code class="sig-name descname">extend_lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask.extend_lock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.BaseTask.extend_lock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.BaseTask.extend_lock">
+<span class="sig-name descname"><span class="pre">extend_lock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/tasks.html#BaseTask.extend_lock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.BaseTask.extend_lock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refresh existing lock. Return <code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code> if lock has been
 successfuly refreshed, otherwise return <code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code>. See
 <a class="reference internal" href="#module-jobslib.oneinstance" title="jobslib.oneinstance"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jobslib.oneinstance</span></code></a>.</p>
@@ -562,59 +594,59 @@ successfuly refreshed, otherwise return <code class="xref py py-data docutils li
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-jobslib.liveness">
-<span id="liveness-informations-about-health-state-of-the-task"></span><h2><code class="docutils literal notranslate"><span class="pre">Liveness</span></code> – informations about health state of the task<a class="headerlink" href="#module-jobslib.liveness" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-jobslib.liveness">
+<span id="liveness-informations-about-health-state-of-the-task"></span><h2><code class="docutils literal notranslate"><span class="pre">Liveness</span></code> – informations about health state of the task<a class="headerlink" href="#module-jobslib.liveness" title="Permalink to this heading">¶</a></h2>
 <p>Module <code class="xref py py-mod docutils literal notranslate"><span class="pre">liveness</span></code> provides functionality for exporting informations
 about health state of the task. When task is successfuly finished,
 some state is written. <a class="reference internal" href="#jobslib.liveness.BaseLiveness" title="jobslib.liveness.BaseLiveness"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLiveness</span></code></a> is ancestor, it is abstract
 class which defines API, not functionality. Override this class if you
 want to write own implementation of the liveness.</p>
 <dl class="py class">
-<dt id="jobslib.liveness.BaseLiveness">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.liveness.</code><code class="sig-name descname">BaseLiveness</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.BaseLiveness">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.liveness.</span></span><span class="sig-name descname"><span class="pre">BaseLiveness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides liveness API. Inherit this class and override abstract method
 <a class="reference internal" href="#jobslib.liveness.BaseLiveness.write" title="jobslib.liveness.BaseLiveness.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code></a>. Configuration options are defined in
 <a class="reference internal" href="#jobslib.liveness.BaseLiveness.OptionsConfig" title="jobslib.liveness.BaseLiveness.OptionsConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionsConfig</span></code></a> class, which is <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigGroup</span></code>
 descendant.</p>
 <dl class="py class">
-<dt id="jobslib.liveness.BaseLiveness.OptionsConfig">
-<em class="property">class </em><code class="sig-name descname">OptionsConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.OptionsConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.OptionsConfig" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.BaseLiveness.OptionsConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptionsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.OptionsConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.OptionsConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validation of the liveness configuration, see
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigGroup</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.liveness.BaseLiveness.check">
-<code class="sig-name descname">check</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_age</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.check" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.BaseLiveness.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_age</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check liveness and return <code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code> when liveness timestamp is
 younger than <em>max_age</em>, <code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code> when liveness timestamp is
 older than <em>max_age</em>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.liveness.BaseLiveness.get_state">
-<code class="sig-name descname">get_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.get_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.get_state" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.BaseLiveness.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.get_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return health state as a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.liveness.BaseLiveness.read">
-<em class="property">abstract </em><code class="sig-name descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.read" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.BaseLiveness.read">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read informations about health state of the task.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.liveness.BaseLiveness.write">
-<em class="property">abstract </em><code class="sig-name descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.write" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.BaseLiveness.write">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness.html#BaseLiveness.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.BaseLiveness.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write informations about health state of the task.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="jobslib.liveness.dummy.DummyLiveness">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.liveness.dummy.</code><code class="sig-name descname">DummyLiveness</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness/dummy.html#DummyLiveness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.dummy.DummyLiveness" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.dummy.DummyLiveness">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.liveness.dummy.</span></span><span class="sig-name descname"><span class="pre">DummyLiveness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness/dummy.html#DummyLiveness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.dummy.DummyLiveness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dummy liveness implementation. Doesn’t provide real functionality.
 It is useful for development or if it is not necessary liveness. For
 use of <a class="reference internal" href="#jobslib.liveness.dummy.DummyLiveness" title="jobslib.liveness.dummy.DummyLiveness"><code class="xref py py-class docutils literal notranslate"><span class="pre">DummyLiveness</span></code></a> write into <a class="reference internal" href="#module-settings" title="settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code></a>:</p>
@@ -626,8 +658,8 @@ use of <a class="reference internal" href="#jobslib.liveness.dummy.DummyLiveness
 </dd></dl>
 
 <dl class="py class">
-<dt id="jobslib.liveness.consul.ConsulLiveness">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.liveness.consul.</code><code class="sig-name descname">ConsulLiveness</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.consul.ConsulLiveness">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.liveness.consul.</span></span><span class="sig-name descname"><span class="pre">ConsulLiveness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Consul liveness implementation. Provides exporting informations about
 health state into Consul’s key/value storage.</p>
 <p>For use of <a class="reference internal" href="#jobslib.liveness.consul.ConsulLiveness" title="jobslib.liveness.consul.ConsulLiveness"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsulLiveness</span></code></a> write into <a class="reference internal" href="#module-settings" title="settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code></a>:</p>
@@ -653,36 +685,36 @@ health state into Consul’s key/value storage.</p>
 <span class="target" id="index-10"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">JOBSLIB_LIVENESS_CONSUL_RETRY_WAIT_MULTIPLIER</span></code>
 environment variables.</p>
 <dl class="py class">
-<dt id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig">
-<em class="property">class </em><code class="sig-name descname">OptionsConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptionsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Consul liveness options.</p>
 <dl class="py attribute">
-<dt id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.host">
-<code class="sig-name descname">host</code><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.host" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.host">
+<span class="sig-name descname"><span class="pre">host</span></span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.host" title="Permalink to this definition">¶</a></dt>
 <dd><p>IP address or hostname of the Consul server.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.key">
-<code class="sig-name descname">key</code><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.key" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.key">
+<span class="sig-name descname"><span class="pre">key</span></span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Key under which the health state is stored.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.port">
-<code class="sig-name descname">port</code><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.port" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.port">
+<span class="sig-name descname"><span class="pre">port</span></span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Port where the Consul server listening on.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.scheme">
-<code class="sig-name descname">scheme</code><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.scheme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.scheme" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.scheme">
+<span class="sig-name descname"><span class="pre">scheme</span></span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.scheme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.scheme" title="Permalink to this definition">¶</a></dt>
 <dd><p>URI scheme, in current implementation always <code class="docutils literal notranslate"><span class="pre">http</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.timeout">
-<code class="sig-name descname">timeout</code><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.timeout" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.liveness.consul.ConsulLiveness.OptionsConfig.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><a class="reference internal" href="_modules/jobslib/liveness/consul.html#ConsulLiveness.OptionsConfig.timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.liveness.consul.ConsulLiveness.OptionsConfig.timeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Timeout in seconds for connect/read/write operation.</p>
 </dd></dl>
 
@@ -690,26 +722,26 @@ environment variables.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-jobslib.metrics">
-<span id="metrics-task-metrics"></span><h2><code class="docutils literal notranslate"><span class="pre">Metrics</span></code> – task metrics<a class="headerlink" href="#module-jobslib.metrics" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-jobslib.metrics">
+<span id="metrics-task-metrics"></span><h2><code class="docutils literal notranslate"><span class="pre">Metrics</span></code> – task metrics<a class="headerlink" href="#module-jobslib.metrics" title="Permalink to this heading">¶</a></h2>
 <p>Provides metrics API. Inherit this class and override abstract method
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">push_monitoring_metrics()</span></code>. Configuration options are defined in
 <code class="xref py py-class docutils literal notranslate"><span class="pre">OptionsConfig</span></code> class, which is <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigGroup</span></code>
 descendant.</p>
 <dl class="py class">
-<dt id="jobslib.metrics.BaseMetrics">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.metrics.</code><code class="sig-name descname">BaseMetrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics.html#BaseMetrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.metrics.BaseMetrics" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.metrics.BaseMetrics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.metrics.</span></span><span class="sig-name descname"><span class="pre">BaseMetrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics.html#BaseMetrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.metrics.BaseMetrics" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py class">
-<dt id="jobslib.metrics.BaseMetrics.OptionsConfig">
-<em class="property">class </em><code class="sig-name descname">OptionsConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics.html#BaseMetrics.OptionsConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.metrics.BaseMetrics.OptionsConfig" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.metrics.BaseMetrics.OptionsConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptionsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics.html#BaseMetrics.OptionsConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.metrics.BaseMetrics.OptionsConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validation of the liveness configuration, see
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigGroup</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.metrics.BaseMetrics.push">
-<em class="property">abstract </em><code class="sig-name descname">push</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metrics</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics.html#BaseMetrics.push"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.metrics.BaseMetrics.push" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.metrics.BaseMetrics.push">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics.html#BaseMetrics.push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.metrics.BaseMetrics.push" title="Permalink to this definition">¶</a></dt>
 <dd><p>Push metrics. <em>metrics</em> are <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, where key is metric
 name and value is <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> structure containing value and
 optionally tags.</p>
@@ -735,8 +767,8 @@ optionally tags.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="jobslib.metrics.dummy.DummyMetrics">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.metrics.dummy.</code><code class="sig-name descname">DummyMetrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics/dummy.html#DummyMetrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.metrics.dummy.DummyMetrics" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.metrics.dummy.DummyMetrics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.metrics.dummy.</span></span><span class="sig-name descname"><span class="pre">DummyMetrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics/dummy.html#DummyMetrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.metrics.dummy.DummyMetrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dummy metrics implementation. Doesn’t provide real functionality.
 It is useful for development or if it is not necessary metrics. For
 use of <a class="reference internal" href="#jobslib.metrics.dummy.DummyMetrics" title="jobslib.metrics.dummy.DummyMetrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">DummyMetrics</span></code></a> write into <a class="reference internal" href="#module-settings" title="settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code></a>:</p>
@@ -748,8 +780,8 @@ use of <a class="reference internal" href="#jobslib.metrics.dummy.DummyMetrics" 
 </dd></dl>
 
 <dl class="py class">
-<dt id="jobslib.metrics.influxdb.InfluxDBMetrics">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.metrics.influxdb.</code><code class="sig-name descname">InfluxDBMetrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics/influxdb.html#InfluxDBMetrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.metrics.influxdb.InfluxDBMetrics" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.metrics.influxdb.InfluxDBMetrics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.metrics.influxdb.</span></span><span class="sig-name descname"><span class="pre">InfluxDBMetrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/metrics/influxdb.html#InfluxDBMetrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.metrics.influxdb.InfluxDBMetrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>InfluxDB metrics implementation.</p>
 <p>For use of <a class="reference internal" href="#jobslib.metrics.influxdb.InfluxDBMetrics" title="jobslib.metrics.influxdb.InfluxDBMetrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">InfluxDBMetrics</span></code></a> write into <a class="reference internal" href="#module-settings" title="settings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">settings</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">METRICS</span> <span class="o">=</span> <span class="p">{</span>
@@ -777,9 +809,9 @@ use of <a class="reference internal" href="#jobslib.metrics.dummy.DummyMetrics" 
 environment variables.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-jobslib.oneinstance">
-<span id="one-instance-lock-only-one-running-instance-at-the-same-time"></span><h2><code class="docutils literal notranslate"><span class="pre">One</span> <span class="pre">Instance</span> <span class="pre">Lock</span></code> – only one running instance at the same time<a class="headerlink" href="#module-jobslib.oneinstance" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-jobslib.oneinstance">
+<span id="one-instance-lock-only-one-running-instance-at-the-same-time"></span><h2><code class="docutils literal notranslate"><span class="pre">One</span> <span class="pre">Instance</span> <span class="pre">Lock</span></code> – only one running instance at the same time<a class="headerlink" href="#module-jobslib.oneinstance" title="Permalink to this heading">¶</a></h2>
 <p>Module <code class="xref py py-mod docutils literal notranslate"><span class="pre">oneinstance</span></code> provides a lock which allowes only one running
 instance at the same time. The Lock is used when <code class="docutils literal notranslate"><span class="pre">--one-instance</span></code> command
 line argument is passed. When acquiring the lock is not possible, task is not
@@ -791,44 +823,44 @@ inside your <a class="reference internal" href="#jobslib.BaseTask.task" title="j
 not locking functionality. Override the class if you want write own
 implementation of the lock.</p>
 <dl class="py class">
-<dt id="jobslib.oneinstance.BaseLock">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.oneinstance.</code><code class="sig-name descname">BaseLock</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.BaseLock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.oneinstance.</span></span><span class="sig-name descname"><span class="pre">BaseLock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides lock’s API. Inherit this class and override abstract methods
 <a class="reference internal" href="#jobslib.oneinstance.BaseLock.acquire" title="jobslib.oneinstance.BaseLock.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>, <a class="reference internal" href="#jobslib.oneinstance.BaseLock.release" title="jobslib.oneinstance.BaseLock.release"><code class="xref py py-meth docutils literal notranslate"><span class="pre">release()</span></code></a> and <a class="reference internal" href="#jobslib.oneinstance.BaseLock.refresh" title="jobslib.oneinstance.BaseLock.refresh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">refresh()</span></code></a>. Configuration
 options are defined in <a class="reference internal" href="#jobslib.oneinstance.BaseLock.OptionsConfig" title="jobslib.oneinstance.BaseLock.OptionsConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionsConfig</span></code></a> class, which is
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigGroup</span></code> descendant.</p>
 <dl class="py class">
-<dt id="jobslib.oneinstance.BaseLock.OptionsConfig">
-<em class="property">class </em><code class="sig-name descname">OptionsConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.OptionsConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.OptionsConfig" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.BaseLock.OptionsConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptionsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.OptionsConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.OptionsConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validation of the lock’s configuration, see
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigGroup</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.oneinstance.BaseLock.acquire">
-<em class="property">abstract </em><code class="sig-name descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.acquire"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.acquire" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.BaseLock.acquire">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.acquire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.acquire" title="Permalink to this definition">¶</a></dt>
 <dd><p>Acquire a lock. Return <code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code> if lock has been successfuly
 acquired, otherwise return <code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.oneinstance.BaseLock.get_lock_owner_info">
-<code class="sig-name descname">get_lock_owner_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.get_lock_owner_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.get_lock_owner_info" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.BaseLock.get_lock_owner_info">
+<span class="sig-name descname"><span class="pre">get_lock_owner_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.get_lock_owner_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.get_lock_owner_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return lock’s owner information. It depends on implementation,
 return <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code> if information is not
 available.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.oneinstance.BaseLock.refresh">
-<em class="property">abstract </em><code class="sig-name descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.refresh" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.BaseLock.refresh">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.refresh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refresh existing lock. Return <code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code> if lock has been
 successfuly refreshed, otherwise return <code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jobslib.oneinstance.BaseLock.release">
-<em class="property">abstract </em><code class="sig-name descname">release</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.release" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.BaseLock.release">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance.html#BaseLock.release"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.BaseLock.release" title="Permalink to this definition">¶</a></dt>
 <dd><p>Release existing lock. Return <code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code> if lock has been
 successfuly released, otherwise return <code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd></dl>
@@ -836,14 +868,14 @@ successfuly released, otherwise return <code class="xref py py-data docutils lit
 </dd></dl>
 
 <dl class="py exception">
-<dt id="jobslib.oneinstance.OneInstanceWatchdogError">
-<em class="property">exception </em><code class="sig-prename descclassname">jobslib.oneinstance.</code><code class="sig-name descname">OneInstanceWatchdogError</code><a class="reference internal" href="_modules/jobslib/oneinstance.html#OneInstanceWatchdogError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.OneInstanceWatchdogError" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.OneInstanceWatchdogError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.oneinstance.</span></span><span class="sig-name descname"><span class="pre">OneInstanceWatchdogError</span></span><a class="reference internal" href="_modules/jobslib/oneinstance.html#OneInstanceWatchdogError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.OneInstanceWatchdogError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicates that TTL of the lock has been reached.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="jobslib.oneinstance.dummy.DummyLock">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.oneinstance.dummy.</code><code class="sig-name descname">DummyLock</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance/dummy.html#DummyLock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.dummy.DummyLock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.dummy.DummyLock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.oneinstance.dummy.</span></span><span class="sig-name descname"><span class="pre">DummyLock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance/dummy.html#DummyLock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.dummy.DummyLock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dummy lock implementation. Doesn’t provide real locking, all methods
 always return <code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code>. It is useful for development or if it is
 not necessary run only one instance at the same time. For using the
@@ -856,8 +888,8 @@ not necessary run only one instance at the same time. For using the
 </dd></dl>
 
 <dl class="py class">
-<dt id="jobslib.oneinstance.consul.ConsulLock">
-<em class="property">class </em><code class="sig-prename descclassname">jobslib.oneinstance.consul.</code><code class="sig-name descname">ConsulLock</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jobslib.oneinstance.consul.</span></span><span class="sig-name descname"><span class="pre">ConsulLock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Consul lock implementation, provides locking among datacenters.
 When the lock expires due to TTL, <code class="xref py py-exc docutils literal notranslate"><span class="pre">OneInstanceWatchdogError</span></code>
 is raised. It is possible to extend the lock using <code class="xref py py-meth docutils literal notranslate"><span class="pre">refresh()</span></code>.
@@ -866,7 +898,7 @@ made and lock will be extended asynchronously when <strong>SIGALRM</strong> is
 received. So use conservative TTL and periodically extend the lock.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><a class="reference internal" href="#jobslib.oneinstance.consul.ConsulLock" title="jobslib.oneinstance.consul.ConsulLock"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsulLock</span></code></a> uses <a class="reference external" href="https://docs.python.org/3/library/signal.html#module-signal" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">signal</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.SIGALRM" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">signal.SIGALRM</span></code></a>
+<p><a class="reference internal" href="#jobslib.oneinstance.consul.ConsulLock" title="jobslib.oneinstance.consul.ConsulLock"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsulLock</span></code></a> uses <a class="reference external" href="https://docs.python.org/3/library/signal.html#module-signal" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">signal</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.SIGALRM" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">signal.SIGALRM</span></code></a>
 for TTL mechanism, so don’t use <code class="xref py py-data docutils literal notranslate"><span class="pre">SIGALRM</span></code> in your
 task. And don’t use multiple instances of the <a class="reference internal" href="#jobslib.oneinstance.consul.ConsulLock" title="jobslib.oneinstance.consul.ConsulLock"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsulLock</span></code></a>
 at the same time, becase <code class="xref py py-data docutils literal notranslate"><span class="pre">SIGALRM</span></code> can’t be shared
@@ -899,50 +931,50 @@ among multiple instances.</p>
 <span class="target" id="index-25"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">JOBSLIB_ONE_INSTANCE_CONSUL_RETRY_WAIT_MULTIPLIER</span></code>
 environment variables.</p>
 <dl class="py class">
-<dt id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig">
-<em class="property">class </em><code class="sig-name descname">OptionsConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptionsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Consul lock options.</p>
 <dl class="py attribute">
-<dt id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.host">
-<code class="sig-name descname">host</code><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.host" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.host">
+<span class="sig-name descname"><span class="pre">host</span></span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.host" title="Permalink to this definition">¶</a></dt>
 <dd><p>IP address or hostname of the Consul server.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.key">
-<code class="sig-name descname">key</code><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.key" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.key">
+<span class="sig-name descname"><span class="pre">key</span></span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Key under which the lock is stored.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.lock_delay">
-<code class="sig-name descname">lock_delay</code><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.lock_delay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.lock_delay" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.lock_delay">
+<span class="sig-name descname"><span class="pre">lock_delay</span></span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.lock_delay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.lock_delay" title="Permalink to this definition">¶</a></dt>
 <dd><p>When sessions invalidation request is received, wait
 <em>lock_delay</em> seconds before session is truly invalidated.
 Value must be between 0 and 60 seconds, default is 1.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.port">
-<code class="sig-name descname">port</code><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.port" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.port">
+<span class="sig-name descname"><span class="pre">port</span></span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Port where the Consul server listening on.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.scheme">
-<code class="sig-name descname">scheme</code><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.scheme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.scheme" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.scheme">
+<span class="sig-name descname"><span class="pre">scheme</span></span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.scheme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.scheme" title="Permalink to this definition">¶</a></dt>
 <dd><p>URI scheme, in current implementation always <code class="docutils literal notranslate"><span class="pre">http</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.timeout">
-<code class="sig-name descname">timeout</code><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.timeout" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.timeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Timeout in seconds for connect/read/write operation.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.ttl">
-<code class="sig-name descname">ttl</code><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.ttl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.ttl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jobslib.oneinstance.consul.ConsulLock.OptionsConfig.ttl">
+<span class="sig-name descname"><span class="pre">ttl</span></span><a class="reference internal" href="_modules/jobslib/oneinstance/consul.html#ConsulLock.OptionsConfig.ttl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jobslib.oneinstance.consul.ConsulLock.OptionsConfig.ttl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum lock lifespan in seconds, must be between 10 seconds
 and one day. If value is omitted, default is one day (maximum
 for Consul).</p>
@@ -952,8 +984,8 @@ for Consul).</p>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -997,12 +1029,12 @@ for Consul).</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -1019,7 +1051,7 @@ for Consul).</p>
       &copy;2018 – 2020, Seznam.cz, a.s..
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.2.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

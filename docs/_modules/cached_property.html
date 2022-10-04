@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cached_property &#8212; jobslib 3.1.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cached_property &#8212; jobslib 3.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
    
@@ -36,9 +37,10 @@
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Daniel Greenfeld&quot;</span>
 <span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;pydanny@gmail.com&quot;</span>
-<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;1.5.1&quot;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;1.5.2&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;BSD&quot;</span>
 
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 
@@ -70,7 +72,7 @@
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">_wrap_in_coroutine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">():</span>
             <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
@@ -219,12 +221,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -241,7 +243,7 @@
       &copy;2018 – 2020, Seznam.cz, a.s..
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.2.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

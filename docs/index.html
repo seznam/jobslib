@@ -1,18 +1,20 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jobslib &#8212; jobslib 3.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Jobslib &#8212; jobslib 3.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Reference manual" href="reference-manual.html" />
@@ -32,10 +34,10 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="jobslib">
-<h1>Jobslib<a class="headerlink" href="#jobslib" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+  <section id="jobslib">
+<h1>Jobslib<a class="headerlink" href="#jobslib" title="Permalink to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
 <p><strong>Jobslib</strong> is a library for launching Python tasks in parallel environment.
 Our use-case is. We have two datacenters (in near future three datacenters),
 in each datacenter is run server with some task. However only one task may
@@ -55,41 +57,41 @@ which uses <a class="reference external" href="https://www.influxdata.com/">Infl
 same time. Jobslib includes implementation which uses
 <a class="reference external" href="https://www.consul.io/">Consul</a>.</p></li>
 </ul>
-</div>
-<div class="section" id="instalation">
-<h2>Instalation<a class="headerlink" href="#instalation" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="instalation">
+<h2>Instalation<a class="headerlink" href="#instalation" title="Permalink to this heading">¶</a></h2>
 <p>Installation from source code:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/seznam/jobslib.git
-<span class="gp">$</span> <span class="nb">cd</span> jobslib
-<span class="gp">$</span> python setup.py install
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/seznam/jobslib.git
+<span class="gp">$ </span><span class="nb">cd</span> jobslib
+<span class="gp">$ </span>python setup.py install
 </pre></div>
 </div>
 <p>Installation from PyPi:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install jobslib
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip install jobslib
 </pre></div>
 </div>
 <p><a class="reference external" href="https://tox.readthedocs.io/en/latest/">Tox</a> is used for testing:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/seznam/jobslib.git
-<span class="gp">$</span> <span class="nb">cd</span> jobslib
-<span class="gp">$</span> pip install tox
-<span class="gp">$</span> tox --skip-missing-interpreters
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/seznam/jobslib.git
+<span class="gp">$ </span><span class="nb">cd</span> jobslib
+<span class="gp">$ </span>pip install tox
+<span class="gp">$ </span>tox --skip-missing-interpreters
 </pre></div>
 </div>
-</div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
 <p>Task is launched from command line using <strong class="command">runjob</strong> command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> runjob <span class="o">[</span>-s SETTINGS<span class="o">]</span> <span class="o">[</span>--disable-one-instance<span class="o">]</span> <span class="o">[</span>--run-once<span class="o">]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>runjob <span class="o">[</span>-s SETTINGS<span class="o">]</span> <span class="o">[</span>--disable-one-instance<span class="o">]</span> <span class="o">[</span>--run-once<span class="o">]</span>
 <span class="go">         [--sleep-interval SLEEP_INTERVAL] [--run-interval RUN_INTERVAL]</span>
-<span class="go">         [--keep-lock]</span>
+<span class="go">         [--keep-lock] [--release-on-error]</span>
 <span class="go">         task_cls</span>
 
-<span class="gp">$</span> <span class="c1"># Pass settings module using -s argument</span>
-<span class="gp">$</span> runjob -s myapp.settings myapp.task.HelloWorld --run-once
+<span class="gp">$ </span><span class="c1"># Pass settings module using -s argument</span>
+<span class="gp">$ </span>runjob -s myapp.settings myapp.task.HelloWorld --run-once
 
-<span class="gp">$</span> <span class="c1"># Pass settings module using environment variable</span>
-<span class="gp">$</span> <span class="nb">export</span> <span class="nv">JOBSLIB_SETTINGS_MODULE</span><span class="o">=</span><span class="s2">&quot;myapp.settings&quot;</span>
-<span class="gp">$</span> runjob myapp.task.HelloWorld --run-once
+<span class="gp">$ </span><span class="c1"># Pass settings module using environment variable</span>
+<span class="gp">$ </span><span class="nb">export</span> <span class="nv">JOBSLIB_SETTINGS_MODULE</span><span class="o">=</span><span class="s2">&quot;myapp.settings&quot;</span>
+<span class="gp">$ </span>runjob myapp.task.HelloWorld --run-once
 </pre></div>
 </div>
 <p>Task is normally run in infinite loop, delay in seconds between individual
@@ -99,7 +101,9 @@ seconds, which is used to sleep after task is done. <a class="reference internal
 tells that task is run every run interval seconds. Both arguments may not be
 used together. <a class="reference internal" href="reference-manual.html#cmdoption-keep-lock"><code class="xref std std-option docutils literal notranslate"><span class="pre">--keep-lock</span></code></a> argument causes that lock will be kept
 during sleeping, it is useful when you have several machines and you want to
-keep the task still on the same machine. If you don’t want to launch task
+keep the task still on the same machine. You can force release lock on error
+with <a class="reference internal" href="reference-manual.html#cmdoption-release-on-error"><code class="xref std std-option docutils literal notranslate"><span class="pre">--release-on-error</span></code></a> if you use <a class="reference internal" href="reference-manual.html#cmdoption-keep-lock"><code class="xref std std-option docutils literal notranslate"><span class="pre">--keep-lock</span></code></a>.
+If you don’t want to launch task
 forever, use <a class="reference internal" href="reference-manual.html#cmdoption-run-once"><code class="xref std std-option docutils literal notranslate"><span class="pre">--run-once</span></code></a> argument. Library provides locking
 mechanism for launching tasks on several machines and only one instance at
 one time may be launched. If you don’t want this locking, use
@@ -167,15 +171,15 @@ and override <a class="reference internal" href="reference-manual.html#jobslib.B
 </div>
 <p>Optionally you can override <a class="reference internal" href="reference-manual.html#jobslib.Config" title="jobslib.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Config</span></code></a> and/or
 <a class="reference internal" href="reference-manual.html#jobslib.Context" title="jobslib.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">jobslib.Context</span></code></a>. Finally run your task:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> runjob -s helloworld.settings --run-once helloworld.task.HelloWorld
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>runjob -s helloworld.settings --run-once helloworld.task.HelloWorld
 <span class="go">2020-07-03 14:53:25 helloworld.task.HelloWorld INFO Run task</span>
 <span class="go">Hello World!</span>
 <span class="go">2020-07-03 14:53:25 helloworld.task.HelloWorld INFO Task done</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="reference-manual">
-<h2>Reference manual<a class="headerlink" href="#reference-manual" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="reference-manual">
+<h2>Reference manual<a class="headerlink" href="#reference-manual" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="reference-manual.html">Reference manual</a><ul>
@@ -190,12 +194,12 @@ and override <a class="reference internal" href="reference-manual.html#jobslib.B
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="source-code-and-license">
-<h2>Source code and license<a class="headerlink" href="#source-code-and-license" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="source-code-and-license">
+<h2>Source code and license<a class="headerlink" href="#source-code-and-license" title="Permalink to this heading">¶</a></h2>
 <p>Source codes are available on GitHub <a class="reference external" href="https://github.com/seznam/jobslib">https://github.com/seznam/jobslib</a> under the <a class="reference external" href="https://opensource.org/licenses/BSD-3-Clause">3-clause BSD license</a>. <a class="reference external" href="https://semver.org/">Semantic Versioning</a> and <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a> for changelog is used.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -230,12 +234,12 @@ and override <a class="reference internal" href="reference-manual.html#jobslib.B
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -252,7 +256,7 @@ and override <a class="reference internal" href="reference-manual.html#jobslib.B
       &copy;2018 – 2020, Seznam.cz, a.s..
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.2.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

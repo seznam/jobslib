@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index &#8212; jobslib 3.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; jobslib 3.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
    
@@ -66,6 +67,13 @@
 
       <ul>
         <li><a href="reference-manual.html#cmdoption-keep-lock">command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --release-on-error
+
+      <ul>
+        <li><a href="reference-manual.html#cmdoption-release-on-error">command line option</a>
 </li>
       </ul></li>
       <li>
@@ -141,6 +149,8 @@
       <ul>
         <li><a href="reference-manual.html#cmdoption-keep-lock">--keep-lock</a>
 </li>
+        <li><a href="reference-manual.html#cmdoption-release-on-error">--release-on-error</a>
+</li>
         <li><a href="reference-manual.html#cmdoption-run-interval">--run-interval</a>
 </li>
         <li><a href="reference-manual.html#cmdoption-run-once">--run-once</a>
@@ -148,10 +158,10 @@
         <li><a href="reference-manual.html#cmdoption-sleep-interval">--sleep-interval</a>
 </li>
       </ul></li>
-      <li><a href="reference-manual.html#jobslib.Config">Config (class in jobslib)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference-manual.html#jobslib.Config">Config (class in jobslib)</a>
+</li>
       <li><a href="reference-manual.html#jobslib.Context.config">config (jobslib.Context attribute)</a>
 </li>
       <li><a href="reference-manual.html#jobslib.liveness.consul.ConsulLiveness">ConsulLiveness (class in jobslib.liveness.consul)</a>
@@ -243,6 +253,8 @@
         <li><a href="reference-manual.html#index-20">JOBSLIB_ONE_INSTANCE_CONSUL_TIMEOUT</a>
 </li>
         <li><a href="reference-manual.html#index-22">JOBSLIB_ONE_INSTANCE_CONSUL_TTL</a>
+</li>
+        <li><a href="reference-manual.html#envvar-JOBSLIB_RELEASE_ON_ERROR">JOBSLIB_RELEASE_ON_ERROR</a>
 </li>
         <li><a href="reference-manual.html#envvar-JOBSLIB_RUN_INTERVAL">JOBSLIB_RUN_INTERVAL</a>
 </li>
@@ -514,9 +526,11 @@
 </li>
       <li><a href="reference-manual.html#jobslib.oneinstance.BaseLock.refresh">refresh() (jobslib.oneinstance.BaseLock method)</a>
 </li>
+      <li><a href="reference-manual.html#jobslib.oneinstance.BaseLock.release">release() (jobslib.oneinstance.BaseLock method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference-manual.html#jobslib.oneinstance.BaseLock.release">release() (jobslib.oneinstance.BaseLock method)</a>
+      <li><a href="reference-manual.html#jobslib.Config.release_on_error">release_on_error (jobslib.Config attribute)</a>
 </li>
       <li><a href="reference-manual.html#jobslib.Config.run_interval">run_interval (jobslib.Config attribute)</a>
 </li>
@@ -547,15 +561,17 @@
 </li>
       <li><a href="reference-manual.html#settings.settings.KEEP_LOCK">settings.KEEP_LOCK (in module settings)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference-manual.html#settings.settings.LIVENESS">settings.LIVENESS (in module settings)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference-manual.html#settings.settings.LOGGING">settings.LOGGING (in module settings)</a>
 </li>
       <li><a href="reference-manual.html#settings.settings.METRICS">settings.METRICS (in module settings)</a>
 </li>
       <li><a href="reference-manual.html#settings.settings.ONE_INSTANCE">settings.ONE_INSTANCE (in module settings)</a>
+</li>
+      <li><a href="reference-manual.html#settings.settings.RELEASE_ON_ERROR">settings.RELEASE_ON_ERROR (in module settings)</a>
 </li>
       <li><a href="reference-manual.html#settings.settings.RUN_INTERVAL">settings.RUN_INTERVAL (in module settings)</a>
 </li>
@@ -629,12 +645,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -651,7 +667,7 @@
       &copy;2018 – 2020, Seznam.cz, a.s..
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.2.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
