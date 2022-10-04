@@ -215,6 +215,18 @@ class Config(OptionsContainer):
         return run_interval
 
     @option
+    def release_on_error(self):
+        """
+        :class:`!bool` that indicates that lock will be release  on task error.
+        """
+        if self._args_parser.release_on_error is not None:
+            return self._args_parser.release_on_error
+        release_on_error = os.environ.get('JOBSLIB_RELEASE_ON_ERROR')
+        if release_on_error:
+            return bool(int(release_on_error))
+        return getattr(self._settings, 'RELEASE_ON_ERROR', False)
+
+    @option
     def keep_lock(self):
         """
         :class:`!bool` that indicates that lock will be kept during sleeping.

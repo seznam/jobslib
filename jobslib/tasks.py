@@ -104,6 +104,7 @@ class BaseTask(object):
             last_successful_run_timestamp = None
             job_status = JobStatus.UNKNOWN
             keep_lock = self.context.config.keep_lock
+            release_on_error = self.context.config.release_on_error
 
             try:
                 if lock.acquire():
@@ -185,7 +186,10 @@ class BaseTask(object):
                 next_run = start_time + self.context.config.run_interval
                 sleep_time = max(next_run - time.time(), 0)
 
-            if keep_lock:
+            failed_and_release = \
+                (job_status == JobStatus.FAILED) and release_on_error
+
+            if keep_lock and not failed_and_release:
                 self.logger.info(
                     "Sleep for %d seconds, lock is kept", sleep_time)
 
@@ -204,9 +208,15 @@ class BaseTask(object):
                     signal.signal(signal.SIGTERM, signal.SIG_DFL)
                     signal.signal(signal.SIGINT, signal.SIG_DFL)
             else:
-                self.logger.info(
-                    "Sleep for %d seconds", sleep_time)
+                # we need wait 2*sleep_time
+                # because another instance need time to take lock
+                sleep_time = \
+                    sleep_time if not failed_and_release else sleep_time * 2
 
+                if failed_and_release:
+                    lock.release()
+
+                self.logger.info("Sleep for %d seconds", sleep_time)
                 time.sleep(sleep_time)
 
     def initialize(self):

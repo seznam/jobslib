@@ -93,6 +93,10 @@ def main(args=None):
         dest='keep_lock', default=None,
         help='keep lock during sleeping interval')
     parser.add_argument(
+        '--release-on-error', action='store_true',
+        dest='release_on_error', default=None,
+        help='release lock on task error')
+    parser.add_argument(
         'task_cls', action='store', type=str,
         help='module path to task class (module.submodule.TaskClass), '
              'or some of the internal tasks ({})'.format(
