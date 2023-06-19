@@ -1,5 +1,9 @@
 # Jobslib
 
+## [3.2.1] - 2023-06-19 15:18 - Jan Seifert <jan.seifert@firma.seznam.cz>
+### Added
+- fix colored 1.5 compatibility
+
 ## [3.2.0] - 2022-09-05 09:33 - Ondrej Voves <ondrej.voves@firma.seznam.cz>
 ### Added
 - Option to release lock on error (DOP-7864)
