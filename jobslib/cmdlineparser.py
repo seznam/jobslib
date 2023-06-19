@@ -5,7 +5,10 @@ Command line parser helpers.
 import argparse
 import sys
 
-from colored import fg, attr
+try:
+    from colored import fg as fore, attr as style
+except ImportError:
+    from colored import fore, style
 
 __all__ = ['argument']
 
@@ -33,4 +36,4 @@ class ArgumentParser(argparse.ArgumentParser):
         self.print_help(sys.stderr)
         self.exit(
             2, '\n{:s}{:s}: error: {}{:s}\n'.format(
-                fg('red'), self.prog, message, attr('reset')))
+                fore('red'), self.prog, message, style('reset')))

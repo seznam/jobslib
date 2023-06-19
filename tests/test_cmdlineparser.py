@@ -3,8 +3,11 @@ import sys
 
 from unittest import mock
 
-import colored
 import pytest
+try:
+    from colored import fg as fore, attr as style
+except ImportError:
+    from colored import fore, style
 
 from jobslib.cmdlineparser import argument, ArgumentParser
 
@@ -29,7 +32,7 @@ def test_argument_parser():
         with mock.patch.object(parser, 'exit') as m_exit:
             parser.error('something is wrong')
     expected_message = (
-        '\n' + colored.fg('red') + 'foo: error: something is wrong' +
-        colored.attr('reset') + '\n')
+        '\n' + fore('red') + 'foo: error: something is wrong' +
+        style('reset') + '\n')
     m_print_help.assert_called_once_with(sys.stderr)
     m_exit.assert_called_once_with(2, expected_message)
